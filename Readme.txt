@@ -1,4 +1,4 @@
-PYTHON MOTHERF*****S, DO YOU SPEAK IT ?
+ PYTHON MOTHERF*****S, DO YOU SPEAK IT ?
 So guys if you have python, or pip or django please proceed further
 1) Install Python
 	1.1) we go to https://www.python.org/downloads/
