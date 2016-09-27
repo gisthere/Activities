@@ -16,6 +16,9 @@ class PlannedActivity(models.Model):
     end_time = models.DateTimeField(auto_now_add=True)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return self.description
+
 
 class Confirmation(models.Model):
     CREATED = 'CR'
