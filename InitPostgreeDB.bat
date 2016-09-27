@@ -1,0 +1,1 @@
+psql --file=.\Postgree\Scripts\InitDB.script -U postgres

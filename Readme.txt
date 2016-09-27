@@ -13,5 +13,13 @@ So guys if you have python, or pip or django please proceed further
 4) Install git
 	4.1) proceed to https://git-scm.com/
 	4.2) click blue button "DOWNLOAD FOR WINDOWS" or whatever OS you have
-5) Clone our repo
-	5.1) run command from directory where you want to be files of project "git clone https://github.com/MSD-GroupI/Activities.git"
+5) Install postgresql
+	5.1) goto http://www.enterprisedb.com/products-services-training/pgdownload#windows
+	5.2) download version Version 9.5.4
+	5.3) install it, REMEMBER PASSWORD YOU ENTERED AT ISTALL, THIS FUCKING ELEPHANT IDIAN FUCKERS FUCKED ME UP WITH THIS
+	5.4) in command line run "pip install psycopg2"
+	5.5) run script InitPostgresDB.bat
+6) Clone our repo
+	6.1) run command from directory where you want to be files of project "git clone https://github.com/MSD-GroupI/Activities.git"
+7) Run server
+	7.1) Run ServerLauncher.bat
