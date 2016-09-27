@@ -19,15 +19,6 @@ class ActivityType(models.Model):
         return self.name
 
 
-class Location(models.Model):
-    name = models.CharField(max_length=100)
-    latitude = models.CharField(max_length=7)
-    longitude = models.CharField(max_length=7)
-
-    def __str__(self):
-        return self.name
-
-
 class Activity(models.Model):
     SCHEDULED = 'SC'
     CANCELED = 'CN'
