@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import os
 import sys
-#check check one-two one-two
+
+# check check one-two one-two
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Activities.settings")
