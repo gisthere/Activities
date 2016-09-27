@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import PlannedActivity
+
+admin.site.register(PlannedActivity)
