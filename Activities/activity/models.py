@@ -7,16 +7,25 @@ from authentication.models import User
 class ActivityCategory(models.Model):
     name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
 
 class ActivityType(models.Model):
     name = models.CharField(max_length=50)
     category = models.ForeignKey('ActivityCategory', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class Location(models.Model):
     name = models.CharField(max_length=100)
     latitude = models.CharField(max_length=7)
-    longtitude = models.CharField(max_length=7)
+    longitude = models.CharField(max_length=7)
+
+    def __str__(self):
+        return self.name
 
 
 class Activity(models.Model):
@@ -48,6 +57,9 @@ class Activity(models.Model):
                                   related_name='organizer_of_activity')
     activity_category = models.ForeignKey(ActivityCategory, on_delete=models.SET_NULL, null=True)
     activity_type = models.ForeignKey(ActivityType, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.name
 
 
 class ActivityLocation(models.Model):

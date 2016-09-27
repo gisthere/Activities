@@ -19,3 +19,6 @@ class User(models.Model):
         choices=GENDERS,
     )
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.user.first_name + " " + self.user.last_name
