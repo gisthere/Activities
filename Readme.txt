@@ -1,4 +1,4 @@
-PYTHON MOTHERF*****S, DO YOU SPEAK IT ?
+ PYTHON MOTHERF*****S, DO YOU SPEAK IT ?
 So guys if you have python, or pip or django please proceed further
 1) Install Python
 	1.1) we go to https://www.python.org/downloads/
@@ -22,4 +22,5 @@ So guys if you have python, or pip or django please proceed further
 6) Clone our repo
 	6.1) run command from directory where you want to be files of project "git clone https://github.com/MSD-GroupI/Activities.git"
 7) Run server
-	7.1) Run ServerLauncher.bat
+	7.1) If it your first run RUN CreateSuperUser.bat
+	7.2) Run ServerLauncher.bat
