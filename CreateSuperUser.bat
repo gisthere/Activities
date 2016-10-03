@@ -1,0 +1,1 @@
+python Activities/manage.py createsuperuser
