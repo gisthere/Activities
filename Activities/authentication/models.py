@@ -9,7 +9,7 @@ class User(models.Model):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-
+    
     user = models.OneToOneField(User)
     phone = models.CharField(max_length=15)
     telegram = models.CharField(max_length=30)
