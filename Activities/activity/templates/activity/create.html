@@ -4,7 +4,7 @@
 
 {% block content %}
     <p>Creating activity worked!</p>
-    <form action="{% url 'add_activity' %}" method="post" novalidate>
+    <form action="{% url 'activity:add_activity' %}" method="post" novalidate>
         {% csrf_token %}
 
         <p>
