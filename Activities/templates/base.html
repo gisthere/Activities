@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Bocor bootstrap 3 one page template</title>
+    <title>Activity Planner</title>
     
     <!-- css -->
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -41,21 +41,24 @@
 
                                           <div class="col-md-10">
                          
-                                          <!-- Brand and toggle get grouped for better mobile display -->
-                                          <div class="navbar-header">
-                                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
-                                                <i class="fa fa-bars"></i>
-                                                </button>
-                                          </div>
+                                                      <!-- Brand and toggle get grouped for better mobile display -->
+                                                      <div class="navbar-header">
+                                                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+                                                            <i class="fa fa-bars"></i>
+                                                            </button>
+                                                      </div>
+
+                                                        
+
                                                       <!-- Collect the nav links, forms, and other content for toggling -->
                                                       <div class="collapse navbar-collapse" id="menu">
                                                             <ul class="nav navbar-nav navbar-right">
-                                                                  <li class="active"><a href="#intro">Home</a></li>
-                                                                  <li><a href="#about">About Us</a></li>
-                                                                   <li><a href="#service">Services</a></li>
-                                                                  <li><a href="#works">Works</a></li>                                                                                 
+                                                                  {% block navbar %}
+                                                                  {% endblock %}
+
+                                                                  <li class="active"><a href="#intro">Home</a></li>                                                                      
                                                                   
-                                                                  <li><a href="#contact">Contact</a></li>
+                                                                  <li><a href="#">Contact</a></li>
                                                             </ul>
                                                       </div>
                                                       <!-- /.Navbar-collapse -->

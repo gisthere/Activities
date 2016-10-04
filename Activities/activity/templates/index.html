@@ -4,36 +4,55 @@
     <section class="hero" id="intro">
             <div class="container">
               <div class="row">
-                <div class="col-md-12 text-right navicon">
-                  <a id="nav-toggle" class="nav_slide_button" href="#"><span></span></a>
-                </div>
+               
               </div>
               <div class="row">
                 <div class="col-md-8 col-md-offset-2 text-center inner">
                     <div class="animatedParent">
-                        <h1 class="animated fadeInDown">APlanner</h1>
-                        <p class="animated fadeInUp">Find your actitivity</p>
+                        <h1 class="animated fadeInDown">Find your actitivity</h1>
                     </div>
                </div>
               </div>
               <div class="row">
-                <div class="col-md-6 col-md-offset-3 text-center">
-                  <a href="#about" class="learn-more-btn btn-scroll">Learn more</a>
-                </div>
+               
               </div>
             </div>
     </section>
 {% endblock %}
 
 
+{% block navbar %}
+  <form class="navbar-form navbar-left" action="" method="GET">
+    <div class="form-group">
+       {% if types %}
+            <select name="activity_type" class="form-control ">
+            {% for t in types %}
+                <option 
+                    {% if request.GET.activity_type and t.id|stringformat:"i" == request.GET.activity_type  %}  
+                      selected
+                    {% endif %} 
+                    value="{{t.id}}">{{t.name}}
+                  </option>
+            {% endfor %}
+            </select>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-skin">Submit</button>
+  </form>
+{% endblock %}
+
+
 
 {% block content %}
+
+    
 
     {% if activities %}
     <section id="service" class="search-result color-dark bg-gray">
         <div class="text-center">
         <div class="container">
-        
+            
+
             {% for activity in activities %}
             {% cycle '<div class="row animatedParent marginbot-20">' '' '' %}
 
