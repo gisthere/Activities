@@ -3,13 +3,13 @@
 
 <div class="collapse navbar-collapse" id="menu">
     <ul class="nav navbar-nav navbar-right">
-
-
             {% if user.is_authenticated %}
-                    auth
-                    <a href="url 'activity:custom'">Logout</a>
+                    <li><a href="{% url 'activity:create_activity' %}">Create</a></li>
+                    <!--<li><a href="{% url 'activity:add_activity' %}">Add</a></li>-->
+                    <li><a href="{% url 'auth:logout' %}">Logout</a></li>
             {% else %}
-                    not auth
+                    <li><a href="{% url 'auth:login' %}">Login</a></li>
+                    <li><a href="{% url 'auth:signup' %}">Signin</a></li>
             {% endif %}
 
     </ul>

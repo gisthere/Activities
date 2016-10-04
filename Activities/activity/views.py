@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import Activity, ActivityType, ActivityCategory
 # Create your views here.
 def index(request):
@@ -41,4 +41,5 @@ def add(request):
     activity_type_id = request.POST['activity_type']
     activity = Activity(name=name, description=description, status='SC', requirements=requirements, participants_limit=participants_limit, activity_category=ActivityCategory.objects.get(pk=activity_category_id), activity_type=ActivityType.objects.get(pk=activity_type_id))
     activity.save()
-    return render(request, 'activity/index.html')
+    #temp solution, should show my activities
+    return HttpResponseRedirect('/')

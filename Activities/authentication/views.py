@@ -1,6 +1,7 @@
 from django.contrib import auth
 from django.contrib.auth import authenticate
 
+from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.shortcuts import render
@@ -25,7 +26,8 @@ def login(request):
         if user is not None:
             auth.login(request, user)
             form = MessageForm('Success', 'Successful authorization')
-            return render(request, 'msg.htm', {'form': form})
+            return HttpResponseRedirect('/')
+            #return render(request, 'msg.htm', {'form': form})
         else:
             form = MessageForm('Error', 'unknown user')
             return render(request, 'msg.htm', {'form': form})
