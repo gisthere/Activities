@@ -1,4 +1,7 @@
- PYTHON MOTHERF*****S, DO YOU SPEAK IT ?
+PYTHON MOTHERF*****S, DO YOU SPEAK IT ?
+--------------------------------
+WINDOWS DEVELOPERS ARE WELCOME THIS SECTION
+--------------------------------
 So guys if you have python, or pip or django please proceed further
 1) Install Python
 	1.1) we go to https://www.python.org/downloads/
@@ -13,14 +16,20 @@ So guys if you have python, or pip or django please proceed further
 4) Install git
 	4.1) proceed to https://git-scm.com/
 	4.2) click blue button "DOWNLOAD FOR WINDOWS" or whatever OS you have
-5) Install postgresql
-	5.1) goto http://www.enterprisedb.com/products-services-training/pgdownload#windows
-	5.2) download version Version 9.5.4
-	5.3) install it, REMEMBER PASSWORD YOU ENTERED AT ISTALL, THIS FUCKING ELEPHANT IDIAN FUCKERS FUCKED ME UP WITH THIS
-	5.4) in command line run "pip install psycopg2"
-	5.5) run script InitPostgresDB.bat
+5) Install additional stuff for heroku and stuff
+	5.1) pip install dj_database_url
+	5.2) pip install whitenoise
+	5.3) pip install psycopg2
 6) Clone our repo
 	6.1) run command from directory where you want to be files of project "git clone https://github.com/MSD-GroupI/Activities.git"
-7) Run server
-	7.1) If it your first run RUN CreateSuperUser.bat
-	7.2) Run ServerLauncher.bat
+7) If it your first run you should use some stuff like this
+	7.1) "python ./Activities/manage.py createsuperuser", creates your user at heroku.com
+8) Run script ServerLauncher.bat
+------------------------------------------------------------------------------
+UNIX LIKE USERS THANK YOU FOR MAKING OUR REPOSITORY 50MBs HEAVIER HATERS ARE WELCOME
+------------------------------------------------------------------------------
+Simple as ****. Just
+	1) "sudo chmod +x UnixRunVenv.sh"
+	2) "sudo ./UnixRunVenv.sh"
+	3).......
+	4) PROFIT

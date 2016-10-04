@@ -1,6 +1,6 @@
 CREATE DATABASE activitiesdb;
-CREATE USER admin WITH PASSWORD 'password';
-ALTER ROLE Admin SET client_encoding TO 'utf8';
-ALTER ROLE Admin SET default_transaction_isolation TO 'read committed';
-ALTER ROLE Admin SET timezone TO 'UTC';
-GRANT ALL PRIVILEGES ON DATABASE activitiesdb TO Admin;
+CREATE USER gakgnvopgvlavd WITH PASSWORD '1bOtL_416lpCj_HMM5qzhs-TAw';
+ALTER ROLE gakgnvopgvlavd SET client_encoding TO 'utf8';
+ALTER ROLE gakgnvopgvlavd SET default_transaction_isolation TO 'read committed';
+ALTER ROLE gakgnvopgvlavd SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE activitiesdb TO gakgnvopgvlavd;

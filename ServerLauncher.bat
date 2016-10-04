@@ -2,7 +2,8 @@
 SET _serverPath=.\Activities\manage.py
 SET _addr=localhost
 SET _port=666
+SET _pythonPath=.\venv\Scripts\python
 
-python %_serverPath% makemigrations
-python %_serverPath% migrate
-python %_serverPath% runserver %_addr%:%_port%
+%_pythonPath% %_serverPath% makemigrations
+%_pythonPath% %_serverPath% migrate
+%_pythonPath% %_serverPath% runserver %_addr%:%_port%
