@@ -1,0 +1,18 @@
+{% load navigation %}
+
+
+<div class="collapse navbar-collapse" id="menu">
+    <ul class="nav navbar-nav navbar-right">
+
+
+            {% if user.is_authenticated %}
+                    auth
+                    <a href="url 'activity:custom'">Logout</a>
+            {% else %}
+                    not auth
+            {% endif %}
+
+    </ul>
+</div>
+
+

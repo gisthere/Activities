@@ -47,21 +47,9 @@
                                                             <i class="fa fa-bars"></i>
                                                             </button>
                                                       </div>
+                                                      {% block navbar %}{% endblock %}
+                                                      {% include "navigation.html" %}
 
-                                                        
-
-                                                      <!-- Collect the nav links, forms, and other content for toggling -->
-                                                      <div class="collapse navbar-collapse" id="menu">
-                                                            <ul class="nav navbar-nav navbar-right">
-                                                                  {% block navbar %}
-                                                                  {% endblock %}
-
-                                                                  <li class="active"><a href="#intro">Home</a></li>                                                                      
-                                                                  
-                                                                  <li><a href="#">Contact</a></li>
-                                                            </ul>
-                                                      </div>
-                                                      <!-- /.Navbar-collapse -->
                              
                                           </div>
                                     </div>
