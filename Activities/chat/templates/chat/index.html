@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>Activity-Chat</title>
+	Welcome, {{user.id}}, to activity chat!
+	</head>
+<body>
+	<div>
+		Comments:
+	</div>
+
+	{% if comments1 %}
+	<ul>
+		{% for com in comments1 %}
+		<li><div>User Name: </div> <div>{{com.user}}</div>
+		</li>
+		<li>
+			<div>Activity: </div> <div>{{com.activity}}</div> 
+		</li>
+		<li>
+			{{com.message}}
+		</li>
+		<li>
+			{{com.time}}
+		</li>
+		<hr>
+		{% endfor %}
+	</ul>
+	{% endif %}
+
+	<div>Write your own comment here!</div>
+	<form name = "comments" action = "" method = "POST">
+		<input type="text" name="UserMessage" id = "userMsg">
+		<input type="submit" name="submitAction" id = "submitMsg" value = "Send">
+	</form>
+</body>
+</html>
