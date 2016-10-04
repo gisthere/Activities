@@ -16,6 +16,10 @@ Including another URLconf
 from django.conf.urls import url
 from . import views
 
+
+app_name = 'chat'
 urlpatterns = [
-    url(r'^$', views.index)
+    url(r'^$', views.index, name="index"),
+    url(r'send/', views.send_Comment, name="send"),
+       
 ]

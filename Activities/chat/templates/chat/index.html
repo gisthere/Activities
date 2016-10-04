@@ -18,10 +18,10 @@
 			<div>Activity: </div> <div>{{com.activity}}</div> 
 		</li>
 		<li>
-			{{com.message}}
+			<div>Comments: </div>{{com.message}}
 		</li>
 		<li>
-			{{com.time}}
+			<div>Time: </div>{{com.time}}
 		</li>
 		<hr>
 		{% endfor %}
@@ -29,7 +29,8 @@
 	{% endif %}
 
 	<div>Write your own comment here!</div>
-	<form name = "comments" action = "" method = "POST">
+	<form name = "comments" action = "send/" method = "POST">
+	{% csrf_token %}
 		<input type="text" name="UserMessage" id = "userMsg">
 		<input type="submit" name="submitAction" id = "submitMsg" value = "Send">
 	</form>
