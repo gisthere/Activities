@@ -1,0 +1,1 @@
+psql --file=.\Postgree\Scripts\DropDB.script -U postgres
