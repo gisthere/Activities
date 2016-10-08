@@ -9,29 +9,27 @@ from authentication.models import User
 # Create your views here.
 
 def index(request):
-    comments = Chat.objects.order_by('id')[:5]
     template = loader.get_template('chat/index.html')
+
+    loggedUser = None
+
+
+    if request.method == 'POST':
+        if 'UserMessage' in request.POST:
+            msgText = request.POST['UserMessage']
+            userName = request.user
+            id = request.user
+            userprofile = User.objects.get(user = id)
+            activ = Activity.objects.get(id = 1)
+
+            newComment = Chat.objects.create(user = userprofile, activity = activ, message = msgText)
+            newComment.save()
+
+    allComments = Chat.objects.all
     context = {
-        'comments1': comments,
-        'user': request.user,
+        'comments': allComments,
+        'currentUser': request.user,
     }
-    return HttpResponse(template.render(context, request))
 
-def send_Comment(request):
-	if request.method == 'POST':
-		
-		userComment = request.POST.get('UserMessage')
-		activ = Activity.objects.get(id = 1)
-
-		user = request.user
-
-		userprofile = User.objects.get(user = user)
-		comment = Chat.objects.create(user = userprofile, activity = activ, message = userComment)
-		comment.save()
-		# return HttpResponse(template.render)
-		return HttpResponse('HALLE')
-
-
-	return HttpResponse('message')
-		# models.add
-    # 
+    result = template.render(context, request)
+    return HttpResponse(result)

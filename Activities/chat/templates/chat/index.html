@@ -2,35 +2,29 @@
 <html>
 	<head>
 	<title>Activity-Chat</title>
-	Welcome, {{user.id}}, to activity chat!
+	Welcome, {{currentUser.username}}, to activity chat!
 	</head>
 <body>
 	<div>
 		Comments:
 	</div>
 
-	{% if comments1 %}
+	{% if comments %}
 	<ul>
-		{% for com in comments1 %}
-		<li><div>User Name: </div> <div>{{com.user}}</div>
-		</li>
-		<li>
-			<div>Activity: </div> <div>{{com.activity}}</div> 
-		</li>
-		<li>
-			<div>Comments: </div>{{com.message}}
-		</li>
-		<li>
-			<div>Time: </div>{{com.time}}
-		</li>
+		{% for com in comments %}
+		<li>User Name:  <div>{{com.user}}</div></li>
+		<li>Activity: <div>{{com.activity}}</div></li>
+		<li>Comments: {{com.message}}</li>
+		<li>Time: {{com.time}}</li>
+
 		<hr>
 		{% endfor %}
 	</ul>
 	{% endif %}
 
 	<div>Write your own comment here!</div>
-	<form name = "comments" action = "send/" method = "POST">
-	{% csrf_token %}
+	<form name = "comments" action = "" method = "POST">
+		{% csrf_token %}
 		<input type="text" name="UserMessage" id = "userMsg">
 		<input type="submit" name="submitAction" id = "submitMsg" value = "Send">
 	</form>
