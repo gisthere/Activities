@@ -10,13 +10,13 @@
     <meta name="author" content="">
 
     <title>Activity Planner</title>
-    
+
     <!-- css -->
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link href="{% static "font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css" />
-    <link href="{% static "css/nivo-lightbox.css" %}" rel="stylesheet" />
-    <link href="{% static "css/nivo-lightbox-theme/default/default.css" %}" rel="stylesheet" type="text/css" />
-    <link href="{% static "css/animations.css" %}" rel="stylesheet" />
+    <link href="{% static "font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static "css/nivo-lightbox.css" %}" rel="stylesheet"/>
+    <link href="{% static "css/nivo-lightbox-theme/default/default.css" %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static "css/animations.css" %}" rel="stylesheet"/>
     <link href="{% static "css/style.css" %}" rel="stylesheet">
     <link href="{% static "color/default.css" %}" rel="stylesheet">
 
@@ -25,76 +25,76 @@
 </head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-custom">
-    
-    {% block header %}
-    {% endblock %}
-    
-    <!-- Navigation -->
-    <div id="navigation">
-        <nav class="navbar navbar-custom" role="navigation">
-                              <div class="container">
-                                    <div class="row">
-                                          <div class="col-md-2">
-                                                   <div class="site-logo">
-                                                            <a href="index.html" class="brand">APlanner</a>
-                                                    </div>
-                                          </div>
-                                          
 
-                                          <div class="col-md-10">
-                         
-                                                      <!-- Brand and toggle get grouped for better mobile display -->
-                                                      <div class="navbar-header">
-                                                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
-                                                            <i class="fa fa-bars"></i>
-                                                            </button>
-                                                      </div>
-                                                      {% block navbar %}{% endblock %}
-                                                      {% include "navigation.html" %}
+{% block header %}
+{% endblock %}
 
-                             
-                                          </div>
-                                    </div>
-                              </div>
-                              <!-- /.container -->
-                        </nav>
-    </div> 
-    <!-- /Navigation -->  
-
-    
-
-    {% block content %}
-    {% endblock%}
-    
-
-    <footer>
+<!-- Navigation -->
+<div id="navigation">
+    <nav class="navbar navbar-custom" role="navigation">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
-                    <ul class="footer-menu">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Press release</a></li>
-                    </ul>
+                <div class="col-md-2">
+                    <div class="site-logo">
+                        <a href="/" class="brand">APlanner</a>
+                    </div>
                 </div>
-                <div class="col-md-6 text-right">
-                    foooter
-                </div>
-            </div>  
-        </div>
-    </footer>
 
-    <!-- Core JavaScript Files -->
-    <script src="{% static "js/jquery.min.js" %}"></script>     
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="{% static "js/jquery.sticky.js" %}"></script>
-    <script src="{% static "js/jquery.easing.min.js" %}"></script> 
-    <script src="{% static "js/jquery.scrollTo.js" %}"></script>
-    <script src="{% static "js/jquery.appear.js" %}"></script>
-    <script src="{% static "js/stellar.js" %}"></script>
-    <script src="{% static "js/nivo-lightbox.min.js" %}"></script>
-    
-    <script src="{% static "js/custom.js" %}"></script>
-    <script src="{% static "js/css3-animate-it.js" %}"></script>
+
+                <div class="col-md-10">
+
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+                    {% block navbar %}{% endblock %}
+                    {% include "navigation.html" %}
+
+
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </nav>
+</div>
+<!-- /Navigation -->
+
+
+
+{% block content %}
+{% endblock %}
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="footer-menu">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Press release</a></li>
+                </ul>
+            </div>
+            <div class="col-md-6 text-right">
+                foooter
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Core JavaScript Files -->
+<script src="{% static "js/jquery.min.js" %}"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="{% static "js/jquery.sticky.js" %}"></script>
+<script src="{% static "js/jquery.easing.min.js" %}"></script>
+<script src="{% static "js/jquery.scrollTo.js" %}"></script>
+<script src="{% static "js/jquery.appear.js" %}"></script>
+<script src="{% static "js/stellar.js" %}"></script>
+<script src="{% static "js/nivo-lightbox.min.js" %}"></script>
+
+<script src="{% static "js/custom.js" %}"></script>
+<script src="{% static "js/css3-animate-it.js" %}"></script>
 
 </body>
 
