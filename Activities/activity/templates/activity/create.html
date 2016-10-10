@@ -3,47 +3,74 @@
 {% block title %}Create Activity{% endblock %}
 
 {% block content %}
-    <p>Creating activity worked!</p>
-    <form action="{% url 'activity:add_activity' %}" method="post" novalidate>
-        {% csrf_token %}
-
-        <p>
-        <label for="id_name">Name:</label>
-        <input id="id_name" maxlength="30" name="name" type="text" required="">
-        </p>
-
-        <label for="id_description">Description:</label>
-        <input id="id_description" maxlength="30" name="description" type="text">
-
-        <p>
-            <label for="id_requirements">Requirements:</label>
-            <textarea cols="40" id="id_requirements" name="requirements" rows="10" required=""></textarea>
-        </p>
-
-        <p>
-            <label for="id_participants_limit">Participants limit:</label>
-            <input id="id_participants_limit" name="participants_limit" type="text" required="">
-        </p>
-
-        <p>
-            <label class="required" for="id_activity_category">Activity category:</label>
-            <select id="id_activity_category" name="activity_category" required="">
-                {% for category in activity_categories %}
-                    <option value="{{ category.id }}" >{{ category.name }}</option>
-                {% endfor %}
-            </select>
-        </p>
-
-        <p>
-            <label class="required" for="id_activity_type">Activity type:</label>
-            <select id="id_activity_type" name="activity_type" required="">
-                {% for type in activity_types %}
-                    <option value="{{ type.id }}" >{{ type.name }}</option>
-                {% endfor %}
-            </select>
-        </p>
-
-        <input type="submit" value="Create" />
-
-    </form>
+    <section class="home-section nopadd-bot color-dark text-center">
+        <div class="container marginbot-50">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="animatedParent">
+                        <div class="section-heading text-center">
+                            <h2 class="h-bold animated bounceInDown">Create a new Activity</h2>
+                            <div class="divider-header"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row marginbot-80">
+                <div class="col-md-8 col-md-offset-2">
+                    <form class="form-horizontal" action="{% url 'activity:add_activity' %}" method="post" novalidate>
+                        {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_name" class="col-sm-2 control-label">Name:</label>
+                        <div class="col-sm-6">
+                            <input id="id_name" class="form-control" maxlength="30" name="name" type="text" required="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_description" class="col-sm-2 control-label">Description:</label>
+                        <div class="col-sm-10">
+                            <input id="id_description" class="form-control" maxlength="30" name="description" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_requirements" class="col-sm-2 control-label">Requirements:</label>
+                        <div class="col-sm-10">
+                            <textarea id="id_requirements" class="form-control" name="requirements" rows="5" required=""></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_participants_limit" class="col-sm-2 control-label">Participants limit:</label>
+                        <div class="col-sm-2">
+                            <input id="id_participants_limit" class="form-control" name="participants_limit" type="text" required="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_activity_category" class="col-sm-2 control-label">Activity category:</label>
+                        <div class="col-sm-10">
+                            <select id="id_activity_category" class="form-control" name="activity_category" required="">
+                                {% for category in activity_categories %}
+                                    <option value="{{ category.id }}" >{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_activity_type" class="col-sm-2 control-label">Activity type:</label>
+                        <div class="col-sm-10">
+                            <select id="id_activity_type" class="form-control" name="activity_type" required="">
+                                {% for type in activity_types %}
+                                    <option value="{{ type.id }}" >{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}
