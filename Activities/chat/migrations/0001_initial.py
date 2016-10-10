@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('activity', '0002_auto_20161001_1008'),
+        ('activity', '0001_initial'),
         ('authentication', '0001_initial'),
     ]
 
