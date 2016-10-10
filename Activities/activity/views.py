@@ -1,8 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Activity, ActivityType, ActivityCategory
+from .models import Activity, ActivityType, ActivityCategory, User
+
+
 # Create your views here.
 def index(request):
     types = ActivityType.objects.order_by('id')[:10]
@@ -33,13 +36,18 @@ def create(request):
 
 
 def add(request):
-    name = request.POST['name']
-    description = request.POST['description']
-    requirements = request.POST['requirements']
-    participants_limit = request.POST['participants_limit']
-    activity_category_id = request.POST['activity_category']
-    activity_type_id = request.POST['activity_type']
-    activity = Activity(name=name, description=description, status='SC', requirements=requirements, participants_limit=participants_limit, activity_category=ActivityCategory.objects.get(pk=activity_category_id), activity_type=ActivityType.objects.get(pk=activity_type_id))
-    activity.save()
-    #temp solution, should show my activities
+    if request.method == 'POST':
+        name = request.POST['name']
+        description = request.POST['description']
+        requirements = request.POST['requirements']
+        participants_limit = request.POST['participants_limit']
+        activity_category_id = request.POST['activity_category']
+        activity_type_id = request.POST['activity_type']
+        activity = Activity(name=name, description=description, status='SC', requirements=requirements,
+                            participants_limit=participants_limit,
+                            activity_category=ActivityCategory.objects.get(pk=activity_category_id),
+                            activity_type=ActivityType.objects.get(pk=activity_type_id),
+                            organizer=User.objects.get(pk=request.user.id))
+        activity.save()
+    # temp solution, should show my activities
     return HttpResponseRedirect('/')
