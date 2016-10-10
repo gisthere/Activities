@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block head %}
+        <meta http-equiv="refresh" content="2;url={{ form.redirect_url }}">
+{% endblock %}
+
+{% block content %}
+
+
+    <section class="home-section nopadd-bot color-dark text-center">
+
+        <div class="container marginbot-50">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div>
+                        <h1>{{ form.header }}</h1>
+                        <p>If you are not redirected automatically, follow the
+                            <a href="{{ form.redirect_url }}">link</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+{% endblock %}
