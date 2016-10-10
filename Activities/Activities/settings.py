@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'activity',
     'plans',
     'templatetags'
-
+    'chat',
 ]
 
 MIDDLEWARE = [
