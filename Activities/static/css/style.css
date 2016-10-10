@@ -167,7 +167,7 @@ blockquote strong {
 /* ------- Navigation ------------ */
 #navigation {
     background: #fff;
-    z-index: 9999;
+    z-index: 100;
     width: 100%;
     box-sizing: border-box;
     border-bottom: 1px solid #eee;
@@ -380,7 +380,7 @@ hr.bold {
     padding-bottom: 110px;
     display: block;
     position: relative;
-    z-index: 120;
+    z-index: 70;
 }
 
 .search-result {
@@ -388,7 +388,7 @@ hr.bold {
     padding-bottom: 110px;
     display: block;
     position: relative;
-    z-index: 120;
+    z-index: 80;
 }
 
 .inner-section {
