@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'authentication',
     'activity',
     'plans',
-    'templatetags'
+    'templatetags',
     'chat',
 ]
 
