@@ -892,15 +892,18 @@ form.search-form input:focus {
 /* ===========================
 --- Footer
 ============================ */
-
 footer {
     background-color: #404040;
 }
 
+footer, .page-wrap:after {
+  height: 98px; 
+}
+
 footer {
     text-align: center;
-    padding: 50px 0 30px;
-
+    padding: 20px 0 20px ;
+    
 }
 
 footer p {
@@ -912,9 +915,18 @@ footer a.totop {
     color: #fff;
     margin-bottom: 30px;
 }
-
 footer a.totop:focus {
     outline: 0;
+}
+
+.page-wrap {
+  min-height: 100%;
+  /* equal to footer height */
+  margin-bottom: -98px; 
+}
+.page-wrap:after {
+  content: "";
+  display: block;
 }
 
 /* menu */

@@ -62,10 +62,10 @@
 <!-- /Navigation -->
 
 
-
-{% block content %}
-{% endblock %}
-
+<div class="page-wrap">
+    {% block content %}
+    {% endblock %}
+</div>
 
 <footer>
     <div class="container">
@@ -96,6 +96,9 @@
 <script src="{% static "js/custom.js" %}"></script>
 <script src="{% static "js/css3-animate-it.js" %}"></script>
 
-</body>
+<!-- custom page scripts. widgets and etc -->
+{% block scripts %}
+{% endblock %}
 
+</body>
 </html>
