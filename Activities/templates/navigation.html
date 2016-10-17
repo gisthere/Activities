@@ -4,8 +4,7 @@
 <div class="collapse navbar-collapse" id="menu">
     <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
-                    <li><a href="{% url 'activity:create_activity' %}">Create</a></li>
-                    <!--<li><a href="{% url 'activity:add_activity' %}">Add</a></li>-->
+                    <li><a href="{% url 'activity:activity_create' %}">Create</a></li>
                     <li><a href="{% url 'auth:logout' %}">Logout</a></li>
             {% else %}
                     <li><a href="{% url 'auth:login' %}">Login</a></li>

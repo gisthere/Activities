@@ -1,12 +1,87 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}Activities{% endblock %}
+{% block header %}
+    <section class="hero" id="intro">
+            <div class="container">
+              <div class="row">
+               
+              </div>
+              <div class="row">
+                <div class="col-md-8 col-md-offset-2 text-center inner">
+                    <div class="animatedParent">
+                        <h1 class="animated fadeInDown">Find your activity</h1>
+                    </div>
+               </div>
+              </div>
+              <div class="row">
+               
+              </div>
+            </div>
+    </section>
+{% endblock %}
+
+
+{% block navbar %}
+  <form class="navbar-form navbar-left" action="" method="GET">
+    <div class="form-group">
+       {% if types %}
+            <select name="activity_type" class="form-control ">
+            {% for t in types %}
+                <option 
+                    {% if request.GET.activity_type and t.id|stringformat:"i" == request.GET.activity_type  %}  
+                      selected
+                    {% endif %} 
+                    value="{{t.id}}">{{t.name}}
+                  </option>
+            {% endfor %}
+            </select>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-skin">Submit</button>
+  </form>
+{% endblock %}
+
+
 
 {% block content %}
-{% for activity in activities  %}
-    <h2>{{ activity.name }}</h2>
-    <p>
-        Description: {{ activity.description }}<br>
-        Start time: {{ activity.start_time }}
-{% endfor %}
+
+
+    {% if activities %}
+    <section id="service" class="search-result color-dark bg-gray">
+        <div class="text-center">
+        <div class="container">
+            
+
+            {% for activity in activities %}
+            {% cycle '<div class="row animatedParent marginbot-20">' '' '' %}
+
+            <div class="col-xs-6 col-sm-4 col-md-4">
+                <div class="animated">
+                <div class="service-box">
+                    <div class="service-icon">
+                        <span class="fa fa-laptop fa-2x"></span> 
+                    </div>
+                    <div class="service-desc">                      
+                        <h5>{{activity.name}}</h5>
+                        <div class="divider-header"></div>
+                        <p>
+                        {{activity.description}}
+                        </p>
+                        <a href="{% url 'activity:activity_detail' activity_id=activity.id %}" class="btn btn-skin">Join</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            {% cycle '' '' '</div>' %}
+            
+            {% endfor %}
+
+            
+        </div>
+        </div>
+    </section>
+
+    {% endif %}    
+  
 {% endblock %}

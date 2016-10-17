@@ -1,6 +1,6 @@
 from django.db import models
 from locations.models import Location
-from authentication.models import User
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -54,6 +54,8 @@ class Activity(models.Model):
 
 
 class ActivityLocation(models.Model):
+    class Meta:
+        auto_created = True
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     index = models.PositiveSmallIntegerField()
