@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'locations',
     'authentication',
     'activity',
+    'myactivities',
     'plans',
     'templatetags'
 

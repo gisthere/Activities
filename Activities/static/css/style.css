@@ -666,10 +666,14 @@ hr.bold {
 /* ===========================
 --- Services
 ============================ */
-.service-box {
+.service-box, .simple-box {
     background: #fff;
     border-bottom: 2px solid #f7f7f7;
     padding: 40px 20px;
+}
+
+.simple-box {
+    margin-bottom: 20px;
 }
 
 .service-box:hover {

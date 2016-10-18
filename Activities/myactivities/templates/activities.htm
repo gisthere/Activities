@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <!-- Section: header -->
+    <section class="color-dark bg-gray">
+        <div class="container">
+            <div class="row simple-box">
+                <div class="section-heading">
+                    <h2 class="text-center h-bold">{{ form.header }}</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /Section: header -->
+
+    {% if form.activities %}
+        <section class="color-dark bg-gray">
+            <div>
+                {# Output information about each activity in the list #}
+                {% for activity in form.activities %}
+                    <div class="container">
+                        <div class="row">
+                            <div class="animated">
+                                <div class="simple-box">
+                                    <div class="service-desc">
+                                        <div class="row">
+                                            <div class="text-center col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                                <h5 class="row">{{ activity.name }}</h5>
+                                                <p class="row">{{ activity.get_status_display }}</p>
+                                                <div class="row">
+                                                    <a href="#" class="btn btn-skin">Details</a>
+                                                    {% if form.can_remove %}
+                                                        <button type="button" class="btn btn-skin"
+                                                                onclick="$.ajax('/activity/delete?id={{ activity.id }}')
+                                                                        .done(function() { location.reload() })">
+                                                            Delete
+                                                        </button>
+                                                    {% endif %}
+                                                    {% if form.can_join %}
+                                                        <a href="#" class="btn btn-skin">Dismiss</a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-6">
+                                                <div class="row col-xs-12">
+                                                    <small>Start time:</small>
+                                                    <p>{{ activity.start_time|date:"Y-m-d   H:i" }}</p>
+                                                </div>
+                                                <div class="row col-xs-12">
+                                                    <small>End time:</small>
+                                                    <p>{{ activity.end_time|date:"Y-m-d   H:i" }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-md-4 col-sm-4">
+                                                        <small>Category:</small>
+                                                        <br>
+                                                        <p>{{ activity.activity_category }}</p>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4">
+                                                        <small>Type:</small>
+                                                        <br>
+                                                        <p>{{ activity.activity_type }}</p>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4">
+                                                        <small>Participants limit:</small>
+                                                        <br>
+                                                        <p>{{ activity.participants_limit }}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <small>Description:</small>
+                                                    <p>{{ activity.description }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+{% endblock content %}

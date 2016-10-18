@@ -1,8 +1,11 @@
+from django.db.models import Model
 from django.shortcuts import render
 
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Activity, ActivityType, ActivityCategory
+
+
 # Create your views here.
 def index(request):
     types = ActivityType.objects.order_by('id')[:10]
@@ -39,7 +42,28 @@ def add(request):
     participants_limit = request.POST['participants_limit']
     activity_category_id = request.POST['activity_category']
     activity_type_id = request.POST['activity_type']
-    activity = Activity(name=name, description=description, status='SC', requirements=requirements, participants_limit=participants_limit, activity_category=ActivityCategory.objects.get(pk=activity_category_id), activity_type=ActivityType.objects.get(pk=activity_type_id))
+    activity = Activity(name=name, description=description, status='SC', requirements=requirements,
+                        participants_limit=participants_limit,
+                        activity_category=ActivityCategory.objects.get(pk=activity_category_id),
+                        activity_type=ActivityType.objects.get(pk=activity_type_id))
     activity.save()
-    #temp solution, should show my activities
+    # temp solution, should show my activities
     return HttpResponseRedirect('/')
+
+
+def delete(request):
+    # redirect to main page if the user is not authenticated
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    # get the ID from the get request
+    activity_id = request.GET.get('id')
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+        # restrict deletion in case if activity does not belong to the user
+        if activity.organizer.id != request.user.id:
+            return HttpResponse()
+        activity.delete()
+    except Model.DoesNotExist as e:
+        print(e)
+    return HttpResponse()
