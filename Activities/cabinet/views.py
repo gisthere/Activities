@@ -28,7 +28,7 @@ def index(request):
 		settings_form = UserSettingsForm(initial={
 			'phone'			: logged_user_data.phone,
 			'telegram' 		: logged_user_data.telegram,
-			'birth_date' 	: logged_user_data.birth_date,
+			'birth_date' 	: logged_user_data.birth_date.isoformat(),
 			'gender'		: logged_user_data.gender
 			})
 
@@ -43,7 +43,7 @@ def index(request):
 		settings_form = UserSettingsForm(data=request.POST)
 
 		if settings_form.is_valid():
-			User.objects.get(pk=User.objects.get(user=logged_user).pk).update(
+			User.objects.filter(pk=User.objects.get(user=logged_user).pk).update(
 				phone		=settings_form.cleaned_data['phone'],
 				telegram	=settings_form.cleaned_data['telegram'],
 				birth_date	=settings_form.cleaned_data['birth_date'],
