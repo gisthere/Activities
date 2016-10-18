@@ -1,22 +1,24 @@
 from django.db.models import Model
 from django.shortcuts import render
-
+from django.http import Http404
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+from .models import Activity, ActivityType, ActivityCategory, ActivityLocation, Participant
+from .forms import ActivityForm
 from django.template import loader
 from django.template.defaulttags import register
-from django.http import HttpResponse, HttpResponseRedirect
-from .models import Activity, ActivityType, ActivityCategory, Participant
 
 
 # Create your views here.
 def index(request):
-    types = ActivityType.objects.order_by('id')[:10]
-    categories = ActivityCategory.objects.order_by('id')[:10]
-    template = loader.get_template('index.html')
+    types = ActivityType.objects.order_by('name')[:10]
+    categories = ActivityCategory.objects.order_by('name')[:10]
+    template = loader.get_template('activity/index.html')
     availableSpots = calcAvailableSpots(Activity.objects.all())
+
 
     if 'activity_type' in request.GET and request.GET['activity_type'].strip():
         query = request.GET['activity_type']
-
         activities = Activity.objects.filter(activity_type=query)
     else:
         activities = Activity.objects.all()
@@ -27,7 +29,7 @@ def index(request):
         'types': types,
         'categories': categories
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, 'activity/index.html', context)
 
 
 def calcAvailableSpots(activities):
@@ -39,29 +41,26 @@ def calcAvailableSpots(activities):
 
 
 def create(request):
-    activity_categories = ActivityCategory.objects.all()
-    activity_types = ActivityType.objects.all()
-    context = {
-        'activity_categories': activity_categories,
-        'activity_types': activity_types,
-    }
-    return render(request, 'activity/create.html', context)
-
-
-def add(request):
-    name = request.POST['name']
-    description = request.POST['description']
-    requirements = request.POST['requirements']
-    participants_limit = request.POST['participants_limit']
-    activity_category_id = request.POST['activity_category']
-    activity_type_id = request.POST['activity_type']
-    activity = Activity(name=name, description=description, status='SC', requirements=requirements,
-                        participants_limit=participants_limit,
-                        activity_category=ActivityCategory.objects.get(pk=activity_category_id),
-                        activity_type=ActivityType.objects.get(pk=activity_type_id))
-    activity.save()
-    # temp solution, should show my activities
-    return HttpResponseRedirect('/')
+    if request.user.is_authenticated():
+        if request.method == 'GET':
+            form = ActivityForm()
+        else:
+            form = ActivityForm(request.POST)
+            if form.is_valid():
+                activity = form.save(commit=False)
+                activity.organizer = request.user
+                activity.save()
+                return HttpResponseRedirect(reverse('activity:activity_detail', kwargs={'activity_id': activity.id}))
+        return render(request, 'activity/create.html', {'activity_form': form})
+    else:
+        return HttpResponseRedirect('login/')
+    # activity_categories = ActivityCategory.objects.all()
+    # activity_types = ActivityType.objects.all()
+    # context = {
+    #     'activity_categories': activity_categories,
+    #     'activity_types': activity_types,
+    # }
+    # return render(request, 'activity/create.html', context)
 
 
 @register.filter
@@ -70,6 +69,7 @@ def get_item(dictionary, key):
 
 
 def delete(request):
+    print('delete hello activity_id')
     # redirect to main page if the user is not authenticated
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/')
@@ -85,3 +85,11 @@ def delete(request):
     except Model.DoesNotExist as e:
         print(e)
     return HttpResponse()
+
+
+def detail(request, activity_id):
+    try:
+        activity = Activity.objects.get(pk=activity_id)
+    except Activity.DoesNotExist:
+        raise Http404("The activity your are looking for doesn't exist.")
+    return render(request, 'activity/detail.html', {'activity': activity})

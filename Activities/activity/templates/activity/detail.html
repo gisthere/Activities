@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}{{ activity.name }}{% endblock %}
+
+{% block content %}
+    <section class="home-section nopadd-bot color-dark text-center">
+
+        <div class="container marginbot-50">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="animatedParent">
+                        <div class="section-heading text-center">
+                            <h2 class="h-bold animated bounceInDown">{{ activity.name }}</h2>
+                            <div class="divider-header"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row marginbot-80">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="panel-group">
+                        <div class="row">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">Description</div>
+                                <div class="panel-body">{{ activity.description }}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">From</div>
+                                    <div class="panel-body">{{ activity.start_time }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">To</div>
+                                    <div class="panel-body">{{ activity.end_time }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">Requirements</div>
+                                <div class="panel-body">{{ activity.requirements }}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="panel panel-success">
+                                    <div class="panel-heading">Organizer</div>
+                                    <div class="panel-body">{{ activity.organizer.first_name }} {{ activity.organizer.last_name }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="col-sm-6">
+                                <div class="panel panel-success">
+                                    <div class="panel-heading">Participants limit</div>
+                                    <div class="panel-body">{{ activity.participants_limit }}</div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{% url 'activity:index' %}" class="btn btn-skin">Back to main page</a>
+                </div>
+            </div>
+        </div>
+
+    </section>
+{% endblock %}
