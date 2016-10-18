@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.template import loader
 from django.template.defaulttags import register
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Activity, ActivityType, ActivityCategory
+from .models import Activity, ActivityType, ActivityCategory, Participant
 
 
 # Create your views here.
@@ -29,11 +29,14 @@ def index(request):
     }
     return HttpResponse(template.render(context, request))
 
+
 def calcAvailableSpots(activities):
     availableSpots = {}
     for activity in activities:
-        availableSpots[activity.id] = activity.participants_limit - Participant.objects.filter(activity=activity).count()
+        availableSpots[activity.id] = activity.participants_limit - Participant.objects.filter(
+            activity=activity).count()
     return availableSpots
+
 
 def create(request):
     activity_categories = ActivityCategory.objects.all()
@@ -60,9 +63,11 @@ def add(request):
     # temp solution, should show my activities
     return HttpResponseRedirect('/')
 
+
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
 
 def delete(request):
     # redirect to main page if the user is not authenticated
