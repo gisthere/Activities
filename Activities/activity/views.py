@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db.models import Model
 from django.shortcuts import render
 
@@ -69,6 +70,7 @@ def get_item(dictionary, key):
     return dictionary.get(key)
 
 
+# Delete activity by specified id (passed as get parameter)
 def delete(request):
     # redirect to main page if the user is not authenticated
     if not request.user.is_authenticated():
@@ -82,6 +84,27 @@ def delete(request):
         if activity.organizer.id != request.user.id:
             return HttpResponse()
         activity.delete()
+    except Model.DoesNotExist as e:
+        print(e)
+    return HttpResponse()
+
+
+# Dismiss activity by specified activity id and user id (passed as get parameters)
+def dismiss(request):
+    # redirect to main page if the user is not authenticated
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    activity_id = request.GET.get('activity_id')
+    user_id = request.GET.get('user_id')
+    # do nothing if there is no valid info in request
+    if activity_id is None or user_id is None:
+        return HttpResponse()
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+        user = User.objects.get(id=user_id)
+        part_activity = Participant.objects.get(user=user, activity=activity)
+        part_activity.delete()
     except Model.DoesNotExist as e:
         print(e)
     return HttpResponse()
