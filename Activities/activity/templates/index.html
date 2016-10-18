@@ -2,6 +2,10 @@
 
 {% block head %}
 <style>
+body {
+    background: #f9f9f9;
+}
+
 .activity-card {
     background: #fff;
     border-bottom: 2px solid #f7f7f7;
@@ -88,11 +92,14 @@
 
 
 
+
 {% block content %}
 
-    {% if activities %}
+    
     <section id="service" class="search-result color-dark bg-gray">
         <div class="text-center">
+
+        {% if activities %}
         <div class="container">
             
 
@@ -120,71 +127,143 @@
             
             {% endfor %}
 
-            
-
-
         </div>
+        {% endif %}    
+
+        {% if user.is_authenticated and request.GET.search and request.GET.search != '' %}
+        <div class="container">
+            <div class="row vert-offset-top-2">
+                <div class="col-lg-8 col-lg-offset-2">       
+                    <div class="text-center" id="subscribe-form">
+                        <p>
+                        Not find a intersting activity by <b>{{request.GET.search}}</b>.<br />
+                        You can subscribe by this filter and get notification, when new activity will be added.
+                        </p>
+                        <div class="alert alert-danger hidden">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <strong id="subsibe-error"></strong>
+                        </div>
+
+                        <a href="" class="btn btn-danger btn-scroll" id="subscribe-button">Subscribe</a>
+                    </div>
+                    <div class="text-center hidden" id="success-form">
+                        Thank you! You subscribed!
+                    </div>
+                </div>
+            </div>      
+        </div>
+
+
+
+        {% endif %}
+
+
         </div>
     </section>
 
-    {% endif %}    
-  
+    
+
+
 {% endblock %}
 
 
 {% block scripts %}
 
+<script>
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    $('#subscribe-button').click(function(e){
+        e.preventDefault();
+        $.ajax({
+            url: "{% url 'subscriptions:subscribe' %}",
+            type: "POST",//type of posting the data
+            data: {
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+                type: "{{request.GET.t}}",
+                value: "{{request.GET.v}}",
+                search: "{{request.GET.search}}"
+            },
+            success: function (data) {
+                $('#subscribe-form').toggleClass('hidden');
+                $('#success-form').toggleClass('hidden');
+            },
+            error: function(xhr, ajaxOptions, thrownError){
+                $('#subsibe-error').toggleClass('hidden');
+                $('#subsibe-error').value(thrownError);
+            },
+            timeout : 15000//timeout of the ajax call
+       });
+    });
+</script>
+
+
 <script type="text/javascript">
     (function() {
 
     // Instantiate the Bloodhound suggestion engine
-    var types = new Bloodhound({
+    var hints = new Bloodhound({
         datumTokenizer: function (datum) {
             return Bloodhound.tokenizers.whitespace(datum.value);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
-            url: '/activity/search_suggestions/',
+            url: '/activity/hints/',
             filter: function (result) {
                 // Map the remote source JSON array to a JavaScript object array
-                return $.map(result.data, function (item) {
+                return $.map(result, function (item) {
                     return {
                         value: item.name,
                         id: item.id,
-                        type: result.types
+                        type: item.f_name
                     };
                 });
             },
             replace: function (url, query) {
-                return url + '?search=' + query;
-
-                console.log(query);
+                return url + '?q=' + query;
             }
         }
     });
 
+
     // Initialize the Bloodhound suggestion engine
-    types.initialize();
+    hints.initialize();
 
     var submit = function(filter_type, filter_value) {
         $('#search_type').val(filter_type);
         $('#search_value').val(filter_value);
-
         $('#search_form').submit();
     }
 
     // Instantiate the Typeahead UI
-    $('#search_input').typeahead(null, {
-        // Use 'value' as the displayKey because the filter function 
-        // returns suggestions in a javascript object with a variable called 'value'
-        displayKey: 'value',
-        source: types.ttAdapter()
-    }).bind('typeahead:select', function(ev, suggestion) {
+    $('#search_input').typeahead({
+        highlight: true
+    },
+    {
+        name: 'names',
+        display: 'value',
+        source: hints
+    }
+    ).bind('typeahead:select', function(ev, suggestion) {
         submit(suggestion.type, suggestion.id);
     }).keypress(function (e) {
         if (e.which == 13) {
             var selectedValue = $('#search_input').val();
-            submit('m', selectedValue);
+            submit('an', selectedValue);
             return true;
         }
     });

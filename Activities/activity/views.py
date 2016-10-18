@@ -1,9 +1,14 @@
 import json
+import random
+from itertools import chain
 from django.shortcuts import render
 from django.core import serializers
 from django.template import loader
+from django.views.generic.list import ListView
+from django.db.models import Value, CharField, FloatField
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .models import Activity, ActivityType, ActivityCategory
+from django.contrib.postgres.search import TrigramSimilarity
 
 def index(request):
     # get search 't' - type and 'v' value 
@@ -16,8 +21,10 @@ def index(request):
             result = Activity.objects.filter(activity_type = filter_value)
         elif filter_type == 'ac':
             result = Activity.objects.filter(activity_category = filter_value)
-        else:
-            result = Activity.objects.filter(name__istartswith = filter_value)
+        elif filter_type == 'an':
+            result = Activity.objects.annotate(
+                similarity = TrigramSimilarity('name', request.GET['search'])
+                ).filter(similarity__gt=0.1)
     else:
         result = Activity.objects
 
@@ -52,33 +59,34 @@ def add(request):
     return HttpResponseRedirect('/')
 
 
-def get_search_suggestions(request):
-    if 'search' not in request.GET:
+
+
+def get_hints(request):
+    if 'q' not in request.GET:
         return JsonResponse({})
 
-    query_parameter = request.GET['search']
+    search = request.GET['q']
+    # name__istartswith
+    activity_data = Activity.objects.annotate(
+        similarity = TrigramSimilarity('name', search),
+        f_name = Value('an', output_field=CharField())
+    ).filter(similarity__gt=0.1).values('id', 'name', 'similarity', 'f_name')
 
-    result = {}
-    types_query = ActivityType.objects.filter(
-        name__istartswith=query_parameter
-    )
+    activity_type_data = ActivityType.objects.annotate(
+        similarity = Value(0.8, output_field=FloatField()),
+        f_name = Value('at', output_field=CharField())
+    ).filter(name__istartswith=search).values('id', 'name', 'similarity', 'f_name')
 
-    result = {}
-    if types_query.count() < 2:
-        categories_query = ActivityCategory.objects.filter(
-            name__istartswith=query_parameter
-        )
-        data = categories_query
+    activity_category_data = ActivityCategory.objects.annotate(
+        similarity =  Value(0.6, output_field=FloatField()),
+        f_name = Value('ac', output_field=CharField())
+    ).filter(name__istartswith=search).values('id', 'name', 'similarity', 'f_name')
 
-        if categories_query.count() != 0:
-            result['types'] = 'ac'
-        else:
-            result['types'] = 'm'
-    else:
-        data = types_query
-        result['types'] = 'at'
+    # Get top most suitable hint by order by similarity
+    hints = sorted(chain(activity_data, activity_type_data, activity_category_data),
+        key=lambda x: x['similarity'], reverse=True)
 
-    result['data'] = list(data.values())
-    qs_json = json.dumps(result),
+    result = list(hints)
 
-    return HttpResponse(qs_json, content_type='application/json')
+    result_json = json.dumps(result)
+    return HttpResponse(result_json, content_type='application/json')
