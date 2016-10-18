@@ -20,7 +20,12 @@
     <link href="{% static "css/style.css" %}" rel="stylesheet">
     <link href="{% static "color/default.css" %}" rel="stylesheet">
 
+    <link href="{% static "css/bootstrap-vert-margin-shim.css" %}" rel="stylesheet">    
+
+    <!-- css typeahead widget -->
+    <link href="{% static 'css/typeahead/typeahead.css' %}" rel="stylesheet">
     {% block head %}
+
     {% endblock %}
 </head>
 
@@ -62,10 +67,10 @@
 <!-- /Navigation -->
 
 
-
-{% block content %}
-{% endblock %}
-
+<div class="page-wrap">
+    {% block content %}
+    {% endblock %}
+</div>
 
 <footer>
     <div class="container">
@@ -95,6 +100,10 @@
 <script src="{% static "js/custom.js" %}"></script>
 <script src="{% static "js/css3-animate-it.js" %}"></script>
 
-</body>
+<script src="{% static "js/typeahead/typeahead.bundle.min.js" %}"></script>
+<!-- custom page scripts. widgets and etc -->
+{% block scripts %}
+{% endblock %}
 
+</body>
 </html>

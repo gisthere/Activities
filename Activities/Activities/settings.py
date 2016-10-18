@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'templatetags',
     'cabinet',
     'chat',
+    'subscriptions',
 ]
 
 MIDDLEWARE = [

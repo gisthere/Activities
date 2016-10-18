@@ -1,3 +1,6 @@
+import json
+import random
+from itertools import chain
 from django.db.models import Model
 from django.shortcuts import render
 from django.http import Http404
@@ -7,29 +10,68 @@ from .models import Activity, ActivityType, ActivityCategory, ActivityLocation, 
 from .forms import ActivityForm
 from django.template import loader
 from django.template.defaulttags import register
+from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models import Value, CharField, FloatField
+
 
 
 # Create your views here.
 def index(request):
-    types = ActivityType.objects.order_by('name')[:10]
-    categories = ActivityCategory.objects.order_by('name')[:10]
-    template = loader.get_template('activity/index.html')
-    availableSpots = calcAvailableSpots(Activity.objects.all())
+    # get search 't' - type and 'v' value 
+    if 't' in request.GET and 'v' in request.GET:
+        filter_type = request.GET['t']
+        filter_value = request.GET['v']
 
-
-    if 'activity_type' in request.GET and request.GET['activity_type'].strip():
-        query = request.GET['activity_type']
-        activities = Activity.objects.filter(activity_type=query)
+        # check possible variation to prevent XSS injection
+        if filter_type == 'at': 
+            result = Activity.objects.filter(activity_type = filter_value)
+        elif filter_type == 'ac':
+            result = Activity.objects.filter(activity_category = filter_value)
+        elif filter_type == 'an':
+            result = Activity.objects.annotate(
+                similarity = TrigramSimilarity('name', request.GET['search'])
+                ).filter(similarity__gt=0.1)
     else:
-        activities = Activity.objects.all()
+        result = Activity.objects
 
     context = {
-        'availableSpots': availableSpots,
-        'activities': activities,
-        'types': types,
-        'categories': categories
+        'activities': result.all()
     }
-    return render(request, 'activity/index.html', context)
+
+    template = loader.get_template('index.html')
+    return HttpResponse(template.render(context, request))
+
+
+def get_hints(request):
+    if 'q' not in request.GET:
+        return JsonResponse({})
+
+    search = request.GET['q']
+    # name__istartswith
+    activity_data = Activity.objects.annotate(
+        similarity = TrigramSimilarity('name', search),
+        f_name = Value('an', output_field=CharField())
+    ).filter(similarity__gt=0.1).values('id', 'name', 'similarity', 'f_name')
+
+    activity_type_data = ActivityType.objects.annotate(
+        similarity = Value(0.8, output_field=FloatField()),
+        f_name = Value('at', output_field=CharField())
+    ).filter(name__istartswith=search).values('id', 'name', 'similarity', 'f_name')
+
+    activity_category_data = ActivityCategory.objects.annotate(
+        similarity =  Value(0.6, output_field=FloatField()),
+        f_name = Value('ac', output_field=CharField())
+    ).filter(name__istartswith=search).values('id', 'name', 'similarity', 'f_name')
+
+    # Get top most suitable hint by order by similarity
+    hints = sorted(chain(activity_data, activity_type_data, activity_category_data),
+        key=lambda x: x['similarity'], reverse=True)
+
+    result = list(hints)
+
+    result_json = json.dumps(result)
+    return HttpResponse(result_json, content_type='application/json')
+
 
 
 def calcAvailableSpots(activities):
