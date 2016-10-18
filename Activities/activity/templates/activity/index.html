@@ -8,5 +8,9 @@
     <p>
         Description: {{ activity.description }}<br>
         Start time: {{ activity.start_time }}
+    </p>
+    <p>
+        Places left: {{activity.participants_limit}}
+    </p>
 {% endfor %}
 {% endblock %}

@@ -1,26 +1,36 @@
 from django.shortcuts import render
 
 from django.template import loader
+from django.template.defaulttags import register
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Activity, ActivityType, ActivityCategory
+from .models import Activity, ActivityType, ActivityCategory, Participant
 # Create your views here.
 def index(request):
     types = ActivityType.objects.order_by('id')[:10]
     categories = ActivityCategory.objects.order_by('id')[:10]
     template = loader.get_template('index.html')
+    availableSpots = calcAvailableSpots(Activity.objects.all())
+
     if 'activity_type' in request.GET and request.GET['activity_type'].strip():
         query = request.GET['activity_type']
 
         activities = Activity.objects.filter(activity_type=query)
     else:
         activities = Activity.objects.all()
+    
     context = {
+        'availableSpots': availableSpots,
         'activities': activities,
         'types': types,
         'categories': categories
     }
     return HttpResponse(template.render(context, request))
 
+def calcAvailableSpots(activities):
+    availableSpots = {}
+    for activity in activities:
+        availableSpots[activity.id] = activity.participants_limit - Participant.objects.filter(activity=activity).count()
+    return availableSpots
 
 def create(request):
     activity_categories = ActivityCategory.objects.all()
@@ -43,3 +53,7 @@ def add(request):
     activity.save()
     #temp solution, should show my activities
     return HttpResponseRedirect('/')
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

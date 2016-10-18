@@ -67,7 +67,14 @@
                         <p>
                         {{activity.description}}
                         </p>
-                        <a href="#" class="btn btn-skin">Join</a>
+                        {% if availableSpots %}
+                            <p>Places available:
+                            {{availableSpots|get_item:activity.id}}/{{activity.participants_limit}}
+                            </p>
+                            <a href="#" class="btn btn-skin">Join</a>                    
+                        {% endif %}
+
+                        
                     </div>
                 </div>
                 </div>
