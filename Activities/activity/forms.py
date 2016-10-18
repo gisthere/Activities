@@ -23,3 +23,8 @@ class ActivityForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
+            self.fields['name'].widget.attrs['placeholder'] = 'title'
+            self.fields['description'].widget.attrs['placeholder'] = 'description'
+            self.fields['requirements'].widget.attrs['placeholder'] = 'requirements'
+            self.fields['participants_limit'].widget.attrs[
+                'placeholder'] = 'required participants (not counting yourself)'
