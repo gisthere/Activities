@@ -11,4 +11,6 @@ urlpatterns = [
     url(r'^activity/delete', views.delete, name='activity_delete'),
     url(r'activity/hints/', views.get_hints, name='activity_hints'),
     url(r'activity/dismiss', views.dismiss, name='dismiss_activity'),
+    url(r'activity/join', views.join, name='join_activity'),
+
 ]
