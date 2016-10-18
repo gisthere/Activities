@@ -71,7 +71,11 @@
                             <p>Places available:
                             {{availableSpots|get_item:activity.id}}/{{activity.participants_limit}}
                             </p>
-                            <a href="#" class="btn btn-skin">Join</a>                    
+                            {% if availableSpots|get_item:activity.id != 0%}
+                                <a href="#" class="btn btn-skin">Join</a>  
+                            {% else %}  
+                                <p>Sorry, this activity is full!</p>
+                            {% endif %}                                           
                         {% endif %}
 
                         
