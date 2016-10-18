@@ -111,18 +111,33 @@ body {
             <div class="col-xs-6 col-sm-4 col-md-4">
                 <div class="animated">
                 <div class="activity-card card">
-                    <!--<img src="https://unsplash.it/400/240/?random={{activity.id}}" class="img-fluid-width">-->
+                    <img src="https://unsplash.it/400/240/?random={{activity.id}}" class="img-fluid-width">
                     <div class="card-block">
                         <div class="card-title">{{activity.name}}</div>
                         <div class="card-text">
                             <p>{{activity.description}}</p>
-                            <p>Places left: {{activity.participants_limit}}</p>
+                            
+
+                            {% if availableSpots %}
+                                <p>Places available:
+                                {{availableSpots|get_item:activity.id}}/{{activity.participants_limit}}
+                                </p>
+                            {% endif %}
+
                         </div>
-                        <button type="button" class="btn btn-skin"
-                        onclick="$.ajax('/activity/join?user_id={{ user.id }}&activity_id={{ activity.id }}')
-                        .done(function() { location.reload() })">
-                        Join
-                        </button>
+
+                       {% if availableSpots %}
+                            {% if availableSpots|get_item:activity.id != 0%}
+                                <button type="button" class="btn btn-skin"
+                                onclick="$.ajax('/activity/join?user_id={{ user.id }}&activity_id={{ activity.id }}')
+                                .done(function() { location.reload() })">
+                                Join
+                                </button>
+                            {% else %}  
+                                <p>Sorry, this activity is full!</p>
+                            {% endif %}                                           
+
+                        {% endif %}  
                     </div>
                 </div>
                 </div>

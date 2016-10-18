@@ -35,9 +35,12 @@ def index(request):
     else:
         result = Activity.objects
 
+    availableSpots = calcAvailableSpots(Activity.objects.all())
+
     context = {
         'user': request.user,
-        'activities': result.all()
+        'activities': result.all(),
+        'availableSpots': availableSpots
     }
 
     template = loader.get_template('activity/index.html')
