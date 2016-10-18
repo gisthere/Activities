@@ -36,6 +36,7 @@ def index(request):
         result = Activity.objects
 
     context = {
+        'user': request.user,
         'activities': result.all()
     }
 
@@ -157,16 +158,18 @@ def join(request):
         return HttpResponseRedirect('/')
     activity_id = request.GET.get('activity_id')
     user_id = request.GET.get('user_id')
+    if user_id is None:
+        return HttpResponseRedirect('/signup')
     # do nothing if there is no valid info in request
-    if activity_id is None or user_id is None:
+    if activity_id is None:
         return HttpResponse()
     try:
         # try to load activity from the database
         activity = Activity.objects.get(id=activity_id)
         user = User.objects.get(id=user_id)
-        part_activity = Participant.objects.get(user=user, activity=activity)
-        if part_activity == None:
-            Participant.objects.create(user=user, activity=activity)
+        #part_activity = Participant.objects.get(user=user, activity=activity)
+        Participant.objects.update_or_create(user=user, activity=activity)
+        #if part_activity == None:
     except Model.DoesNotExist as e:
         print(e)
     return HttpResponse()

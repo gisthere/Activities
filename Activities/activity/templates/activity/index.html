@@ -118,7 +118,11 @@ body {
                             <p>{{activity.description}}</p>
                             <p>Places left: {{activity.participants_limit}}</p>
                         </div>
-                        <a href="#" class="btn btn-skin">Join</a>
+                        <button type="button" class="btn btn-skin"
+                        onclick="$.ajax('/activity/join?user_id={{ user.id }}&activity_id={{ activity.id }}')
+                        .done(function() { location.reload() })">
+                        Join
+                        </button>
                     </div>
                 </div>
                 </div>

@@ -62,7 +62,7 @@ class ActivityLocation(models.Model):
 class Participant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
-    rating = models.PositiveSmallIntegerField(required=False)
+    rating = models.PositiveSmallIntegerField(null=True)
 
 
 # perhaps we should move 'Comments' to its own app later
