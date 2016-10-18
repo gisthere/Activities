@@ -54,8 +54,6 @@ class Activity(models.Model):
 
 
 class ActivityLocation(models.Model):
-    class Meta:
-        auto_created = True
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     index = models.PositiveSmallIntegerField()
