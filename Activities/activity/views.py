@@ -39,7 +39,7 @@ def index(request):
         'activities': result.all()
     }
 
-    template = loader.get_template('index.html')
+    template = loader.get_template('activity/index.html')
     return HttpResponse(template.render(context, request))
 
 
