@@ -26,5 +26,5 @@ class ActivityForm(forms.ModelForm):
             self.fields['name'].widget.attrs['placeholder'] = 'title'
             self.fields['description'].widget.attrs['placeholder'] = 'description'
             self.fields['requirements'].widget.attrs['placeholder'] = 'requirements'
-            self.fields['participants_limit'].widget.attrs[
-                'placeholder'] = 'required participants (not counting yourself)'
+            self.fields['participants_limit'].widget.attrs['placeholder'] = 'required participants (not counting yourself)'
+            self.fields['activity_type'].widget.attrs['id'] = 'create_form_activity_type'

@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from . import views
+from . import statistics
 
 
 app_name = 'activity'
@@ -12,5 +13,6 @@ urlpatterns = [
     url(r'activity/hints/', views.get_hints, name='activity_hints'),
     url(r'activity/dismiss', views.dismiss, name='dismiss_activity'),
     url(r'activity/join', views.join, name='join_activity'),
+    url(r'activity/recommendations$', statistics.recommendations, name='recommendations'),
 
 ]

@@ -29,7 +29,7 @@
                                     <p class="error-list">{{ activity_form.message }}</p>
                                 {% endif %}
                                 {% for field in activity_form %}
-                                    <div class="form-group">
+                                    <div class="form-group typeahead">
                                         {{ field }}
                                         {% if field.errors %}
                                             <li class="error-list">
@@ -49,6 +49,54 @@
             </div>
         </div>
 
+        <div class="container marginbot-50">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="animatedParent">
+                        <div class="section-heading text-center">
+                            <h2 id="pidor" class="h-bold animated bounceInDown"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </section>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    function recommendationsRequest(){
+
+        var type = $('#create_form_activity_type').val();
+
+        if(type == ''){
+            setTimeout(recommendationsRequest, 5000);
+            return;
+        }
+
+        $.ajax({
+            url: "{% url 'activity:recommendations' %}" + '?' + 'type=' + type,
+            type: "GET",
+        })
+        .done(recommendationsResponse)
+        .always(function() {setTimeout(recommendationsRequest, 5000);});
+        };
+</script>>
+
+<script type="text/javascript">
+    function recommendationsResponse(response){
+        document.getElementById("pidor").innerHTML = response;
+    };
+</script>>
+
+<script type="text/javascript">
+    (function(){
+
+        recommendationsRequest();
+
+    })();
+</script>>
 
 {% endblock %}
