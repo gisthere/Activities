@@ -26,12 +26,13 @@ def recommendations(request):
 	start_time_mean = start_time_mean / activities.count()
 	end_time_mean = end_time_mean / activities.count()
 
-	context = {
-		'r_activities' : json.dumps(list(activities.all().values_list('id', 'name', 'start_time','end_time')), cls=DjangoJSONEncoder),
-		'r_time' : str(start_time_mean) + ":" + str(end_time_mean)
-	}
+	j_act_value = json.dumps(list(activities.all().values_list('id', 'name', 'start_time','end_time')), cls=DjangoJSONEncoder)
+	j_time_value = str(start_time_mean) + "_" + str(end_time_mean)
 
-	return HttpResponse(context)
+	result_json = '{"activities":' + j_act_value + ',"times":"' + j_time_value +'"}'
+
+	print(result_json)
+	return HttpResponse(result_json, content_type='application/json')
 
 
 def datetimeToTotalMinutes(value):

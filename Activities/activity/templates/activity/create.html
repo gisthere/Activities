@@ -79,24 +79,26 @@
         $.ajax({
             url: "{% url 'activity:recommendations' %}" + '?' + 'type=' + type,
             type: "GET",
+            dataType: "json",
+            contentType : "application/json",
+            async: false,
+            success : recommendationsResponse, // TODO remove this ugly hack
+            error : console.log,
         })
-        .done(recommendationsResponse)
         .always(function() {setTimeout(recommendationsRequest, 5000);});
         };
-</script>>
+</script>
 
 <script type="text/javascript">
-    function recommendationsResponse(response){
-        document.getElementById("pidor").innerHTML = response;
+    function recommendationsResponse(json){
+        
     };
-</script>>
+</script>
 
 <script type="text/javascript">
     (function(){
-
         recommendationsRequest();
-
     })();
-</script>>
+</script>
 
 {% endblock %}
