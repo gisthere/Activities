@@ -14,6 +14,9 @@ def recommendations(request):
 	start_time_mean = 0;
 	end_time_mean = 0;
 
+	print(activities.count())
+	print(ac_id)
+
 	if activities.count() == 0 or ac_id is None:
 		return HttpResponse();
 

@@ -133,6 +133,11 @@
         return result;
     };
 
+    function clearRecommendations(){
+        document.getElementById("div_time_reccomendation").innerHTML = "";
+        document.getElementById("div_activities_reccomendation").innerHTML = "";
+    }
+
     function recommendationsRequest(){
 
         var type = $('#create_form_activity_type').val();
@@ -149,7 +154,7 @@
             contentType : "application/json",
             async: false,
             success : recommendationsResponse, 
-            error : console.log,
+            error : clearRecommendations,
         })
         .always(function() {setTimeout(recommendationsRequest, 5000);});
     };
@@ -158,17 +163,17 @@
         var timeRecEl = document.getElementById("div_time_reccomendation");
         var actRecEl = document.getElementById("div_activities_reccomendation");
 
-        if(response.times == ""){
-            timeRecEl.innerHTML = ""    
-        }
-        else{
+        if(response.times.length > 0){
             var times = response.times.split("_");
             var fromTime = parseFloat(minutesToTimeString(times[0]));
             var toTime = parseFloat(minutesToTimeString(times[1]));
             timeRecEl.innerHTML = getTimeReccomendation(fromTime,toTime);
         }
-
-        if(response.activities == ""){
+        else{
+            timeRecEl.innerHTML = ""   
+        }
+        
+        if(response.activities.count == 0){
             actRecEl.innerHTML = "";
         }
         else{
