@@ -16,11 +16,26 @@
                     </div>
                 </div>
             </div>
+            <div>Save your time! Create a new activity based on your previous ones!</div>
         </div>
+
 
         <div class="container">
             <div class="row marginbot-80">
                 <div class="col-md-8 col-md-offset-2">
+                <div class="col-md-12">
+                    
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Choose activity...
+                            <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            {% for activity in activities %}
+                                <li><a href="{% url 'activity:activity_create' activity.id %}">{{ activity.name }}</a></li>
+                            {% endfor%}
+                        </ul>
+                    </div>
+                    
+                </div>  
                     <form class="input-form" action="" method="POST">
                         {% csrf_token %}
                         <div class="row">
