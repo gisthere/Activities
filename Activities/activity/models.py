@@ -31,8 +31,8 @@ class Activity(models.Model):
 
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=250)
-    start_time = models.DateTimeField(auto_now_add=True)
-    end_time = models.DateTimeField(auto_now_add=True)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
     status = models.CharField(
         max_length=2,
         choices=STATUSES,
