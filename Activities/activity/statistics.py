@@ -31,7 +31,6 @@ def recommendations(request):
 
 	result_json = '{"activities":' + j_act_value + ',"times":"' + j_time_value +'"}'
 
-	print(result_json)
 	return HttpResponse(result_json, content_type='application/json')
 
 
