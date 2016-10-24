@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Cabinet{% endblock %}
+
+{% block content %}
+
+   <section class="home-section nopadd-bot color-dark text-center">
+
+        <div class="container marginbot-50">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="animatedParent">
+                        <div class="section-heading text-center">
+                            <h2 class="h-bold animated bounceInDown">{{ settings_form.title }}</h2>
+                            <div class="divider-header"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row marginbot-80">
+                <div class="col-md-8 col-md-offset-2">
+                    <form class="input-form" action="/cabinet/" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% for field in settings_form %}
+                                    <div class="form-group">
+                                    	<p>{{ field.label }}</p>
+                                        <input name="{{ field.html_name }}"
+                                               placeholder="{{ field.label }}"
+                                               type="{{ field.field.widget.input_type }}"
+                                               value="{{ field.value }}"
+                                               class="form-control input-lg">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <input type="submit" value="Change settings" class="btn btn-skin btn-lg btn-block"/>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+{% endblock %}

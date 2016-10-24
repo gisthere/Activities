@@ -18,7 +18,10 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^cabinet/', include('cabinet.urls')),
     url(r'^chat/', include('chat.urls')),
     url(r'^', include('authentication.urls')),
     url(r'^', include('activity.urls')),
+    url(r'^', include('myactivities.urls')),
+    url(r'^subscriptions/', include('subscriptions.urls'))
 ]

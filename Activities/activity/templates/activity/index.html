@@ -1,16 +1,296 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}Activities{% endblock %}
+{% block head %}
+<style>
+body {
+    background: #f9f9f9;
+}
+
+.activity-card {
+    background: #fff;
+    border-bottom: 2px solid #f7f7f7;
+}
+
+.activity-card:hover {
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+    margin-top: -20px;
+}
+
+.card {
+    display: block;
+}
+
+.card-block {
+    padding: 1.25rem;
+    
+}
+
+.card-title {
+    font-size: 24px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    color: #111;
+
+    margin-bottom: 0.2em;
+}
+
+.card-text {
+}
+
+.img-fluid-width {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+</style>
+
+{% endblock %}
+
+{% block header %}
+    <section class="hero" id="intro">
+            <div class="container">
+              <div class="row">
+               
+              </div>
+              <div class="row">
+                <div class="col-md-8 col-md-offset-2 text-center inner">
+                    <div class="animatedParent">
+                        <h1 class="animated fadeInDown">Find your actitivity</h1>
+                    </div>
+               </div>
+              </div>
+              <div class="row">
+               
+              </div>
+            </div>
+    </section>
+{% endblock %}
+
+
+{% block navbar %}
+  <form class="navbar-form navbar-left" action="" method="GET" id="search_form">
+    <div class="form-group">
+       <input type="text" 
+              id="search_input" 
+              class="typeahead form-control" 
+              name="search"
+              {% if request.GET.search and request.GET.search != ''  %}  
+              value = "{{request.GET.search}}"
+              {% endif %} 
+              placeholder="Start search suitable activity.." />
+        <input type="hidden" id="search_type" name="t" />
+        <input type="hidden" id="search_value" name="v" />
+    </div>
+    {% if request.GET.search and request.GET.search != ''  %}  
+        <a href="{% url 'activity:index' %}" class="btn btn-skin">X</a>
+    {% endif %} 
+    <button type="submit" class="hidden">Submit</button>
+  </form>
+{% endblock %}
+
+
+
 
 {% block content %}
-{% for activity in activities  %}
-    <h2>{{ activity.name }}</h2>
-    <p>
-        Description: {{ activity.description }}<br>
-        Start time: {{ activity.start_time }}
-    </p>
-    <p>
-        Places left: {{activity.participants_limit}}
-    </p>
-{% endfor %}
+
+    
+    <section id="service" class="search-result color-dark bg-gray">
+        <div class="text-center">
+
+        {% if activities %}
+        <div class="container">
+            
+
+            {% for activity in activities %}
+            {% cycle '<div class="row animatedParent marginbot-20">' '' '' %}
+
+
+
+            <div class="col-xs-6 col-sm-4 col-md-4">
+                <div class="animated">
+                <div class="activity-card card">
+                    <img src="https://unsplash.it/400/240/?random={{activity.id}}" class="img-fluid-width">
+                    <div class="card-block">
+                        <div class="card-title">{{activity.name}}</div>
+                        <div class="card-text">
+                            <p>{{activity.description}}</p>
+                            
+
+                            {% if availableSpots %}
+                                <p>Places available:
+                                {{availableSpots|get_item:activity.id}}/{{activity.participants_limit}}
+                                </p>
+                            {% endif %}
+
+                        </div>
+
+                       {% if availableSpots %}
+                            {% if availableSpots|get_item:activity.id != 0%}
+                                <button type="button" class="btn btn-skin"
+                                onclick="$.ajax('/activity/join?user_id={{ user.id }}&activity_id={{ activity.id }}')
+                                .done(function() { location.reload() })">
+                                Join
+                                </button>
+                            {% else %}  
+                                <p>Sorry, this activity is full!</p>
+                            {% endif %}                                           
+
+                        {% endif %}  
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            {% cycle '' '' '</div>' %}
+            
+            {% endfor %}
+
+        </div>
+        {% endif %}    
+
+        {% if user.is_authenticated and request.GET.search and request.GET.search != '' %}
+        <div class="container">
+            <div class="row vert-offset-top-2">
+                <div class="col-lg-8 col-lg-offset-2">       
+                    <div class="text-center" id="subscribe-form">
+                        <p>
+                        Not find a intersting activity by <b>{{request.GET.search}}</b>.<br />
+                        You can subscribe by this filter and get notification, when new activity will be added.
+                        </p>
+                        <div class="alert alert-danger hidden">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <strong id="subsibe-error"></strong>
+                        </div>
+
+                        <a href="" class="btn btn-danger btn-scroll" id="subscribe-button">Subscribe</a>
+                    </div>
+                    <div class="text-center hidden" id="success-form">
+                        Thank you! You subscribed!
+                    </div>
+                </div>
+            </div>      
+        </div>
+
+
+
+        {% endif %}
+
+
+        </div>
+    </section>
+
+    
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script>
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    $('#subscribe-button').click(function(e){
+        e.preventDefault();
+        $.ajax({
+            url: "{% url 'subscriptions:subscribe' %}",
+            type: "POST",//type of posting the data
+            data: {
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+                type: "{{request.GET.t}}",
+                value: "{{request.GET.v}}",
+                search: "{{request.GET.search}}"
+            },
+            success: function (data) {
+                $('#subscribe-form').toggleClass('hidden');
+                $('#success-form').toggleClass('hidden');
+            },
+            error: function(xhr, ajaxOptions, thrownError){
+                $('#subsibe-error').toggleClass('hidden');
+                $('#subsibe-error').value(thrownError);
+            },
+            timeout : 15000//timeout of the ajax call
+       });
+    });
+</script>
+
+
+<script type="text/javascript">
+    (function() {
+
+    // Instantiate the Bloodhound suggestion engine
+    var hints = new Bloodhound({
+        datumTokenizer: function (datum) {
+            return Bloodhound.tokenizers.whitespace(datum.value);
+        },
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url: '/activity/hints/',
+            filter: function (result) {
+                // Map the remote source JSON array to a JavaScript object array
+                return $.map(result, function (item) {
+                    return {
+                        value: item.name,
+                        id: item.id,
+                        type: item.f_name
+                    };
+                });
+            },
+            replace: function (url, query) {
+                return url + '?q=' + query;
+            }
+        }
+    });
+
+
+    // Initialize the Bloodhound suggestion engine
+    hints.initialize();
+
+    var submit = function(filter_type, filter_value) {
+        $('#search_type').val(filter_type);
+        $('#search_value').val(filter_value);
+        $('#search_form').submit();
+    }
+
+    // Instantiate the Typeahead UI
+    $('#search_input').typeahead({
+        highlight: true
+    },
+    {
+        name: 'names',
+        display: 'value',
+        source: hints
+    }
+    ).bind('typeahead:select', function(ev, suggestion) {
+        submit(suggestion.type, suggestion.id);
+    }).keypress(function (e) {
+        if (e.which == 13) {
+            var selectedValue = $('#search_input').val();
+            submit('an', selectedValue);
+            return true;
+        }
+    });
+
+
+
+
+    })();
+  </script>
 {% endblock %}
