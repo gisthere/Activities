@@ -16,31 +16,71 @@
 
     {% if form.activities %}
         <section class="color-dark bg-gray">
-            <div>
+            <div id="activities">
                 {# Output information about each activity in the list #}
                 {% for activity in form.activities %}
                     <div class="container">
                         <div class="row">
                             <div class="animated">
-                                <div class="simple-box">
+                                <div id="activity{{ activity.id }}" class="{% if activity.status == 'SC' %}simple-box
+                                    {% elif activity.status == 'CN' %}canceled-box
+                                    {% elif activity.status == 'PF' %}performed-box{% endif %}">
                                     <div class="service-desc">
                                         <div class="row">
                                             <div class="text-center col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                                 <h5 class="row">{{ activity.name }}</h5>
-                                                <p class="row">{{ activity.get_status_display }}</p>
+                                                <div class="row">
+                                                    {% if activity.status == 'PF' %}
+                                                        <fieldset class="rating">
+                                                            <input type="radio" id="star5" name="rating" value="5"/>
+                                                            <label class="full" for="star5"
+                                                                   onclick="changeRating({{ activity.id }}, 5)"
+                                                                   title="Awesome - 5 stars"></label>
+                                                            <input type="radio" id="star4" name="rating" value="4"/>
+                                                            <label class="full" for="star4"
+                                                                   title="Pretty good - 4 stars"></label>
+                                                            <input type="radio" id="star3" name="rating" value="3"/>
+                                                            <label class="full" for="star3"
+                                                                   title="Meh - 3 stars"></label>
+                                                            <input type="radio" id="star2" name="rating" value="2"/>
+                                                            <label class="full" for="star2"
+                                                                   title="Kinda bad - 2 stars"></label>
+                                                            <input type="radio" id="star1" name="rating" value="1"/>
+                                                            <label class="full" for="star1"
+                                                                   title="Sucks big time - 1 star"></label>
+                                                        </fieldset>
+                                                    {% else %}
+                                                        <p>{{ activity.get_status_display }}
+                                                    {% endif %}
+                                                </div>
+
+                                                </p>
                                                 <div class="row">
                                                     <a href="#" class="btn btn-skin">Details</a>
                                                     {% if form.can_remove %}
-                                                        <button type="button" class="btn btn-skin"
-                                                                onclick="$.ajax('/activity/delete?id={{ activity.id }}')
-                                                                        .done(function() { location.reload() })">
-                                                            Delete
-                                                        </button>
+                                                        {% if activity.status == 'SC' %}
+                                                            <button type="button" class="perform btn btn-skin"
+                                                                    onclick="changeStatus({{ activity.id }}, 'PF')">
+                                                                Perform
+                                                            </button>
+                                                            <button type="button" class="btn btn-skin"
+                                                                    onclick="changeStatus({{ activity.id }}, 'CN')">
+                                                                Cancel
+                                                            </button>
+                                                        {% elif activity.status == 'CN' %}
+                                                            <button type="button" class="btn btn-skin"
+                                                                    onclick="changeStatus({{ activity.id }}, 'SC')">
+                                                                Restore
+                                                            </button>
+                                                            <button type="button" class="btn btn-skin"
+                                                                    onclick="deleteActivity({{ activity.id }})">
+                                                                Delete
+                                                            </button>
+                                                        {% endif %}
                                                     {% endif %}
-                                                    {% if form.can_join %}
+                                                    {% if form.can_join and activity.status != 'PF' %}
                                                         <button type="button" class="btn btn-skin"
-                                                                onclick="$.ajax('/activity/dismiss?user_id={{ form.user.id }}&activity_id={{ activity.id }}')
-                                                                        .done(function() { location.reload() })">
+                                                                onclick="dismissActivity({{ form.user.id }}, {{ activity.id }})">
                                                             Dismiss
                                                         </button>
                                                     {% endif %}
@@ -48,7 +88,7 @@
                                             </div>
                                             <div class="col-lg-2 col-md-2 col-sm-6">
                                                 <div class="row col-xs-12">
-                                                    <small>Start time:</small>
+                                                    <small class="start-time">Start time:</small>
                                                     <p>{{ activity.start_time|date:"Y-m-d   H:i" }}</p>
                                                 </div>
                                                 <div class="row col-xs-12">
@@ -104,5 +144,50 @@
             </div>
         </section>
     {% endif %}
-
 {% endblock content %}
+
+{% block scripts %}
+    <script>
+        function deleteActivity(activity_id) {
+            $.ajax('/activity/delete?activity_id=' + activity_id)
+                    .done(function () {
+                        // TODO: remove element from the DOM. Do not reload the whole page!
+                        location.reload();
+                    });
+        }
+
+        function dismissActivity(user_id, activity_id) {
+            $.ajax('/activity/dismiss?user_id=' + user_id + '&activity_id=' + activity_id)
+                    .done(function () {
+                        // TODO: remove the element from the DOM. Do not reload the whole page!
+                        location.reload();
+                    });
+        }
+
+        function changeStatus(activity_id, new_status) {
+            $.ajax('/activity/status/change?activity_id=' + activity_id + '&new_status=' + new_status)
+                    .done(function () {
+                        location.reload();
+                        // TODO: complete ajax
+                        {#                        var activity = $('#activity' + activity_id);#}
+                        {#                        activity.removeClass('simple-box');#}
+                        {#                        activity.removeClass('canceled-box');#}
+                        {#                        activity.removeClass('performed-box');#}
+                        {#                        activity.find('perform').hide();#}
+                        {#                        if (new_status == 'SC')#}
+                        {#                            activity.addClass('simple-box');#}
+                        {#                        else if (new_status == 'CN')#}
+                        {#                            activity.addClass('canceled-box');#}
+                        {#                        else if (new_status == 'PF')#}
+                        {#                            activity.addClass('performed-box');#}
+                    });
+        }
+
+        function changeRating(activity_id, new_rating) {
+            $.ajax('/activity/rating?activity_id=' + activity_id + '&new_rating=' + new_rating)
+                    .done(function () {
+{#                        alert('ok')#}
+                    });
+        }
+    </script>
+{% endblock %}
