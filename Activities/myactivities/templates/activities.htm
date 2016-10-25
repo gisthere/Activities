@@ -38,15 +38,19 @@
                                                                    title="Awesome - 5 stars"></label>
                                                             <input type="radio" id="star4" name="rating" value="4"/>
                                                             <label class="full" for="star4"
+                                                                   onclick="changeRating({{ activity.id }}, 4)"
                                                                    title="Pretty good - 4 stars"></label>
                                                             <input type="radio" id="star3" name="rating" value="3"/>
                                                             <label class="full" for="star3"
+                                                                   onclick="changeRating({{ activity.id }}, 3)"
                                                                    title="Meh - 3 stars"></label>
                                                             <input type="radio" id="star2" name="rating" value="2"/>
                                                             <label class="full" for="star2"
+                                                                   onclick="changeRating({{ activity.id }}, 2)"
                                                                    title="Kinda bad - 2 stars"></label>
                                                             <input type="radio" id="star1" name="rating" value="1"/>
                                                             <label class="full" for="star1"
+                                                                   onclick="changeRating({{ activity.id }}, 1)"
                                                                    title="Sucks big time - 1 star"></label>
                                                         </fieldset>
                                                     {% else %}
@@ -168,25 +172,13 @@
             $.ajax('/activity/status/change?activity_id=' + activity_id + '&new_status=' + new_status)
                     .done(function () {
                         location.reload();
-                        // TODO: complete ajax
-                        {#                        var activity = $('#activity' + activity_id);#}
-                        {#                        activity.removeClass('simple-box');#}
-                        {#                        activity.removeClass('canceled-box');#}
-                        {#                        activity.removeClass('performed-box');#}
-                        {#                        activity.find('perform').hide();#}
-                        {#                        if (new_status == 'SC')#}
-                        {#                            activity.addClass('simple-box');#}
-                        {#                        else if (new_status == 'CN')#}
-                        {#                            activity.addClass('canceled-box');#}
-                        {#                        else if (new_status == 'PF')#}
-                        {#                            activity.addClass('performed-box');#}
                     });
         }
 
         function changeRating(activity_id, new_rating) {
-            $.ajax('/activity/rating?activity_id=' + activity_id + '&new_rating=' + new_rating)
+            $.ajax('/activity/rating/change?activity_id=' + activity_id + '&new_rating=' + new_rating)
                     .done(function () {
-{#                        alert('ok')#}
+                        alert('ok');
                     });
         }
     </script>

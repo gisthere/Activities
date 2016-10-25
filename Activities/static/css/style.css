@@ -1010,17 +1010,12 @@ fieldset, label {
     padding: 0;
 }
 
-body {
-    margin: 20px;
-}
-
 h1 {
     font-size: 1.5em;
     margin: 10px;
 }
 
 /****** Style Star Rating Widget *****/
-
 .rating {
     border: none;
     float: left;
@@ -1036,11 +1031,6 @@ h1 {
     font-family: FontAwesome;
     display: inline-block;
     content: "\f005";
-}
-
-.rating > .half:before {
-    content: "\f089";
-    position: absolute;
 }
 
 .rating > label {

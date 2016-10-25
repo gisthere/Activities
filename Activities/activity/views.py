@@ -211,6 +211,26 @@ def change_status(request):
     return HttpResponse()
 
 
+def rating(request):
+    # redirect to main page if the user is not authenticated
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    activity_id = request.GET.get('activity_id')
+    # do nothing if there is no valid info in request
+    result = 0
+    if activity_id is None:
+        return HttpResponse()
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+        # calculate the rating of the activity
+        for participant in activity.participants:
+            result += participant.rating
+    except Model.DoesNotExist as e:
+        print(e)
+    return HttpResponse(content=result)
+
+
 # Change rating of the activity by specified activity id and new rating value (passed as get parameters)
 def change_rating(request):
     # redirect to main page if the user is not authenticated

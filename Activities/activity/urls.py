@@ -14,6 +14,7 @@ urlpatterns = [
 
     url(r'activity/dismiss', views.dismiss, name='dismiss_activity'),
     url(r'activity/join', views.join, name='join_activity'),
-    url(r'activity/status', views.change_status, name='change_status'),
-    url(r'activity/rating', views.change_rating, name='change_rating'),
+    url(r'activity/status/change', views.change_status, name='change_status'),
+    url(r'activity/rating\?activity_id.\d+$', views.rating, name='rating'),
+    url(r'activity/rating/change', views.change_rating, name='change_rating'),
 ]
