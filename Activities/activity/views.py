@@ -86,10 +86,16 @@ def calcAvailableSpots(activities):
     return availableSpots
 
 
-def create(request):
+def create(request, activity_id=None):
     if request.user.is_authenticated():
+        organizer = User.objects.get(id=request.user.id)
+        activities = Activity.objects.filter(organizer=organizer)
         if request.method == 'GET':
-            form = ActivityForm()
+            if activity_id is not None:
+                activity = Activity.objects.get(id=activity_id)
+                form = ActivityForm(instance=activity)
+            else:
+                form = ActivityForm()
         else:
             form = ActivityForm(request.POST)
             if form.is_valid():
@@ -97,7 +103,7 @@ def create(request):
                 activity.organizer = request.user
                 activity.save()
                 return HttpResponseRedirect(reverse('activity:activity_detail', kwargs={'activity_id': activity.id}))
-        return render(request, 'activity/create.html', {'activity_form': form})
+        return render(request, 'activity/create.html', {'activity_form': form, 'activities': activities})
     else:
         return HttpResponseRedirect('login/')
         # activity_categories = ActivityCategory.objects.all()
