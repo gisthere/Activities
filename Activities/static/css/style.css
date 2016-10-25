@@ -666,14 +666,24 @@ hr.bold {
 /* ===========================
 --- Services
 ============================ */
-.service-box, .simple-box {
+.service-box, .simple-box, .canceled-box, .performed-box {
     background: #fff;
     border-bottom: 2px solid #f7f7f7;
     padding: 40px 20px;
 }
 
-.simple-box {
+.simple-box, .canceled-box, .performed-box {
     margin-bottom: 20px;
+}
+
+.canceled-box {
+    background: #FFFAFA;
+    border-left: 3px solid red;
+}
+
+.performed-box {
+    background: #FAFFFA;
+    border-left: 3px solid green;
 }
 
 .service-box:hover {
@@ -768,7 +778,7 @@ form.input-form .error-list {
 }
 
 form.input-form > input {
-	margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 /* ===========================
@@ -901,13 +911,13 @@ footer {
 }
 
 footer, .page-wrap:after {
-  height: 98px; 
+    height: 98px;
 }
 
 footer {
     text-align: center;
-    padding: 20px 0 20px ;
-    
+    padding: 20px 0 20px;
+
 }
 
 footer p {
@@ -919,18 +929,20 @@ footer a.totop {
     color: #fff;
     margin-bottom: 30px;
 }
+
 footer a.totop:focus {
     outline: 0;
 }
 
 .page-wrap {
-  min-height: 100%;
-  /* equal to footer height */
-  margin-bottom: -98px; 
+    min-height: 100%;
+    /* equal to footer height */
+    margin-bottom: -98px;
 }
+
 .page-wrap:after {
-  content: "";
-  display: block;
+    content: "";
+    display: block;
 }
 
 /* menu */
@@ -988,6 +1000,57 @@ footer .social-widget ul.team-social li a {
 .testimonialslide ul li h4 span {
     color: #fff;
     font-weight: 400;
+}
+
+/* --- rating stars --- */
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
+fieldset, label {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-size: 1.5em;
+    margin: 10px;
+}
+
+/****** Style Star Rating Widget *****/
+.rating {
+    border: none;
+    float: left;
+}
+
+.rating > input {
+    display: none;
+}
+
+.rating > label:before {
+    margin: 5px;
+    font-size: 1.25em;
+    font-family: FontAwesome;
+    display: inline-block;
+    content: "\f005";
+}
+
+.rating > label {
+    color: #ddd;
+    float: right;
+}
+
+/***** CSS Magic to Highlight Stars on Hover *****/
+.rating > input:checked ~ label, /* show gold star when clicked */
+.rating:not(:checked) > label:hover, /* hover current star */
+.rating:not(:checked) > label:hover ~ label {
+    color: #FFD700;
+}
+
+/* hover previous stars in list */
+.rating > input:checked + label:hover, /* hover current star when changing rating */
+.rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label, /* lighten current selection */
+.rating > input:checked ~ label:hover ~ label {
+    color: #FFED85;
 }
 
 /* --- button --- */
