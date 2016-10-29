@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'cabinet',
     'chat',
     'subscriptions',
+    # 'django_nyt',
+    # 'channels'
 ]
 
 MIDDLEWARE = [
@@ -97,6 +99,14 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# WS connnection
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "asgiref.inmemory.ChannelLayer",
+#         "ROUTING": "django_nyt.routing.channel_routing",
+#     },
+# }
 
 
 # Password validation

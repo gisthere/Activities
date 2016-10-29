@@ -126,12 +126,13 @@ def delete(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/')
     # get the ID from the get request
-    activity_id = request.GET.get('id')
+    activity_id = request.GET.get('activity_id')
     try:
         # try to load activity from the database
         activity = Activity.objects.get(id=activity_id)
         # restrict deletion in case if activity does not belong to the user
-        if activity.organizer.id != request.user.id:
+        # or if was already performed
+        if activity.organizer.id != request.user.id or activity.status == 'PF':
             return HttpResponse()
         activity.delete()
     except Model.DoesNotExist as e:
@@ -176,13 +177,91 @@ def join(request):
         # try to load activity from the database
         activity = Activity.objects.get(id=activity_id)
         user = User.objects.get(id=user_id)
-        #part_activity = Participant.objects.get(user=user, activity=activity)
+        # TODO: check whether I've joined activity or not
         Participant.objects.update_or_create(user=user, activity=activity)
-        #if part_activity == None:
     except Model.DoesNotExist as e:
         print(e)
     return HttpResponse()
 
+
+# Checks whether the provided status is valid
+def validate_status(new_status):
+    valid_status = False
+    for status in Activity.STATUSES:
+        if new_status == status[0]:
+            valid_status = True
+            break
+    return valid_status
+
+
+# Change status of the activity by specified activity id and new status value (passed as get parameters)
+def change_status(request):
+    # redirect to main page if the user is not authenticated
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    activity_id = request.GET.get('activity_id')
+    new_status = request.GET.get('new_status')
+    # do nothing if there is no valid info in request
+    if activity_id is None or new_status is None:
+        return HttpResponse()
+    # check whether the provided status is valid
+    if not validate_status(new_status):
+        return HttpResponse()
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+        activity.status = new_status
+        activity.save()
+    except Model.DoesNotExist as e:
+        print(e)
+    return HttpResponse()
+
+
+def rating(request):
+    # redirect to main page if the user is not authenticated
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    activity_id = request.GET.get('activity_id')
+    # do nothing if there is no valid info in request
+    result = 0
+    if activity_id is None:
+        return HttpResponse()
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+        # calculate the rating of the activity
+        for participant in activity.participants:
+            result += participant.rating
+    except Model.DoesNotExist as e:
+        print(e)
+    return HttpResponse(content=result)
+
+
+# Change rating of the activity by specified activity id and new rating value (passed as get parameters)
+def change_rating(request):
+    # redirect to main page if the user is not authenticated
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    user = request.user
+    activity_id = request.GET.get('activity_id')
+    new_rating = request.GET.get('new_rating')
+    # do nothing if there is no valid info in request
+    if activity_id is None or new_rating is None:
+        return HttpResponse()
+    # check whether the provided rating is valid
+    new_rating = int(new_rating)
+    if new_rating < 0 or new_rating > 5:
+        return HttpResponse()
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+        # set the rating from the participant
+        participation = Participant.objects.get_or_create(user=user, activity=activity)[0]
+        participation.rating = new_rating
+        participation.save()
+    except Model.DoesNotExist as e:
+        print(e)
+    return HttpResponse()
 
 
 def detail(request, activity_id):
