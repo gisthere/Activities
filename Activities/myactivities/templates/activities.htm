@@ -60,34 +60,41 @@
 
                                                 </p>
                                                 <div class="row">
-                                                    <a href="{% url 'activity:activity_detail' activity.id %}" class="btn btn-skin">Details</a>
-                                                    {% if form.can_remove %}
-                                                        {% if activity.status == 'SC' %}
-                                                            <button type="button" class="perform btn btn-skin"
-                                                                    onclick="changeStatus({{ activity.id }}, 'PF')">
-                                                                Perform
-                                                            </button>
+                                                    <p>
+                                                        {% if form.can_remove %}
+                                                            {% if activity.status == 'SC' %}
+                                                                <button type="button" class="perform btn btn-skin"
+                                                                        onclick="changeStatus({{ activity.id }}, 'PF')">
+                                                                    Perform
+                                                                </button>
+                                                                <button type="button" class="btn btn-skin"
+                                                                        onclick="changeStatus({{ activity.id }}, 'CN')">
+                                                                    Cancel
+                                                                </button>
+                                                            {% elif activity.status == 'CN' %}
+                                                                <button type="button" class="btn btn-skin"
+                                                                        onclick="changeStatus({{ activity.id }}, 'SC')">
+                                                                    Restore
+                                                                </button>
+                                                                <button type="button" class="btn btn-skin"
+                                                                        onclick="deleteActivity({{ activity.id }})">
+                                                                    Delete
+                                                                </button>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if form.can_join and activity.status != 'PF' %}
                                                             <button type="button" class="btn btn-skin"
-                                                                    onclick="changeStatus({{ activity.id }}, 'CN')">
-                                                                Cancel
-                                                            </button>
-                                                        {% elif activity.status == 'CN' %}
-                                                            <button type="button" class="btn btn-skin"
-                                                                    onclick="changeStatus({{ activity.id }}, 'SC')">
-                                                                Restore
-                                                            </button>
-                                                            <button type="button" class="btn btn-skin"
-                                                                    onclick="deleteActivity({{ activity.id }})">
-                                                                Delete
+                                                                    onclick="dismissActivity({{ form.user.id }}, {{ activity.id }})">
+                                                                Dismiss
                                                             </button>
                                                         {% endif %}
-                                                    {% endif %}
-                                                    {% if form.can_join and activity.status != 'PF' %}
-                                                        <button type="button" class="btn btn-skin"
-                                                                onclick="dismissActivity({{ form.user.id }}, {{ activity.id }})">
-                                                            Dismiss
-                                                        </button>
-                                                    {% endif %}
+                                                    </p>
+                                                    <p>
+                                                        <a href="{% url 'activity:activity_detail' activity.id %}" class="btn btn-skin">Details</a>
+                                                        {% if activity.status != 'PF' %}
+                                                            <a href="{% url 'activity:activity_edit' activity.id %}" class="btn btn-skin">Edit</a>
+                                                        {% endif %}
+                                                    </p>
                                                 </div>
                                             </div>
                                             <div class="col-lg-2 col-md-2 col-sm-6">
