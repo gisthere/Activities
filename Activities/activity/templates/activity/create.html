@@ -27,7 +27,8 @@
                 <div class="row marginbot-30">
                     <div class="btn-group">
                         <div class="dropdown">
-                            <button type="button" class="btn btn-skin dropdown-toggle" data-toggle="dropdown">Choose activity...
+                            <button type="button" class="btn btn-skin dropdown-toggle" data-toggle="dropdown">
+                                <span id="textDropDown">Choose activity...</span>
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pre-scrollable" role="menu">
@@ -207,5 +208,20 @@
         recommendationsRequest();
     })();
 </script>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var name = $("#id_name").val();
+
+        if (name.length == 0) {
+            $("#textDropDown").text("Choose your activity...");
+        } else {
+            $("#textDropDown").text(name);
+        }
+        
+    });
+</script>
+
 
 {% endblock %}

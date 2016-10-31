@@ -20,13 +20,14 @@ def index(request):
             userName = request.user
             id = request.user
             userprofile = User.objects.get(user = id)
-            activ = Activity.objects.get(id = 1)
+            activ = Activity.objects.get(id = 2)
 
             newComment = Chat.objects.create(user = userprofile, activity = activ, message = msgText)
             newComment.save()
 
     allComments = Chat.objects.all
     context = {
+        'title' : Chat.objects.get(id = 2).activity,
         'comments': allComments,
         'currentUser': request.user,
     }
