@@ -1,0 +1,43 @@
+{% block content %}
+{% if time_from_rec and time_to_rec %}
+<div class="panel panel-success">
+  <div class="panel-heading">
+    <h3 class="panel-title">Time recommendations</h3>
+  </div>
+  <div class="panel-body">
+  	This activity usually take place between {{ time_from_rec }} and {{ time_to_rec }}.
+  </div>
+</div>
+{% endif %}
+{% if activities %}
+<div class="panel panel-success">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Similar activities</div>
+  <!-- List group -->
+  <ul class="list-group">
+  {% for activity in activities %}
+  <li class="list-group-item">
+	  <div class="row">
+	  	<div class="col-xs-6 col-md-3">
+	  		{{ activity.name }}
+	  	</div>
+	  	<div class="col-xs-6 col-md-3">
+	  		{{ activity.description }}
+	  	</div>
+	  	<div class="col-xs-6 col-md-3">
+	  		{{ activity.start_time }}
+	  	</div>
+	  	<div class="col-xs-6 col-md-3">
+		  	<button type="button" class="btn btn-skin"
+		    onclick="$.ajax('/activity/join?user_id={{ user.id }}&activity_id={{ activity.id }}')
+		    .done(function() { location.reload({% url 'myactivities:participated_activities' %}) })">
+		    Join
+		    </button>	
+	  	</div>
+	  </div>
+  </li>
+  {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% endblock %}

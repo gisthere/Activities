@@ -1,8 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Activity, ActivityType, ActivityCategory, ActivityLocation, Participant
-import json
-from django.core.serializers.json import DjangoJSONEncoder
-
+from django.template import loader
 
 def recommendations(request):
 	if not request.user.is_authenticated():
@@ -14,31 +12,27 @@ def recommendations(request):
 	start_time_mean = 0;
 	end_time_mean = 0;
 
-	print(activities.count())
-	print(ac_id)
-
 	if activities.count() == 0 or ac_id is None:
 		return HttpResponse();
 
 
 	for act in activities:
-		start_time_mean += datetimeToTotalMinutes(act.start_time) 
-		end_time_mean += datetimeToTotalMinutes(act.end_time)
+		start_time_mean += act.start_time.hour
+		end_time_mean += act.end_time.hour
+
+	template = loader.get_template('activity/activities_reccomendation.html')
 
 
 	start_time_mean = start_time_mean / activities.count()
 	end_time_mean = end_time_mean / activities.count()
 
-	j_act_value = json.dumps(list(activities.all().values_list('id', 'name', 'start_time','end_time')), cls=DjangoJSONEncoder)
-	j_time_value = str(start_time_mean) + "_" + str(end_time_mean)
+	if end_time_mean < start_time_mean :
+		end_time_mean = start_time_mean + 1
+	context = {
+    	'activities' : activities.all(),
+    	'time_from_rec' : "%.0f" % start_time_mean,
+    	'time_to_rec' : "%.0f" % end_time_mean
+    }
 
-	result_json = '{"activities":' + j_act_value + ',"times":"' + j_time_value +'"}'
-
-	return HttpResponse(result_json, content_type='application/json')
-
-
-def datetimeToTotalMinutes(value):
-	return (value.hour * 60) + (value.minute)
-
-
+	return HttpResponse(template.render(context, request))
 

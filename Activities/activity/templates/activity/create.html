@@ -105,9 +105,7 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2">
                     <div class="animatedParent">
-                        <div id="div_time_reccomendation" class="section-heading text-center">
-                        </div>
-                        <div id="div_activities_reccomendation" class="section-heading text-center">
+                        <div id="div_reccomendation" class="section-heading text-center">
                         </div>
                     </div>
                 </div>
@@ -121,44 +119,7 @@
 {% block scripts %}
 
 <script type="text/javascript">
-    function minutesToTimeString(minutes){
-        return (minutes/60).toFixed(0) + ":" + (minutes%60).toFixed(0);
-    };
-
-    function getTimeReccomendation(fromTime,toTime){
-        return "<h5>Time recommendations</h5><p>This type of activity usually takes place between " + fromTime +  " and " + toTime + "</p>"
-    };
-
-    function extractDate(value){
-        return value.split("T")[0];
-    }
-
-    function extractTime(value){
-        return value.split("T")[1].split(".")[0];
-    }
-
-    function getActivitiesReccomendation(activities){
-        var result = "<h5>Similar activities</h5>";
-        activities.forEach(function(item,i,activities){
-            result += "<div class=\"row\">";
-            result += "<p>" + item[1]  + " - " + extractDate(item[2]) + " - "  + extractTime(item[2]) + "</p>";
-            result +=           '<button type="button" class="btn btn-skin"' +
-                                'onclick="$.ajax(/activity/join?user_id={{ user.id }}&activity_id=' + item[0] + ')' +
-                                '.done(function() { location.reload() })">' +
-                                'Join' +
-                                '</button>';
-            result += "</div>";
-        });
-        return result;
-    };
-
-    function clearRecommendations(){
-        document.getElementById("div_time_reccomendation").innerHTML = "";
-        document.getElementById("div_activities_reccomendation").innerHTML = "";
-    }
-
     function recommendationsRequest(){
-
         var type = $('#create_form_activity_type').val();
 
         if(type == ''){
@@ -169,36 +130,20 @@
         $.ajax({
             url: "{% url 'activity:recommendations' %}" + '?' + 'type=' + type,
             type: "GET",
-            dataType: "json",
-            contentType : "application/json",
+            contentType : "application/text",
             async: false,
             success : recommendationsResponse, 
-            error : clearRecommendations,
+            error : recommendationsError,
         })
         .always(function() {setTimeout(recommendationsRequest, 5000);});
     };
 
     function recommendationsResponse(response){
-        var timeRecEl = document.getElementById("div_time_reccomendation");
-        var actRecEl = document.getElementById("div_activities_reccomendation");
+      document.getElementById("div_reccomendation").innerHTML = response;
+    };
 
-        if(response.times.length > 0){
-            var times = response.times.split("_");
-            var fromTime = parseFloat(minutesToTimeString(times[0]));
-            var toTime = parseFloat(minutesToTimeString(times[1]));
-            timeRecEl.innerHTML = getTimeReccomendation(fromTime,toTime);
-        }
-        else{
-            timeRecEl.innerHTML = ""   
-        }
-        
-        if(response.activities.count == 0){
-            actRecEl.innerHTML = "";
-        }
-        else{
-            actRecEl.innerHTML = getActivitiesReccomendation(response.activities);
-        }
-
+    function recommendationsError(response){
+      document.getElementById("div_reccomendation").innerHTML = "";
     };
 </script>
 
