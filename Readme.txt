@@ -18,6 +18,9 @@ So guys if you have python, or pip or django please proceed further
 	5.2) pip install whitenoise
 	5.3) pip install psycopg2
 	5.4) pip install django-leaflet
+	5.5) pip install channels
+	5.6) pip install asgi_redis
+	5.7) pip install redis
 6) Clone our repo
 	6.1) run command from directory where you want to be files of project "git clone https://github.com/MSD-GroupI/Activities.git"
 7) If it your first run you should use some stuff like this
