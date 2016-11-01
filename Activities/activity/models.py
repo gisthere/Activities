@@ -52,6 +52,20 @@ class Activity(models.Model):
     def __str__(self):
         return self.name
 
+    def rating(self):
+        result = 0
+        n = 0
+        try:
+            for participant in self.participant_set.all():
+                if participant.rating is not None:
+                    result += participant.rating
+                    n += 1
+        except Exception as e:
+            print(e)
+        if n > 0:
+            return round(result / n)
+        return None
+
 
 class ActivityLocation(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)

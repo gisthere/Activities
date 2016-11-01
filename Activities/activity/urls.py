@@ -11,14 +11,13 @@ urlpatterns = [
     url(r'^activity/(?P<activity_id>\d+)/$', views.detail, name='activity_detail'),
     url(r'^activity/edit/(?P<activity_id>\d+)/$', views.edit, name='activity_edit'),
     url(r'^activity/delete', views.delete, name='activity_delete'),
+    url(r'^activity/(?P<activity_id>\d+)/dismiss/$', views.dismiss, name='dismiss_activity'),
 
     url(r'activity/hints/', views.get_hints, name='activity_hints'),
 
-    url(r'activity/dismiss', views.dismiss, name='dismiss_activity'),
     url(r'activity/join', views.join, name='join_activity'),
     url(r'activity/recommendations$', statistics.recommendations, name='recommendations'),
-    url(r'activity/status/change', views.change_status, name='change_status'),
-    url(r'activity/rating\?activity_id.\d+$', views.rating, name='rating'),
-    url(r'activity/rating/change', views.change_rating, name='change_rating'),
+    url(r'^activity/(?P<activity_id>\d+)/status/change/(?P<new_status>\S{2})/$', views.change_status, name='change_status'),
+    url(r'^activity/(?P<activity_id>\d+)/rating/change/(?P<new_rating>\d+)/$', views.change_rating, name='change_rating'),
 
 ]

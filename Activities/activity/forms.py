@@ -11,8 +11,8 @@ class DateTimeInput(forms.DateTimeInput):
 
 class ActivityForm(forms.ModelForm):
     title = 'Create a new activity'
-    start_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
-    end_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
+    start_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%d %H:%i'], widget=DateTimeInput)
+    end_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%d %H:%i'], widget=DateTimeInput)
 
     class Meta:
         model = Activity
@@ -21,9 +21,13 @@ class ActivityForm(forms.ModelForm):
         error_messages = {'required': 'This field is required'}
 
     def clean(self):
-        if self.cleaned_data.get('start_time') <= datetime.datetime.utcnow().replace(tzinfo=utc):
+        start_time = self.cleaned_data.get('start_time')
+        if start_time is None:
+            start_time = datetime.datetime.utcnow().replace(tzinfo=utc)
+            return self.cleaned_data
+        if start_time <= datetime.datetime.utcnow().replace(tzinfo=utc):
             raise ValidationError("You can't choose past time, please choose correct one.")
-        if self.cleaned_data.get('start_time') > self.cleaned_data.get('end_time'):
+        if start_time > self.cleaned_data.get('end_time'):
             raise ValidationError("Activity can't end before starting, please choose correct dates.")
         if self.cleaned_data.get('participants_limit') <= 0:
             raise ValidationError("At least one participant is required.")

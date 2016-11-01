@@ -20,7 +20,7 @@ import django.contrib.auth.views
 app_name = 'auth'
 
 urlpatterns = [
-    url(r'login/', views.login, name='login'),
-    url(r'signup/', views.signup, name='signup'),
-    url(r'logout/', django.contrib.auth.views.logout, {'next_page':'/'}, name='logout'),
+    url(r'^login/', views.login, name='login'),
+    url(r'^signup/', views.signup, name='signup'),
+    url(r'^logout/', django.contrib.auth.views.logout, {'next_page':'/'}, name='logout'),
 ]
