@@ -97,6 +97,9 @@ class ActivityLocation(models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     index = models.PositiveSmallIntegerField()
 
+    def as_json(self):
+        return dict(location=self.location.as_json())
+
 
 class Participant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -1,6 +1,12 @@
 {% extends "base.html" %}
+{% load leaflet_tags %}
 
 {% block title %}{{ activity.name }}{% endblock %}
+
+{% block head %}
+    {% leaflet_js %}
+    {% leaflet_css %}
+{% endblock %}
 
 {% block content %}
     <section class="home-section nopadd-bot color-dark text-center">
@@ -57,12 +63,15 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="col-sm-6">
-                                <div class="panel panel-success">
-                                    <div class="panel-heading">Participants limit</div>
-                                    <div class="panel-body">{{ activity.participants_limit }}</div>
+                                    <div class="panel panel-success">
+                                        <div class="panel-heading">Participants limit</div>
+                                        <div class="panel-body">{{ activity.participants_limit }}</div>
+                                    </div>
                                 </div>
                             </div>
-                            </div>
+                        </div>
+                        <div class="row">
+                            {% leaflet_map "activity_map" %}
                         </div>
                     </div>
                     <a href="{% url 'activity:index' %}" class="btn btn-skin">Back to main page</a>
@@ -71,4 +80,36 @@
         </div>
 
     </section>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(window).on('map:init', function (e) {
+            var detail = e.originalEvent ? e.originalEvent.detail : e.detail;
+            var map = L;
+            $.ajax('/activity/' + {{ activity.id }} +'/locations/')
+                    .done(function (locs) {
+                        if (locs.length == 0)
+                            return;
+                        loc = locs[0].location;
+                        var south = loc.latitude, north = loc.latitude, east = loc.longitude, west = loc.longitude;
+                        map.marker([loc.latitude, loc.longitude]).addTo(detail.map);
+                        for (i = 1; i < locs.length; ++i) {
+                            loc = locs[i].location;
+                            map.marker([loc.latitude, loc.longitude]).addTo(detail.map);
+                            if (south > loc.latitude)
+                                south = loc.latitude;
+                            if (north < loc.latitude)
+                                north = loc.latitude;
+                            if (east < loc.longitude)
+                                east = loc.longitude;
+                            if (west > loc.longitude)
+                                west = loc.longitude;
+                        }
+                        var southWest = map.latLng(south, west);
+                        var northEast = map.latLng(north, east);
+                        detail.map.fitBounds(map.latLngBounds(southWest, northEast));
+                    });
+        });
+    </script>
 {% endblock %}

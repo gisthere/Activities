@@ -78,6 +78,24 @@ def get_hints(request):
     return HttpResponse(result_json, content_type='application/json')
 
 
+def locations(request, activity_id):
+    #  redirect to main page if the user is not authenticated
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    # do nothing if there is no valid info in request
+    if activity_id is None:
+        return HttpResponse()
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+        result = [obj.as_json() for obj in activity.activitylocation_set.all()]
+        result_json = json.dumps(result)
+        return HttpResponse(result_json, content_type='application/json')
+    except Exception as e:
+        print(e)
+    return HttpResponse()
+
+
 def calcAvailableSpots(activities):
     availableSpots = {}
     for activity in activities:

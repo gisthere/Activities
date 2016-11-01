@@ -9,3 +9,6 @@ class Location(models.Model):
 
     def __str__(self):
         return self.name
+
+    def as_json(self):
+        return dict(name=self.name, latitude=self.latitude, longitude=self.longitude)
