@@ -122,8 +122,13 @@
 
                                                 </p>
                                                 <div class="row">
-                                                    <a href="#" class="btn btn-skin">Details</a>
+                                                    <a href="{% url 'activity:activity_detail' activity.id %}"
+                                                       class="btn btn-skin">Details</a>
                                                     {% if form.can_remove %}
+                                                        {% if activity.status != 'PF' %}
+                                                            <a href="{% url 'activity:activity_edit' activity.id %}"
+                                                               class="btn btn-skin">Edit</a>
+                                                        {% endif %}
                                                         {% if activity.status == 'SC' %}
                                                             <button type="button" class="perform btn btn-skin"
                                                                     onclick="changeStatus({{ activity.id }}, 'PF')">

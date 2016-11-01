@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
+    'leaflet',
     'locations',
     'authentication',
     'activity',
@@ -127,6 +128,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LEAFLET_CONFIG = {
+  'DEFAULT_CENTER': (00.00, 00.00),
+  'DEFAULT_ZOOM': 1,
+  'MIN_ZOOM': 1,
+  'MAX_ZOOM': 20,
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
