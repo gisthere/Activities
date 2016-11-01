@@ -1002,6 +1002,11 @@ footer .social-widget ul.team-social li a {
     font-weight: 400;
 }
 
+.map{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 /* --- rating stars --- */
 /*@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);*/
 fieldset, label {
