@@ -44,12 +44,12 @@ INSTALLED_APPS = [
     'activity',
     'myactivities',
     'plans',
-    'templatetags',
+    # 'templatetags',
     'cabinet',
     'chat',
     'subscriptions',
-    # 'django_nyt',
-    # 'channels'
+    'django_nyt',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -100,13 +100,19 @@ DATABASES = {
     }
 }
 
-# WS connnection
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "asgiref.inmemory.ChannelLayer",
-#         "ROUTING": "django_nyt.routing.channel_routing",
-#     },
-# }
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        # "BACKEND": "asgiref.inmemory.ChannelLayer",
+
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+        "ROUTING": "django_nyt.routing.channel_routing",
+    },
+}
+
 
 
 # Password validation
