@@ -17,6 +17,7 @@ urlpatterns = [
 
     url(r'activity/join', views.join, name='join_activity'),
     url(r'activity/recommendations$', statistics.recommendations, name='recommendations'),
+    url(r'^activity/(?P<activity_id>\d+)/locations/$', views.locations, name='locations'),
     url(r'^activity/(?P<activity_id>\d+)/status/change/(?P<new_status>\S{2})/$', views.change_status, name='change_status'),
     url(r'^activity/(?P<activity_id>\d+)/rating/change/(?P<new_rating>\d+)/$', views.change_rating, name='change_rating'),
 

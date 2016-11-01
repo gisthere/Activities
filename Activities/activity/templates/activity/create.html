@@ -137,10 +137,9 @@
 {% block scripts %}
 
     <script type="text/javascript">
-
         $(window).on('map:init', function (e) {
             var detail = e.originalEvent ? e.originalEvent.detail : e.detail;
-            L.marker([5.5, 3.5]).addTo(detail.map);
+            var map = L;
         });
 
         function minutesToTimeString(minutes) {
