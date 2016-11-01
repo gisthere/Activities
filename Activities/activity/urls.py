@@ -9,8 +9,8 @@ urlpatterns = [
     url(r'^activity/create/$', views.create, name='activity_create'),
     url(r'^activity/create/(?P<activity_id>\d+)$', views.create, name='activity_create'),
     url(r'^activity/(?P<activity_id>\d+)/$', views.detail, name='activity_detail'),
-    url(r'^activity/(?P<pk>\d+)/edit$', views.detail, name='activity_edit'),
-    url(r'^activity/(?P<activity_id>\d+)/delete/$', views.delete, name='activity_delete'),
+    url(r'^activity/edit/(?P<activity_id>\d+)/$', views.edit, name='activity_edit'),
+    url(r'^activity/delete', views.delete, name='activity_delete'),
     url(r'^activity/(?P<activity_id>\d+)/dismiss/$', views.dismiss, name='dismiss_activity'),
 
     url(r'activity/hints/', views.get_hints, name='activity_hints'),

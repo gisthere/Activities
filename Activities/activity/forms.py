@@ -16,7 +16,7 @@ class ActivityForm(forms.ModelForm):
 
     class Meta:
         model = Activity
-        fields = ['name', 'description', 'requirements', 'start_time', 'end_time','participants_limit', 'locations',
+        fields = ['name', 'description', 'requirements', 'start_time', 'end_time', 'participants_limit', 'locations',
                   'activity_category', 'activity_type']
         error_messages = {'required': 'This field is required'}
 
@@ -38,5 +38,6 @@ class ActivityForm(forms.ModelForm):
             self.fields['name'].widget.attrs['placeholder'] = 'title'
             self.fields['description'].widget.attrs['placeholder'] = 'description'
             self.fields['requirements'].widget.attrs['placeholder'] = 'requirements'
-            self.fields['participants_limit'].widget.attrs['placeholder'] = 'required participants (not counting yourself)'
+            self.fields['participants_limit'].widget.attrs[
+                'placeholder'] = 'required participants (not counting yourself)'
             self.fields['activity_type'].widget.attrs['id'] = 'create_form_activity_type'

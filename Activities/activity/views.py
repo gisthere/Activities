@@ -94,8 +94,10 @@ def create(request, activity_id=None):
             if activity_id is not None:
                 activity = Activity.objects.get(id=activity_id)
                 form = ActivityForm(instance=activity)
+                form.title = 'Copy from activity'
             else:
                 form = ActivityForm()
+                form.title = 'Create a new activity'
         else:
             form = ActivityForm(request.POST)
             if form.is_valid():
@@ -106,13 +108,6 @@ def create(request, activity_id=None):
         return render(request, 'activity/create.html', {'activity_form': form, 'activities': activities})
     else:
         return HttpResponseRedirect('login/')
-        # activity_categories = ActivityCategory.objects.all()
-        # activity_types = ActivityType.objects.all()
-        # context = {
-        #     'activity_categories': activity_categories,
-        #     'activity_types': activity_types,
-        # }
-        # return render(request, 'activity/create.html', context)
 
 
 @register.filter
@@ -242,3 +237,25 @@ def detail(request, activity_id):
     except Activity.DoesNotExist:
         raise Http404("The activity your are looking for doesn't exist.")
     return render(request, 'activity/detail.html', {'activity': activity})
+
+
+def edit(request, activity_id=None):
+    if request.user.is_authenticated():
+        try:
+            activity = Activity.objects.get(id=activity_id)
+            if request.method == 'GET':
+                form = ActivityForm(instance=activity)
+                form.title = 'Edit the activity'
+                return render(request, 'activity/edit.html', {'activity_form': form})
+            else:
+                form = ActivityForm(request.POST, instance=activity)
+                if form.is_valid():
+                    activity = form.save(commit=False)
+                    activity.organizer = request.user
+                    activity.save()
+                    return HttpResponseRedirect(
+                        reverse('activity:activity_detail', kwargs={'activity_id': activity.id}))
+        except Activity.DoesNotExist:
+            raise Http404("The activity your are looking for doesn't exist.")
+    else:
+        return HttpResponseRedirect('login/')
