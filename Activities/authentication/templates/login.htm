@@ -1,10 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-
     <section class="home-section nopadd-bot color-dark text-center">
-
         <div class="container marginbot-50">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2">
@@ -22,6 +19,8 @@
             <div class="row marginbot-80">
                 <div class="col-md-8 col-md-offset-2">
                     <form class="input-form" action="{{ form.action }}" method="post">
+                        <input id="latitude" type="hidden" name="latitude">
+                        <input id="longitude" type="hidden" name="longitude">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-12">
@@ -51,11 +50,25 @@
                         <input type="submit" value="{{ form.title }}" class="btn btn-skin btn-lg btn-block"/>
                         <a href="{{ form.switch_action }}">{{ form.switch_title }}</a>
                     </form>
-
                 </div>
             </div>
         </div>
-
     </section>
+{% endblock %}
 
+{% block scripts %}
+    <script>
+        function success(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            $('#latitude').val(latitude);
+            $('#longitude').val(longitude);
+        }
+        function error() {
+
+        }
+        window.onload = function () {
+            navigator.geolocation.getCurrentPosition(success, error);
+        }
+    </script>
 {% endblock %}

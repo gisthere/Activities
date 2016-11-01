@@ -11,12 +11,13 @@ class User(models.Model):
     )
     
     user = models.OneToOneField(User)
-    phone = models.CharField(max_length=15)
-    telegram = models.CharField(max_length=30)
-    birth_date = models.DateField()
+    phone = models.CharField(max_length=15, null=True)
+    telegram = models.CharField(max_length=30, null=True)
+    birth_date = models.DateField(null=True)
     gender = models.CharField(
         max_length=1,
         choices=GENDERS,
+        null=True
     )
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
 

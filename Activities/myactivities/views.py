@@ -14,6 +14,7 @@ def created(request):
     form = MyActivities(data=request.POST, user=user)
     form.header = 'Organizer'
     form.can_remove = True
+    form.is_created = True
     form.load_created()
     return render(request, 'activities.htm', {'form': form})
 
@@ -25,5 +26,6 @@ def participated(request):
     form = MyActivities(data=request.POST, user=user)
     form.header = 'Participator'
     form.can_join = True
+    form.is_created = False
     form.load_participated()
     return render(request, 'activities.htm', {'form': form})

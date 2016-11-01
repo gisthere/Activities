@@ -10,6 +10,7 @@ class MyActivities(forms.Form):
     header = ''
     can_remove = False
     can_join = False
+    is_created = False
 
     def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,
                  initial=None, label_suffix=None, empty_permitted=False,
@@ -21,6 +22,8 @@ class MyActivities(forms.Form):
 
     def load_created(self):
         self.activities = list(Activity.objects.filter(organizer=self.user))
+        self.activities.sort(key=lambda a: a.start_time, reverse=True)
 
     def load_participated(self):
         self.activities = list(Activity.objects.filter(participants=self.user))
+        self.activities.sort(key=lambda a: a.start_time, reverse=True)

@@ -1003,8 +1003,7 @@ footer .social-widget ul.team-social li a {
 }
 
 /* --- rating stars --- */
-@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
-
+/*@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);*/
 fieldset, label {
     margin: 0;
     padding: 0;
@@ -1015,7 +1014,12 @@ h1 {
     margin: 10px;
 }
 
-/****** Style Star Rating Widget *****/
+/* --- style star rating widget --- */
+.rating-container {
+    margin: auto;
+    width: 145px;
+}
+
 .rating {
     border: none;
     float: left;
@@ -1028,7 +1032,7 @@ h1 {
 .rating > label:before {
     margin: 5px;
     font-size: 1.25em;
-    font-family: FontAwesome;
+    font-family: FontAwesome, serif, sans-serif;
     display: inline-block;
     content: "\f005";
 }
@@ -1038,7 +1042,7 @@ h1 {
     float: right;
 }
 
-/***** CSS Magic to Highlight Stars on Hover *****/
+/* --- CSS Magic to Highlight Stars on Hover --- */
 .rating > input:checked ~ label, /* show gold star when clicked */
 .rating:not(:checked) > label:hover, /* hover current star */
 .rating:not(:checked) > label:hover ~ label {
