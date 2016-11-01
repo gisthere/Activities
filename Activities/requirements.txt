@@ -1,0 +1,2 @@
+twisted==16.4.1
+channels==0.17.3
