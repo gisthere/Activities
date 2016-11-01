@@ -16,7 +16,7 @@ class ActivityForm(forms.ModelForm):
 
     class Meta:
         model = Activity
-        fields = ['name', 'description', 'requirements', 'start_time', 'end_time','participants_limit', 'locations',
+        fields = ['name', 'description', 'requirements', 'start_time', 'end_time', 'participants_limit', 'locations',
                   'activity_category', 'activity_type']
         error_messages = {'required': 'This field is required'}
 
