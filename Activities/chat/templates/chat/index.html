@@ -23,10 +23,10 @@
                 <div class="col-md-12">
                 	<div class="row marginbot-30">
 	                    <div class="btn-group">
-	                        {% if comments %}
+	                        {% if comments != 0 %}
 								<ul>
 									{% for com in comments %}
-									<div>User Name: {{com.user}}</div>
+									<div>User Name: {{com.user.id}}</div>
 									<div>Activity: {{com.activity}}</div>
 									<div>Comments: {{com.message}}</div>
 									<div>Time: {{com.time}}</div>
@@ -40,9 +40,10 @@
 							<form class="form-horizontal" action="" method="POST" name = "comments">
 								{% csrf_token %}
 								<div class="row">
-									<div class="form-group">
-										<div class="col-md-12">
-										<input type="text" name="UserMessage" id = "userMsg" >
+                                    <div class="form-group">
+									   <div class="col-md-12">
+                                            <!-- {{activity_form.message}} -->
+										  <input type="text" name="UserMessage" id = "userMsg">
 										</div>
 						            </div>
 						        </div>
