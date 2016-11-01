@@ -11,12 +11,14 @@ class DateTimeInput(forms.DateTimeInput):
 
 class ActivityForm(forms.ModelForm):
     title = 'Create a new activity'
-    start_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
-    end_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
+    id = forms.IntegerField(widget=forms.HiddenInput)
+    start_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%d %H:%i'], widget=DateTimeInput)
+    end_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%d %H:%i'], widget=DateTimeInput)
 
     class Meta:
         model = Activity
-        fields = ['name', 'description', 'requirements', 'start_time', 'end_time', 'participants_limit', 'locations',
+        fields = ['id', 'name', 'description', 'requirements', 'start_time', 'end_time', 'participants_limit',
+                  'locations',
                   'activity_category', 'activity_type']
         error_messages = {'required': 'This field is required'}
 
@@ -39,17 +41,17 @@ class ActivityForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
-            self.fields['name'].widget.attrs['placeholder'] = 'title'
-            self.fields['name'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-            self.fields['description'].widget.attrs['placeholder'] = 'description'
-            self.fields['description'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-            self.fields['requirements'].widget.attrs['placeholder'] = 'requirements'
-            self.fields['requirements'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-            self.fields['participants_limit'].widget.attrs['placeholder'] = 'required participants (not counting yourself)'
-            self.fields['participants_limit'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-            self.fields['activity_type'].widget.attrs['id'] = 'create_form_activity_type'
-            self.fields['activity_type'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-            self.fields['start_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-            self.fields['end_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-            self.fields['locations'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-            self.fields['activity_type'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        self.fields['name'].widget.attrs['placeholder'] = 'title'
+        self.fields['name'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        self.fields['description'].widget.attrs['placeholder'] = 'description'
+        self.fields['description'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        self.fields['requirements'].widget.attrs['placeholder'] = 'requirements'
+        self.fields['requirements'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        self.fields['participants_limit'].widget.attrs['placeholder'] = 'required participants (not counting yourself)'
+        self.fields['participants_limit'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        self.fields['activity_type'].widget.attrs['id'] = 'create_form_activity_type'
+        self.fields['activity_type'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        self.fields['start_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        self.fields['end_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        self.fields['locations'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+ 
