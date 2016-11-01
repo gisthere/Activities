@@ -1,6 +1,10 @@
 from django.contrib.auth.models import User
 from django.db import models
 from locations.models import Location
+from django.apps import apps
+from django.db.models import Q
+from django.contrib.postgres.search import TrigramSimilarity
+from django_nyt.utils import notify, subscribe
 
 
 # Create your models here.
@@ -52,6 +56,7 @@ class Activity(models.Model):
     def __str__(self):
         return self.name
 
+
     def rating(self):
         result = 0
         n = 0
@@ -66,6 +71,26 @@ class Activity(models.Model):
             return round(result / n)
         return None
 
+    def notify_subscribers(self):
+        SearchFilter = apps.get_model('subscriptions','SearchFilter')
+        Subscription = apps.get_model('subscriptions', 'Subscription')
+
+        filters = SearchFilter.objects.annotate(
+            similarity=TrigramSimilarity('search', self.name)
+        ).filter(Q(activity_type = self.activity_type) | Q(activity_category = self.activity_category) | Q(similarity__gt=0.1))
+
+        for f in filters:
+            subscribers = Subscription.objects.filter(search_filter = f)
+            for s in subscribers:
+                if s.user != self.organizer:
+                    notify(
+                        ("New suitable activity %s" % self.name),
+                        "test",
+                        target_object=s.user,
+                    )
+
+        return
+        
 
 class ActivityLocation(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)

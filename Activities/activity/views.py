@@ -104,6 +104,11 @@ def create(request, activity_id=None):
                 activity = form.save(commit=False)
                 activity.organizer = request.user
                 activity.save()
+
+                # basic trigger notification system on creating new activity
+                activity.notify_subscribers()
+                # end basic trigger notifiaction system
+
                 return HttpResponseRedirect(reverse('activity:activity_detail', kwargs={'activity_id': activity.id}))
         return render(request, 'activity/create.html', {'activity_form': form, 'activities': activities})
     else:
