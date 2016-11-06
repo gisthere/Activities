@@ -11,13 +11,12 @@ class DateTimeInput(forms.DateTimeInput):
 
 class ActivityForm(forms.ModelForm):
     title = 'Create a new activity'
-    id = forms.IntegerField(widget=forms.HiddenInput)
-    start_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%d %H:%i'], widget=DateTimeInput)
-    end_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%d %H:%i'], widget=DateTimeInput)
+    start_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
+    end_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
 
     class Meta:
         model = Activity
-        fields = ['id', 'name', 'description', 'requirements', 'start_time', 'end_time', 'participants_limit',
+        fields = ['name', 'description', 'requirements', 'start_time', 'end_time', 'participants_limit',
                   'locations',
                   'activity_category', 'activity_type']
         error_messages = {'required': 'This field is required'}
