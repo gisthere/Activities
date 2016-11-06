@@ -184,10 +184,16 @@
                                                         <br>
                                                         <p>{{ activity.participants_limit }}</p>
                                                     </div>
-                                                </div>
-                                                <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <small>Description:</small>
-                                                    <p>{{ activity.description }}</p>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4">
+                                                            <small>Description:</small>
+                                                            <p>{{ activity.description }}</p>
+                                                    </div>
+                                                    {% if comment %}
+                                                    <div class="col-md-12 col-sm-12">
+                                                        <small>Participation rating ({{ comment.rating }}):</small>
+                                                        <p>{{ comment.comment }}</p>
+                                                    </div>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>
