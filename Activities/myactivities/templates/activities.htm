@@ -188,12 +188,14 @@
                                                             <small>Description:</small>
                                                             <p>{{ activity.description }}</p>
                                                     </div>
-                                                    {% if comment %}
-                                                    <div class="col-md-12 col-sm-12">
-                                                        <small>Participation rating ({{ comment.rating }}):</small>
-                                                        <p>{{ comment.comment }}</p>
-                                                    </div>
-                                                    {% endif %}
+                                                    {% for rating in form.ratings %}
+                                                        {% if rating.activity.id == activity.id %}
+                                                        <div class="rating row">
+                                                            <label class="full col-md-12 col-sm-12">{{ rating.rating }}</label>
+                                                            <p class="col-md-12 col-sm-12">{{ rating.comment }}</p>
+                                                        </div>
+                                                        {% endif %}
+                                                    {% endfor %}
                                                 </div>
                                             </div>
                                         </div>

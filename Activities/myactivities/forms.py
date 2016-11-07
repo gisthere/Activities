@@ -2,11 +2,13 @@ from django import forms
 from django.contrib.auth.models import User
 
 from activity.models import Activity
+from ratings.models import SingleParticipantRating
 
 
 class MyActivities(forms.Form):
     user = None
     activities = None
+    ratings = None
     header = ''
     can_remove = False
     can_join = False
@@ -27,3 +29,6 @@ class MyActivities(forms.Form):
     def load_participated(self):
         self.activities = list(Activity.objects.filter(participants=self.user))
         self.activities.sort(key=lambda a: a.start_time, reverse=True)
+
+    def load_rated(self):
+        self.ratings = SingleParticipantRating.objects.filter(rated_user=self.user)

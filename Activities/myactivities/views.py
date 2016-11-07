@@ -28,11 +28,11 @@ def participated(request):
     form.can_join = True
     form.is_created = False
     form.load_participated()
+    form.load_rated()
+
+    print(form.ratings.count())
+    
     context = {
         'form': form,
-        'comment' : {
-            'comment' : "HeyFuckFace this is the comment",
-            'rating' : 5
-        }
     }
     return render(request, 'activities.htm', context)
