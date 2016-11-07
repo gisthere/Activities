@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'chat',
     'subscriptions',
     'django_nyt',
-    'channels'
+    'channels',
+    'ratings'
 ]
 
 MIDDLEWARE = [
