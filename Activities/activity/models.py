@@ -105,6 +105,7 @@ class Participant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField(null=True)
+    comment = models.TextField()
 
 
 # perhaps we should move 'Comments' to its own app later
