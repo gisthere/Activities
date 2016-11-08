@@ -4,6 +4,9 @@
 {% block head %}
     {% leaflet_js %}
     {% leaflet_css %}
+
+
+
 {% endblock %}
 
 {% block content %}
@@ -181,5 +184,9 @@
             var map = L;
         });
 
+
+    $(document).ready(function() {
+        $('.datepicker').datetimepicker();
+    });
 </script>
 {% endblock %}

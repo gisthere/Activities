@@ -4,15 +4,18 @@ from activity.models import Activity
 from django.utils.timezone import utc
 import datetime
 
+from functools import partial
+DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
 class DateTimeInput(forms.DateTimeInput):
     input_type = 'datetime-local'
 
 
+
 class ActivityForm(forms.ModelForm):
     title = 'Create a new activity'
-    start_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
-    end_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
+    start_time = forms.DateField(widget=DateInput())
+    end_time = forms.DateField(widget=DateInput())
 
     class Meta:
         model = Activity
@@ -51,6 +54,8 @@ class ActivityForm(forms.ModelForm):
         self.fields['activity_type'].widget.attrs['id'] = 'create_form_activity_type'
         self.fields['activity_type'].widget.attrs['onChange'] = '{recommendationsRequest();}'
         self.fields['start_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        self.fields['start_time'].widget.attrs['class'] = 'datepicker'
         self.fields['end_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        self.fields['end_time'].widget.attrs['class'] = 'datepicker'
         self.fields['locations'].widget.attrs['onChange'] = '{recommendationsRequest();}'
  

@@ -28,6 +28,10 @@
     <!-- css amaran notifcation -->
     <link href="{% static 'css/amaran/amaran.min.css' %}" rel="stylesheet">
 
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/datetimepicker/jquery.datetimepicker.css' %}"/>
+
+
     {% block head %}
 
     {% endblock %}
@@ -107,6 +111,9 @@
 
 <script src="{% static "js/typeahead/typeahead.bundle.min.js" %}"></script>
 <script src="{% static "js/amaran/jquery.amaran.min.js" %}"></script>
+
+
+<script src="{% static 'js/datetimepicker/jquery.datetimepicker.full.min.js' %}"></script>
 
 <!-- custom page scripts. widgets and etc -->
 {% block scripts %}
