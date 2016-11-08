@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 
 
@@ -10,5 +12,25 @@ class Location(models.Model):
     def __str__(self):
         return self.name
 
-    def as_json(self):
+    def to_json(self):
+        """ Convert object to JSON """
         return dict(name=self.name, latitude=self.latitude, longitude=self.longitude)
+
+    @staticmethod
+    def from_json(json_str):
+        """ Create object from JSON """
+        data = json.loads(json_str)
+        result = Location()
+        result.name = data['name']
+        result.latitude = data['latitude']
+        result.longitude = data['longitude']
+        return result
+
+    @staticmethod
+    def from_dict(dict):
+        """ Create object from values in dictionary """
+        result = Location()
+        result.name = dict['name']
+        result.latitude = dict['latitude']
+        result.longitude = dict['longitude']
+        return result
