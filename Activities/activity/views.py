@@ -255,11 +255,37 @@ def change_rating(request, activity_id, new_rating):
     return HttpResponse()
 
 
+def change_participant_rating(request, activity_id, participant_id, new_rating):
+    # redirect to main page if the user is not authenticated
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    # do nothing if there is no valid info in request
+    if activity_id is None or participant_id is None or new_rating is None:
+        return HttpResponse()
+    # check whether the provided rating is valid
+    new_rating = int(new_rating)
+    if new_rating < 0 or new_rating > 5:
+        return HttpResponse()
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+        participant = User.objects.get(id=participant_id)
+        print(participant.first_name)
+        # set the rating from the participant
+        participation = Participant.objects.get_or_create(user=participant, activity=activity)[0]
+        participation.participant_rating = new_rating
+        participation.save()
+    except Model.DoesNotExist as e:
+        print(e)
+    return HttpResponse()
+
+
 def detail(request, activity_id):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login')
     try:
         activity = Activity.objects.get(pk=activity_id)
+        participants = Participant.objects.filter(activity=activity)
         if request.method == 'POST':
             if 'UserMessage' in request.POST:
                 msgText = request.POST['UserMessage']
@@ -270,7 +296,7 @@ def detail(request, activity_id):
         allComments = Chat.objects.filter(activity = activ)
     except Activity.DoesNotExist:
         raise Http404("The activity your are looking for doesn't exist.")
-    return render(request, 'activity/detail.html', {'activity': activity, 'comments': allComments})
+    return render(request, 'activity/detail.html', {'activity': activity, 'comments': allComments, 'participants': participants})
 
 
 def edit(request, activity_id=None):
