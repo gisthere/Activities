@@ -222,13 +222,14 @@ def create(request, activity_id=None):
                 # save locations into database
                 for loc in locs:
                     loc.activity = activity
-                    for l in loc.locations:
-                        l.save()
+                    loc.location.save()
+                    loc.location_id = loc.location.id
                     loc.save()
                 # basic trigger notification system on creating new activity
                 activity.notify_subscribers()
                 # end basic trigger notifiaction system
                 return HttpResponseRedirect(reverse('activity:activity_detail', kwargs={'activity_id': activity.id}))
+            print(form.errors)
         return render(request, 'activity/create.html', {'activity_form': form, 'activities': activities})
     else:
         return HttpResponseRedirect('login/')
@@ -421,8 +422,8 @@ def edit(request, activity_id=None):
                     # save locations into database
                     for loc in locs:
                         loc.activity = activity
-                        for l in loc.locations:
-                            l.save()
+                        loc.location.save()
+                        loc.location_id = loc.location.id
                         loc.save()
                     return HttpResponseRedirect(
                         reverse('activity:activity_detail', kwargs={'activity_id': activity.id}))

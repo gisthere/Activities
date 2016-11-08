@@ -18,7 +18,7 @@ class ActivityForm(forms.ModelForm):
     class Meta:
         model = Activity
         fields = ['id', 'name', 'description', 'requirements', 'start_time', 'end_time', 'participants_limit',
-                  'locations', 'activity_category', 'activity_type']
+                  'activity_category', 'activity_type']
         error_messages = {'required': 'This field is required'}
 
     def clean(self):
@@ -52,4 +52,4 @@ class ActivityForm(forms.ModelForm):
         self.fields['activity_type'].widget.attrs['onChange'] = '{recommendationsRequest();}'
         self.fields['start_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
         self.fields['end_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-        self.fields['locations'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        #self.fields['locations'].widget.attrs['onChange'] = '{recommendationsRequest();}'
