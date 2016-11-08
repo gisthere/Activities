@@ -19,7 +19,7 @@ from . import views
 
 app_name = 'chat'
 urlpatterns = [
-    url(r'index', views.index, name="index"),
+    url(r'^', views.index, name="index"),
     # url(r'send/', views.send_Comment, name="send"),
        
 ]

@@ -1,15 +1,18 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from .models import Chat
 from activity.models import Activity
-from authentication.models import User
+from django.contrib.auth.models import User
 # from .forms import ChatForm
 
 
 # Create your views here.
 
 def index(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login')
+
     template = loader.get_template('chat/index.html')
 
     loggedUser = None
@@ -19,15 +22,13 @@ def index(request):
         if 'UserMessage' in request.POST:
             msgText = request.POST['UserMessage']
             userName = request.user
-            id = request.user
-            userprofile = User.objects.get(user = id)
             activ = Activity.objects.get(id = 1)
 
-            newComment = Chat.objects.create(user = userprofile, activity = activ, message = msgText)
+            newComment = Chat.objects.create(user = request.user, activity = activ, message = msgText)
             newComment.save()
 
 
-    userprofile = User.objects.get(user = request.user)
+    userprofile = request.user
     activ = Activity.objects.get(id = 1)
     allComments = Chat.objects.filter(activity = activ)
     # form = ChatForm()
