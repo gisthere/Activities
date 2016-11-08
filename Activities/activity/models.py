@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.models import User
 from django.db import models
 from locations.models import Location
@@ -56,8 +58,9 @@ class Activity(models.Model):
     def __str__(self):
         return self.name
 
-
     def rating(self):
+        """ This method return the average rating of the activity
+         which was given by its participants. """
         result = 0
         n = 0
         try:
@@ -97,14 +100,31 @@ class ActivityLocation(models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     index = models.PositiveSmallIntegerField()
 
-    def as_json(self):
-        return dict(location=self.location.as_json())
+    def to_json(self):
+        return dict(index=self.index, location=self.location.to_json())  # , activity=self.activity.to_json()
+
+    @staticmethod
+    def from_json(json_str):
+        """ Create object from JSON """
+        data = json.loads(json_str)['locations']
+        # create objects
+        objs = []
+        index = 0
+        for val in data:
+            act_loc = ActivityLocation()
+            act_loc.index = index
+            index += 1
+            location = Location.from_dict(val)
+            act_loc.location = location
+            objs.append(act_loc)
+        return objs
 
 
 class Participant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField(null=True)
+    comment = models.TextField()
 
 
 # perhaps we should move 'Comments' to its own app later

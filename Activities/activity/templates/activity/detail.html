@@ -84,6 +84,24 @@
 
 {% block scripts %}
     <script type="text/javascript">
+        // -------------------------------------------------------
+        // LeafletJS Map Functions
+        // -------------------------------------------------------
+        var layers = {};
+        // adds marker and its description (if any) to the specified map
+        function addMarker(map, loc) {
+            var marker = L.marker([loc.latitude, loc.longitude]);
+            // add a marker to the map
+            layers.addLayer(marker);
+            // add popup for the marker if it has any name
+            if (loc.name) {
+                var popup = L.popup()
+                        .setLatLng([loc.latitude, loc.longitude])
+                        .setContent(loc.name);
+                marker.bindPopup(popup);
+            }
+        }
+
         $(window).on('map:init', function (e) {
             var detail = e.originalEvent ? e.originalEvent.detail : e.detail;
             var map = L;
@@ -92,11 +110,14 @@
                         if (locs.length == 0)
                             return;
                         loc = locs[0].location;
-                        var south = loc.latitude, north = loc.latitude, east = loc.longitude, west = loc.longitude;
-                        map.marker([loc.latitude, loc.longitude]).addTo(detail.map);
-                        for (i = 1; i < locs.length; ++i) {
+                        var south = 90, north = -90, east = -180, west = 180;
+                        for (i = 0; i < locs.length; ++i) {
                             loc = locs[i].location;
-                            map.marker([loc.latitude, loc.longitude]).addTo(detail.map);
+                            var marker = map.marker([loc.latitude, loc.longitude]).addTo(detail.map);
+                            var popup = L.popup()
+                                    .setLatLng([loc.latitude, loc.longitude])
+                                    .setContent(loc.name);
+                            marker.bindPopup(popup);
                             if (south > loc.latitude)
                                 south = loc.latitude;
                             if (north < loc.latitude)
