@@ -1,19 +1,12 @@
-
-
-
-<div class="collapse navbar-collapse" id="menu">
-    <ul class="nav navbar-nav navbar-right">
-        {% if user.is_authenticated %}
-            <li><a href="{% url 'activity:activity_create' %}">Create</a></li>
-            <li><a href="{% url 'myactivities:created_activities' %}">Created</a></li>
-            <li><a href="{% url 'myactivities:participated_activities' %}">Participated</a></li>
-            <li><a href="{% url 'cabinet:index' %}">Cabinet</a></li>
-            <li><a href="{% url 'auth:logout' %}">Logout</a></li>
-        {% else %}
-            <li><a href="{% url 'auth:login' %}">Login</a></li>
-            <li><a href="{% url 'auth:signup' %}">Sign up</a></li>
-        {% endif %}
-    </ul>
-</div>
-
-
+<ul class="nav navbar-nav navbar-right">
+    {% if user.is_authenticated %}
+        <li><a href="{% url 'activity:activity_create' %}">Create</a></li>
+        <li><a href="{% url 'myactivities:created_activities' %}">Created</a></li>
+        <li><a href="{% url 'myactivities:participated_activities' %}">Participated</a></li>
+        <li><a href="{% url 'cabinet:index' %}">Cabinet</a></li>
+        <li><a href="{% url 'auth:logout' %}">Logout</a></li>
+    {% else %}
+        <li><a href="{% url 'auth:login' %}">Login</a></li>
+        <li><a href="{% url 'auth:signup' %}">Sign up</a></li>
+    {% endif %}
+</ul>

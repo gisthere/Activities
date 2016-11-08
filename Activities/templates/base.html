@@ -20,7 +20,7 @@
     <link href="{% static "css/style.css" %}" rel="stylesheet">
     <link href="{% static "color/default.css" %}" rel="stylesheet">
 
-    <link href="{% static "css/bootstrap-vert-margin-shim.css" %}" rel="stylesheet">    
+    <link href="{% static "css/bootstrap-vert-margin-shim.css" %}" rel="stylesheet">
 
     <!-- css typeahead widget -->
     <link href="{% static 'css/typeahead/typeahead.css' %}" rel="stylesheet">
@@ -58,9 +58,10 @@
                             <i class="fa fa-bars"></i>
                         </button>
                     </div>
-                    {% block navbar %}{% endblock %}
-                    {% include "navigation.html" %}
-
+                    <div class="collapse navbar-collapse" id="menu">
+                        {% include "navigation.html" %}
+                        {% block navbar %}{% endblock %}
+                    </div>
 
                 </div>
             </div>
@@ -113,88 +114,89 @@
 
 
 <script type="text/javascript">
-  var URL_NYT_GET_NEW = "{% url "nyt:json_get" %}";
-  var URL_NYT_MARK_READ = "{% url "nyt:json_mark_read_base" %}";
-  var URL_NYT_GOTO = "{% url "nyt:goto_base" %}";
+    var URL_NYT_GET_NEW = "{% url "nyt:json_get" %}";
+    var URL_NYT_MARK_READ = "{% url "nyt:json_mark_read_base" %}";
+    var URL_NYT_GOTO = "{% url "nyt:goto_base" %}";
 
-  var nyt_oldest_id = 0;
-  var nyt_latest_id = 0;
-  var nyt_update_timeout = 30000;
-  var nyt_update_timeout_adjust = 1.2; // factor to adjust between each timeout.
+    var nyt_oldest_id = 0;
+    var nyt_latest_id = 0;
+    var nyt_update_timeout = 30000;
+    var nyt_update_timeout_adjust = 1.2; // factor to adjust between each timeout.
 
-  
-  function ajaxError(){}
 
-  $.ajaxSetup({
-    timeout: 7000,
-    cache: false,
-    error: function(e, xhr, settings, exception) {
-        ajaxError();
-    }
-  });
-
-  function jsonWrapper(url, callback) {
-    $.getJSON(url, function(data) {
-      if (data == null) {
-        ajaxError();
-      } else {
-        callback(data);
-      }
-    });
-  }
-
-  function nyt_update() {
-    jsonWrapper(URL_NYT_GET_NEW+nyt_latest_id+'/', function (data) {
-      if (data.success) {
-          if(data.objects.length > 0) {
-              $.amaran({
-                  'message': data.objects[0]["message"],
-                  'position': 'bottom right'
-              });
-          }
-      }
-    });
-  }
-
-  // Mark all <li> items read and tell the server.
-  function nyt_mark_read() {
-    $('.notification-li').remove();
-    var url = URL_NYT_MARK_READ+nyt_latest_id+'/'+nyt_oldest_id+'/';
-    nyt_oldest_id = 0;
-    nyt_latest_id = 0;
-    jsonWrapper(url, function (data) {
-      if (data.success) {
-        $('.notifications-empty').show();
-        nyt_update();
-      }
-    });
-  }
-
-  // Call this function to use traditional polling
-  function update_timeout() {
-    setTimeout("nyt_update()", nyt_update_timeout);
-    setTimeout("update_timeout()", nyt_update_timeout);
-    nyt_update_timeout *= nyt_update_timeout_adjust;
-  }
-
-  // Don't check immediately... some users just click through pages very quickly.
-  //setTimeout("nyt_update()", 2000);
-
-  var socket = new WebSocket('ws://' + window.location.host + "/nyt/?session_key={{ request.session.session_key }}");
-
-  $(document).ready(function () {
-    // update_timeout();
-    socket.onopen = function() {
-        //console.log("Sending hello world");
-        //socket.send("hello world");
-    }
-    socket.onmessage = function(e) {
-      console.log("Got some message, so going to update");
-      nyt_update();
+    function ajaxError() {
     }
 
-     if (socket.readyState == WebSocket.OPEN) socket.onopen();
-  });
+    $.ajaxSetup({
+        timeout: 7000,
+        cache: false,
+        error: function (e, xhr, settings, exception) {
+            ajaxError();
+        }
+    });
+
+    function jsonWrapper(url, callback) {
+        $.getJSON(url, function (data) {
+            if (data == null) {
+                ajaxError();
+            } else {
+                callback(data);
+            }
+        });
+    }
+
+    function nyt_update() {
+        jsonWrapper(URL_NYT_GET_NEW + nyt_latest_id + '/', function (data) {
+            if (data.success) {
+                if (data.objects.length > 0) {
+                    $.amaran({
+                        'message': data.objects[0]["message"],
+                        'position': 'bottom right'
+                    });
+                }
+            }
+        });
+    }
+
+    // Mark all <li> items read and tell the server.
+    function nyt_mark_read() {
+        $('.notification-li').remove();
+        var url = URL_NYT_MARK_READ + nyt_latest_id + '/' + nyt_oldest_id + '/';
+        nyt_oldest_id = 0;
+        nyt_latest_id = 0;
+        jsonWrapper(url, function (data) {
+            if (data.success) {
+                $('.notifications-empty').show();
+                nyt_update();
+            }
+        });
+    }
+
+    // Call this function to use traditional polling
+    function update_timeout() {
+        setTimeout("nyt_update()", nyt_update_timeout);
+        setTimeout("update_timeout()", nyt_update_timeout);
+        nyt_update_timeout *= nyt_update_timeout_adjust;
+    }
+
+    // Don't check immediately... some users just click through pages very quickly.
+    //setTimeout("nyt_update()", 2000);
+
+    var socket = new WebSocket('ws://' + window.location.host + "/nyt/?session_key={{ request.session.session_key }}");
+
+    $(document).ready(function () {
+        // update_timeout();
+        socket.onopen = function () {
+            //console.log("Sending hello world");
+            //socket.send("hello world");
+        }
+        socket.onmessage = function (e) {
+            console.log("Got some message, so going to update");
+            nyt_update();
+        }
+
+        if (socket.readyState == WebSocket.OPEN) socket.onopen();
+    });
 
 </script>
 
