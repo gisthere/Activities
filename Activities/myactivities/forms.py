@@ -31,4 +31,4 @@ class MyActivities(forms.Form):
         self.activities.sort(key=lambda a: a.start_time, reverse=True)
 
     def load_rated(self):
-        self.ratings = Participant.objects.filter(paricipant=self.user)
+        self.ratings = Participant.objects.filter(user=self.user)
