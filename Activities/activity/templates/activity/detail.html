@@ -26,60 +26,110 @@
 
         <div class="container">
             <div class="row marginbot-80">
-                <div class="col-md-8 col-md-offset-2">
-                    <div class="panel-group">
-                        <div class="row">
-                            <div class="panel panel-success">
-                                <div class="panel-heading">Description</div>
-                                <div class="panel-body">{{ activity.description }}</div>
+                <div class="col-md-6">
+                    <div class="section-heading text-center">
+                        <h2 class="h-bold"> Activity description:</h2>
+                        <div class="divider-header"></div>
+                    </div>
+                    <div class="row">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                Description
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">From</div>
-                                    <div class="panel-body">{{ activity.start_time }}</div>
+                            <!-- List group -->
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                                Organizer:
+                                    </div> 
+                                    <div class="col-xs-6">
+                                        {{ activity.organizer.first_name }} {{ activity.organizer.last_name }}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="panel panel-primary">
-                                    <div class="panel-heading">To</div>
-                                    <div class="panel-body">{{ activity.end_time }}</div>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        Requirements:
+                                    </div> 
+                                    <div class="col-xs-6">
+                                       {{ activity.requirements }}
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="panel panel-danger">
-                                <div class="panel-heading">Requirements</div>
-                                <div class="panel-body">{{ activity.requirements }}</div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="panel panel-success">
-                                    <div class="panel-heading">Organizer</div>
-                                    <div class="panel-body">{{ activity.organizer.first_name }} {{ activity.organizer.last_name }}</div>
+                                <div class="row">
+                                    <div class="col-xs-6 ">
+                                        Participants limit:
+                                    </div> 
+                                    <div class="col-xs-6">
+                                        {{ activity.participants_limit }}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="col-sm-6">
-                                    <div class="panel panel-success">
-                                        <div class="panel-heading">Participants limit</div>
-                                        <div class="panel-body">{{ activity.participants_limit }}</div>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                       Start:
+                                    </div> 
+                                    <div class="col-xs-6">
+                                       {{ activity.start_time }}
+                                    </div>
+                                   <div class="col-xs-6">
+                                        End:
+                                    </div> 
+                                    <div class="col-xs-6">
+                                       {{ activity.end_time }}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row map">
-                            {% leaflet_map "activity_map" %}
+                    </div>
+                    <div class="row map">
+                        {% leaflet_map "activity_map" %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="section-heading text-center">
+                        <h2 class="h-bold"> Activity Feed:</h2>
+                        <div class="divider-header"></div>
+                    </div>
+                    <div class="well well-sm pre-scrollable">
+                        <div class="row marginbot-80">
+                            <div class="col-md-8 col-md-offset-2">
+                                <div class="col-md-12">
+                                    <div class="row marginbot-30">
+                                        <div class="btn-group">
+                                            {% if comments != 0 %}
+                                                {% for com in comments %}
+                                                    <div class="row">
+                                                        <div class="panel panel-success">
+                                                            <div class="panel-heading">{{com.user.first_name}} {{ com.user.last_name}} {{com.time}}</div>
+                                                            <div class="panel-body">{{com.message}}</div>
+                                                        <!-- <div class="panel-footer">{{com.time}}</div> -->
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}                                   
+                                            {% endif %}
+
+                                        <div>Write your own comment here!</div>
+                                            <form class="form-horizontal" action="" method="POST" name = "comments">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="form-group">
+                                                       <div class="col-md-12">
+                                                            <!-- {{activity_form.message}} -->
+                                                          <input type="text" name="UserMessage" id = "userMsg">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input type="submit" name="submitAction" id = "submitMsg" value = "Send" class="btn btn-skin btn-lg btn-block">
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <a href="{% url 'activity:index' %}" class="btn btn-skin">Back to main page</a>
                 </div>
-            </div>
+            </div>        
         </div>
-
     </section>
+
 {% endblock %}
 
 {% block scripts %}

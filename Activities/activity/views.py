@@ -14,6 +14,7 @@ from authentication.models import User as MUser
 from django.views.generic import ListView
 
 from .models import Activity, ActivityType, ActivityCategory, ActivityLocation, Participant
+from chat.models import Chat
 from .forms import ActivityForm
 from django.template import loader
 from django.template.defaulttags import register
@@ -355,11 +356,21 @@ def change_rating(request, activity_id, new_rating):
 
 
 def detail(request, activity_id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login')
     try:
         activity = Activity.objects.get(pk=activity_id)
+        if request.method == 'POST':
+            if 'UserMessage' in request.POST:
+                msgText = request.POST['UserMessage']
+                activ = Activity.objects.get(id = activity_id)
+                newComment = Chat.objects.create(user = request.user, activity = activ, message = msgText)
+                newComment.save()
+        activ = Activity.objects.get(id = activity_id)
+        allComments = Chat.objects.filter(activity = activ)
     except Activity.DoesNotExist:
         raise Http404("The activity your are looking for doesn't exist.")
-    return render(request, 'activity/detail.html', {'activity': activity})
+    return render(request, 'activity/detail.html', {'activity': activity, 'comments': allComments})
 
 
 def edit(request, activity_id=None):
