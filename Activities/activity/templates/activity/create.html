@@ -52,7 +52,7 @@
                         </div>
 
                     </div>
-                    <form class="form-horizontal" action="" method="POST">
+                    <form id="activityForm" class="form-horizontal" action="" method="POST">
                         {% csrf_token %}
                         {% for error in activity_form.non_field_errors %}
                             <div class="alert alert-danger">{{ error }}</div>
@@ -138,50 +138,105 @@
 {% block scripts %}
 
 
-<script type="text/javascript">
-    function recommendationsRequest(){
-        var type = $('#create_form_activity_type').val();
+    <script type="text/javascript">
+        function recommendationsRequest() {
+            var type = $('#create_form_activity_type').val();
 
-        if(type == ''){
+            if (type == '') {
+                document.getElementById("div_reccomendation").innerHTML = "";
+                return;
+            }
+
+            $.ajax({
+                url: "{% url 'activity:recommendations' %}" + '?' + 'type=' + type,
+                type: "GET",
+                contentType: "application/text",
+                async: true,
+                success: recommendationsResponse,
+                error: recommendationsError,
+            })
+        }
+        ;
+
+        function recommendationsResponse(response) {
+            document.getElementById("div_reccomendation").innerHTML = response;
+        }
+        ;
+
+        function recommendationsError(response) {
             document.getElementById("div_reccomendation").innerHTML = "";
-            return;
+        }
+        ;
+    </script>
+
+
+    <script type="text/javascript">
+        var layers = {};
+
+        function onMarkerClick(e) {
+            // get the marker on which click event fired
+            var marker = e.target;
+            // remove it from the map
+            if (layers.hasLayer(marker)) {
+                console.log(marker);
+                layers.removeLayer(marker);
+            }
         }
 
-        $.ajax({
-            url: "{% url 'activity:recommendations' %}" + '?' + 'type=' + type,
-            type: "GET",
-            contentType : "application/text",
-            async: true,
-            success : recommendationsResponse, 
-            error : recommendationsError,
-        })
-    };
-
-    function recommendationsResponse(response){
-      document.getElementById("div_reccomendation").innerHTML = response;
-    };
-
-    function recommendationsError(response){
-      document.getElementById("div_reccomendation").innerHTML = "";
-    };
-</script>
-
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        var name = $("#id_name").val();
-
-        if (name.length == 0) {
-            $("#textDropDown").text("Choose your activity...");
-        } else {
-            $("#textDropDown").text(name);
+        // adds marker and its description (if any) to the specified map
+        function addMarker(map, loc) {
+            var marker = L.marker([loc.latitude, loc.longitude], {draggable: true});
+            marker.on('click', onMarkerClick);
+            // add a marker to the map
+            layers.addLayer(marker);
+            // add popup for the marker if it has any name
+            if (loc.name) {
+                var popup = L.popup()
+                        .setLatLng([loc.latitude, loc.longitude])
+                        .setContent(loc.name);
+                marker.bindPopup(popup);
+            }
         }
-        
-    });
 
-    $(window).on('map:init', function (e) {
+        // create location object from the given parameters
+        function createLocation(latlng, name) {
+            var loc = {};
+            loc.latitude = latlng.lat;
+            loc.longitude = latlng.lng;
+            loc.name = name;
+            return loc;
+        }
+
+        function onMapClick(e) {
+            // if there is location information, then add new marker on the map
+            if (e.latlng) {
+                var loc = createLocation(e.latlng, '');
+                addMarker(e.target, loc);
+            }
+        }
+
+        $(window).on('map:init', function (e) {
             var detail = e.originalEvent ? e.originalEvent.detail : e.detail;
-            var map = L;
+            layers = L.layerGroup().addTo(detail.map);
+            detail.map.on('click', onMapClick);
+            detail.map.locate();
+
+            // add geo information to the post request before submit
+            $('#activityForm').submit(function () { //listen for submit event
+                var res = [];
+                // pack all locations into json array...
+                layers.eachLayer(function (layer) {
+                    var latlng = layer.getLatLng();
+                    var loc = createLocation(latlng, '');
+                    res.push(JSON.stringify(loc));
+                });
+                // ...and attach it to the current form
+                $('<input />').attr('type', 'hidden')
+                        .attr('name', 'locations')
+                        .attr('value', '{ "locations": [' + res + ']}')
+                        .appendTo('#activityForm');
+                return true;
+            });
         });
 
 
@@ -189,4 +244,16 @@
         $('.datepicker').datetimepicker();
     });
 </script>
+        $(document).ready(function () {
+            var name = $("#id_name").val();
+
+            if (name.length == 0) {
+                $("#textDropDown").text("Choose your activity...");
+            } else {
+                $("#textDropDown").text(name);
+            }
+
+        });
+
+    </script>
 {% endblock %}

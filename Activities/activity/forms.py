@@ -14,14 +14,12 @@ class DateTimeInput(forms.DateTimeInput):
 
 class ActivityForm(forms.ModelForm):
     title = 'Create a new activity'
-    start_time = forms.DateField(widget=DateInput())
+	id = forms.IntegerField(widget=forms.HiddenInput)	start_time = forms.DateField(widget=DateInput())
     end_time = forms.DateField(widget=DateInput())
-
     class Meta:
         model = Activity
-        fields = ['name', 'description', 'requirements', 'start_time', 'end_time', 'participants_limit',
-                  'locations',
-                  'activity_category', 'activity_type']
+        fields = ['id', 'name', 'description', 'requirements', 'start_time', 'end_time', 'participants_limit',
+                  'locations', 'activity_category', 'activity_type']
         error_messages = {'required': 'This field is required'}
 
     def clean(self):
@@ -58,4 +56,3 @@ class ActivityForm(forms.ModelForm):
         self.fields['end_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
         self.fields['end_time'].widget.attrs['class'] = 'datepicker'
         self.fields['locations'].widget.attrs['onChange'] = '{recommendationsRequest();}'
- 

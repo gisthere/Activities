@@ -1,13 +1,16 @@
 import json
 import random
+import datetime
 from itertools import chain
 
 from django.contrib.auth.models import User
 from django.db.models import Model, Count, Sum, Avg
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from authentication.models import User as MUser
 from django.views.generic import ListView
 
 from .models import Activity, ActivityType, ActivityCategory, ActivityLocation, Participant
@@ -71,7 +74,24 @@ def index(request):
     if 't' in request.GET and 'v' in request.GET:
         filter_type = request.GET['t']
         filter_value = request.GET['v']
-
+        latitude = None
+        longitude = None
+        # extract GEO information from the search request
+        if 'lat' in request.GET:
+            try:
+                distance = float(request.GET['distance'])
+                latitude = float(request.GET['lat'])
+                longitude = float(request.GET['lng'])
+            except ValueError as e:
+                latitude = None
+                longitude = None
+        if latitude is None or longitude is None:
+            try:
+                usr = MUser.objects.get(user=request.user)
+                longitude = float(usr.location.longitude)
+                latitude = float(usr.location.latitude)
+            except Exception as e:
+                print(e)
         # check possible variation to prevent XSS injection
         if filter_type == 'at':
             result = Activity.objects.filter(activity_type=filter_value)
@@ -81,17 +101,38 @@ def index(request):
             result = Activity.objects.annotate(
                 similarity=TrigramSimilarity('name', request.GET['search'])
             ).filter(similarity__gt=0.1)
+        # use GEO information of the search request if there was any
+        objs = result.filter(status='SC',start_time__gte=datetime.date.today()).all()
+        if latitude is not None or longitude is not None:
+            res = []
+            latScale = 111  # value in kilometers
+            lngScale = 111  # value in kilometers
+            # output only activities which located no further than 'distance' threshold
+            for activity in objs:
+                # if at least one location of the activity is located within
+                # the specified distance, then add it to the output list
+                locs = activity.activitylocation_set.all()
+                if len(locs) == 0:
+                    res.append(activity)
+                else:
+                    for loc in locs:
+                        lat = float(loc.location.latitude)
+                        lng = float(loc.location.longitude)
+                        dist = pow((lat - latitude) * latScale, 2.0) \
+                               + pow((lng - longitude) * lngScale, 2.0)
+                        dist = pow(dist, 0.5)
+                        if dist <= distance:
+                            res.append(activity)
+                            break
+            objs = res
     else:
-        result = Activity.objects
-
+        objs = Activity.objects.filter(status='SC',start_time__gte=datetime.date.today()).all()
     availableSpots = calcAvailableSpots(Activity.objects.all())
-
     context = {
         'user': request.user,
-        'activities': result.all(),
+        'activities': objs,
         'availableSpots': availableSpots
     }
-
     template = loader.get_template('activity/index.html')
     return HttpResponse(template.render(context, request))
 
@@ -137,7 +178,8 @@ def locations(request, activity_id):
     try:
         # try to load activity from the database
         activity = Activity.objects.get(id=activity_id)
-        result = [obj.as_json() for obj in activity.activitylocation_set.all()]
+        a = activity.activitylocation_set.all()
+        result = [obj.to_json() for obj in activity.activitylocation_set.all()]
         result_json = json.dumps(result)
         return HttpResponse(result_json, content_type='application/json')
     except Exception as e:
@@ -166,16 +208,25 @@ def create(request, activity_id=None):
                 form = ActivityForm()
                 form.title = 'Create a new activity'
         else:
-            form = ActivityForm(request.POST)
+            data = request.POST['locations']
+            locs = ActivityLocation.from_json(data)
+            post = request.POST.copy()
+            # remove extra information concerning the locations
+            post.pop('locations')
+            form = ActivityForm(post)
             if form.is_valid():
                 activity = form.save(commit=False)
                 activity.organizer = request.user
                 activity.save()
-
+                # save locations into database
+                for loc in locs:
+                    loc.activity = activity
+                    for l in loc.locations:
+                        l.save()
+                    loc.save()
                 # basic trigger notification system on creating new activity
                 activity.notify_subscribers()
                 # end basic trigger notifiaction system
-
                 return HttpResponseRedirect(reverse('activity:activity_detail', kwargs={'activity_id': activity.id}))
         return render(request, 'activity/create.html', {'activity_form': form, 'activities': activities})
     else:
@@ -320,11 +371,22 @@ def edit(request, activity_id=None):
                 form.title = 'Edit the activity'
                 return render(request, 'activity/edit.html', {'activity_form': form})
             else:
-                form = ActivityForm(request.POST, instance=activity)
+                data = request.POST['locations']
+                locs = ActivityLocation.from_json(data)
+                post = request.POST.copy()
+                # remove extra information concerning the locations
+                post.pop('locations')
+                form = ActivityForm(post, instance=activity)
                 if form.is_valid():
                     activity = form.save(commit=False)
                     activity.organizer = request.user
                     activity.save()
+                    # save locations into database
+                    for loc in locs:
+                        loc.activity = activity
+                        for l in loc.locations:
+                            l.save()
+                        loc.save()
                     return HttpResponseRedirect(
                         reverse('activity:activity_detail', kwargs={'activity_id': activity.id}))
         except Activity.DoesNotExist:
