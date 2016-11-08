@@ -14,7 +14,8 @@ class DateTimeInput(forms.DateTimeInput):
 
 class ActivityForm(forms.ModelForm):
     title = 'Create a new activity'
-	id = forms.IntegerField(widget=forms.HiddenInput)	start_time = forms.DateField(widget=DateInput())
+    id = forms.IntegerField(widget=forms.HiddenInput)
+    start_time = forms.DateField(widget=DateInput())
     end_time = forms.DateField(widget=DateInput())
     class Meta:
         model = Activity
