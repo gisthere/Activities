@@ -1,5 +1,6 @@
 import json
 import random
+import datetime
 from itertools import chain
 
 from django.contrib.auth.models import User
@@ -39,7 +40,7 @@ def index(request):
 
     context = {
         'user': request.user,
-        'activities': result.all(),
+        'activities': result.filter(status='SC',start_time__gte=datetime.date.today()).all(),
         'availableSpots': availableSpots
     }
 
