@@ -7,7 +7,7 @@ app_name = 'activity'
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^activity/search/$', views.ActivityList.as_view(), name='search'),
-    url(r'^activity/search/(?P<page>\d+)/$', views.ActivityList.as_view()),
+    # url(r'^activity/search/(?P<page>\d+)/$', views.ActivityList.as_view()),
 
     url(r'^activity/create/$', views.create, name='activity_create'),
     url(r'^activity/create/(?P<activity_id>\d+)$', views.create, name='activity_create'),

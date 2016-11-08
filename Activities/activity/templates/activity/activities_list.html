@@ -214,8 +214,8 @@
                     <ul class="pagination">
                         {% if page_obj.has_previous %}
                             <li>
-                                <a href="/activity/search/{{ page_obj.previous_page_number }}/"
-                                   aria-label="Previous">
+                                <a href="#" data-page="{{ page_obj.previous_page_number }}"
+                                   aria-label="Previous" class="page-selector">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
@@ -224,14 +224,14 @@
 
                         {% for page_number in paginator.page_range %}
                             <li>
-                                <a href="/activity/search/{{ page_number }}">
+                                <a href="#" data-page="{{page_number}}" class="page-selector">
                                     {{ paginator.number }}{{ page_number }}</a>
                             </li>
                         {% endfor %}
 
                         {% if page_obj.has_next %}
                             <li>
-                                <a href="/activity/search/{{ page_obj.next_page_number }}/" aria-label="Next">
+                                <a href="#" data-page="{{ page_obj.next_page_number }}" class="page-selector">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
@@ -357,6 +357,17 @@
                 var target = $(e.target);
                 if(target.data("order")) {
                     $('#order_by').val(target.data("order"));
+                    submit();
+                } else {
+                }
+
+            });
+
+            $('.page-selector').on('click', function(e) {
+                var target = $(e.currentTarget);
+                if(target.data("page")) {
+                    console.log(target.data("page"));
+                    $('#page').val(target.data("page"));
                     submit();
                 } else {
                 }
