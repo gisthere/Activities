@@ -53,7 +53,7 @@ def index(request):
                 similarity=TrigramSimilarity('name', request.GET['search'])
             ).filter(similarity__gt=0.1)
         # use GEO information of the search request if there was any
-        objs = result.all()
+        objs = result.filter(status='SC',start_time__gte=datetime.date.today()).all()
         if latitude is not None or longitude is not None:
             res = []
             latScale = 111  # value in kilometers
@@ -77,12 +77,11 @@ def index(request):
                             break
             objs = res
     else:
-        objs = Activity.objects.all()
+        objs = Activity.objects.filter(status='SC',start_time__gte=datetime.date.today()).all()
     availableSpots = calcAvailableSpots(Activity.objects.all())
     context = {
         'user': request.user,
-        'activities': objs, // TODO: redo
-        'activities': result.filter(status='SC',start_time__gte=datetime.date.today()).all(),
+        'activities': objs,
         'availableSpots': availableSpots
     }
     template = loader.get_template('activity/index.html')
