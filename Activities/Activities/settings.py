@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'activity',
     'myactivities',
     'plans',
-    # 'templatetags',
+     # templatetags',
     'cabinet',
     'chat',
     'subscriptions',

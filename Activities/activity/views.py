@@ -3,17 +3,66 @@ import random
 from itertools import chain
 
 from django.contrib.auth.models import User
-from django.db.models import Model
+from django.db.models import Model, Count, Sum, Avg
 from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.views.generic import ListView
+
 from .models import Activity, ActivityType, ActivityCategory, ActivityLocation, Participant
 from .forms import ActivityForm
 from django.template import loader
 from django.template.defaulttags import register
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Value, CharField, FloatField
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+class ActivityList(ListView):
+    model = Activity
+    paginate_by = 10
+    context_object_name = 'activities'
+    template_name = 'activity/activities_list.html'
+
+
+
+    def get_queryset(self):
+        list = Activity.objects.annotate(
+            num_participant=Count('participant'),
+            rating =Avg('participant__rating')
+        )
+
+        # get search 't' - type and 'v' value
+        if 't' in self.request.GET and 'v' in self.request.GET and self.request.GET['t']:
+            filter_type = self.request.GET['t']
+            filter_value = self.request.GET['v']
+
+            # check possible variation to prevent XSS injection
+            if filter_type == 'at':
+                result = list.filter(activity_type=filter_value)
+            elif filter_type == 'ac':
+                result = list.filter(activity_category=filter_value)
+            elif filter_type == 'an':
+                result = list.annotate(
+                    similarity=TrigramSimilarity('name', self.request.GET['search'])
+                ).filter(similarity__gt=0.1)
+
+            if result:
+                self.page_kwarg = 0
+        else:
+            result = list
+
+        activities = result.all()
+        for activity in activities:
+            activity.available_spots = activity.participants_limit - activity.num_participant
+
+        if 'order_by' in self.request.GET and self.request.GET['order_by']:
+            if self.request.GET['order_by'] == 'rating':
+                return activities.order_by('-rating')
+            else:
+                return activities.order_by('start_time')
+        else:
+            return activities
 
 
 # Create your views here.
