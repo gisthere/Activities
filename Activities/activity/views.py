@@ -370,12 +370,13 @@ def change_participant_rating(request, activity_id, participant_id, new_rating):
     try:
         # try to load activity from the database
         activity = Activity.objects.get(id=activity_id)
-        participant = User.objects.get(id=participant_id)
-        print(participant.first_name)
-        # set the rating from the participant
-        participation = Participant.objects.get_or_create(user=participant, activity=activity)[0]
-        participation.participant_rating = new_rating
-        participation.save()
+        if request.user.id == activity.organizer_id:
+            participant = User.objects.get(id=participant_id)
+            print(participant.first_name)
+            # set the rating from the participant
+            participation = Participant.objects.get_or_create(user=participant, activity=activity)[0]
+            participation.participant_rating = new_rating
+            participation.save()
     except Model.DoesNotExist as e:
         print(e)
     return HttpResponse()
