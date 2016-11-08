@@ -8,6 +8,8 @@ in which I have participated """
 
 
 def created(request):
+    """ This method returns page with the list of the activities
+     created by the current user """
     user = request.user
     if not user.is_authenticated():
         return HttpResponseRedirect('/')
@@ -20,6 +22,8 @@ def created(request):
 
 
 def participated(request):
+    """ This method return page with the list of the activities
+     in which current user enrolled as participant """
     user = request.user
     if not user.is_authenticated():
         return HttpResponseRedirect('/')

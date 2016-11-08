@@ -7,10 +7,7 @@
 {% endblock %}
 
 {% block content %}
-
-
     <section class="home-section nopadd-bot color-dark text-center">
-
         <div class="container marginbot-20 formCreate">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2">
@@ -22,13 +19,12 @@
                     </div>
                 </div>
             </div>
-          
         </div>
 
         <div class="container">
             <div class="row marginbot-80">
                 <div class="col-md-8 col-md-offset-2">
-                    <form class="form-horizontal" action="" method="POST">
+                    <form id="activityForm" class="form-horizontal" action="" method="POST">
                         {% csrf_token %}
                         {% for error in activity_form.non_field_errors %}
                             <div class="alert alert-danger">{{ error }}</div>
@@ -51,11 +47,13 @@
                         <div class="row">
                             <div class="form-group">
                                 <div class="col-md-6">
-                                    <label for="{{ activity_form.start_time.id_for_label }}" class="col-md-2 control-label">From:</label>
+                                    <label for="{{ activity_form.start_time.id_for_label }}"
+                                           class="col-md-2 control-label">From:</label>
                                     <div class="col-md-10">{{ activity_form.start_time }}</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="{{ activity_form.end_time.id_for_label }}" class="col-md-2 control-label">To:</label>
+                                    <label for="{{ activity_form.end_time.id_for_label }}"
+                                           class="col-md-2 control-label">To:</label>
                                     <div class="col-md-10">{{ activity_form.end_time }}</div>
                                 </div>
                             </div>
@@ -73,11 +71,13 @@
                         <div class="row">
                             <div class="form-group">
                                 <div class="col-md-6">
-                                    <label for="{{ activity_form.activity_category.id_for_label }}" class="col-md-4 control-label">Category:</label>
+                                    <label for="{{ activity_form.activity_category.id_for_label }}"
+                                           class="col-md-4 control-label">Category:</label>
                                     <div class="col-md-8">{{ activity_form.activity_category }}</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="{{ activity_form.activity_type.id_for_label }}" class="col-md-4 control-label">Type:</label>
+                                    <label for="{{ activity_form.activity_type.id_for_label }}"
+                                           class="col-md-4 control-label">Type:</label>
                                     <div class="col-md-8">{{ activity_form.activity_type }}</div>
                                 </div>
                             </div>
@@ -103,26 +103,74 @@
                 </div>
             </div>
         </div>
-
     </section>
-
 {% endblock %}
 
 {% block scripts %}
     <script type="text/javascript">
+        // -------------------------------------------------------
+        // LeafletJS Map Functions
+        // -------------------------------------------------------
+        var layers = {};
+
+        function onMarkerClick(e) {
+            // get the marker on which click event fired
+            var marker = e.target;
+            // remove it from the map
+            if (layers.hasLayer(marker)) {
+                console.log(marker);
+                layers.removeLayer(marker);
+            }
+        }
+
+        // adds marker and its description (if any) to the specified map
+        function addMarker(map, loc) {
+            var marker = L.marker([loc.latitude, loc.longitude], {draggable: true});
+            marker.on('click', onMarkerClick);
+            // add a marker to the map
+            layers.addLayer(marker);
+            // add popup for the marker if it has any name
+            if (loc.name) {
+                var popup = L.popup()
+                        .setLatLng([loc.latitude, loc.longitude])
+                        .setContent(loc.name);
+                marker.bindPopup(popup);
+            }
+        }
+
+        // create location object from the given parameters
+        function createLocation(latlng, name) {
+            var loc = {};
+            loc.latitude = latlng.lat;
+            loc.longitude = latlng.lng;
+            loc.name = name;
+            return loc;
+        }
+
+        function onMapClick(e) {
+            // if there is location information, then add new marker on the map
+            if (e.latlng) {
+                var loc = createLocation(e.latlng, '');
+                addMarker(e.target, loc);
+            }
+        }
+
         $(window).on('map:init', function (e) {
             var detail = e.originalEvent ? e.originalEvent.detail : e.detail;
-            var map = L;
+            layers = L.layerGroup().addTo(detail.map);
+            detail.map.on('click', onMapClick);
             $.ajax('/activity/' + {{ activity_form.id.value }} +'/locations/')
                     .done(function (locs) {
                         if (locs.length == 0)
                             return;
                         loc = locs[0].location;
                         var south = loc.latitude, north = loc.latitude, east = loc.longitude, west = loc.longitude;
-                        map.marker([loc.latitude, loc.longitude]).addTo(detail.map);
+                        // add a marker to the map
+                        addMarker(detail.map, loc);
                         for (i = 1; i < locs.length; ++i) {
                             loc = locs[i].location;
-                            map.marker([loc.latitude, loc.longitude]).addTo(detail.map);
+                            // add a marker to the map
+                            addMarker(detail.map, loc);
                             if (south > loc.latitude)
                                 south = loc.latitude;
                             if (north < loc.latitude)
@@ -132,10 +180,27 @@
                             if (west > loc.longitude)
                                 west = loc.longitude;
                         }
-                        var southWest = map.latLng(south, west);
-                        var northEast = map.latLng(north, east);
-                        detail.map.fitBounds(map.latLngBounds(southWest, northEast));
+                        var southWest = L.latLng(south, west);
+                        var northEast = L.latLng(north, east);
+                        detail.map.fitBounds(L.latLngBounds(southWest, northEast));
                     });
+
+            // add geo information to the post request before submit
+            $('#activityForm').submit(function () { //listen for submit event
+                var res = [];
+                // pack all locations into json array...
+                layers.eachLayer(function (layer) {
+                    var latlng = layer.getLatLng();
+                    var loc = createLocation(latlng, '');
+                    res.push(JSON.stringify(loc));
+                });
+                // ...and attach it to the current form
+                $('<input />').attr('type', 'hidden')
+                        .attr('name', 'locations')
+                        .attr('value', '{ "locations": [' + res + ']}')
+                        .appendTo('#activityForm');
+                return true;
+            });
         });
     </script>
 {% endblock %}

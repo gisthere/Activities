@@ -64,9 +64,7 @@
             $('#latitude').val(latitude);
             $('#longitude').val(longitude);
         }
-        function error() {
-
-        }
+        function error() { }
         window.onload = function () {
             navigator.geolocation.getCurrentPosition(success, error);
         }
