@@ -14,7 +14,6 @@ def index(request):
 
 	logged_user = request.user
 
-	#THIS IS FUCKING UGLY HACK SHOULD BE REMOVED AFTER DB IS FIXED
 	try:
 		logged_user_data = User.objects.get(user=logged_user)
 	except ObjectDoesNotExist:

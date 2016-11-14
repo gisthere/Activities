@@ -127,7 +127,7 @@ def index(request):
                             break
             objs = res
     else:
-        objs = Activity.objects.filter(status='SC',start_time__gte=datetime.date.today()).all()
+        objs = Activity.objects.filter(status='SC',start_time__gte=datetime.date.today()).exclude(participants=request.user).all()
     availableSpots = calcAvailableSpots(Activity.objects.all())
     context = {
         'user': request.user,
@@ -291,9 +291,12 @@ def join(request):
         return HttpResponse()
     try:
         # try to load activity from the database
-        activity = Activity.objects.get(id=activity_id)
         user = User.objects.get(id=user_id)
-        # TODO: check whether I've joined activity or not
+        activity = Activity.objects.get(id=activity_id)
+
+        if user in activity.participants.all():
+            return HttpResponseRedirect('/')
+        
         Participant.objects.update_or_create(user=user, activity=activity)
     except Model.DoesNotExist as e:
         print(e)
