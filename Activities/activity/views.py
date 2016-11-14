@@ -127,7 +127,10 @@ def index(request):
                             break
             objs = res
     else:
-        objs = Activity.objects.filter(status='SC',start_time__gte=datetime.date.today()).exclude(participants=request.user).all()
+        if request.user.is_authenticated():
+            objs = Activity.objects.filter(status='SC',start_time__gte=datetime.date.today()).exclude(participants=request.user).all()
+        else:
+            objs = Activity.objects.filter(status='SC',start_time__gte=datetime.date.today()).all()
     availableSpots = calcAvailableSpots(Activity.objects.all())
     context = {
         'user': request.user,
