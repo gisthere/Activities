@@ -33,10 +33,4 @@ def participated(request):
     form.is_created = False
     form.load_participated()
     form.load_rated()
-
-    print(form.ratings.count())
-    
-    context = {
-        'form': form,
-    }
-    return render(request, 'activities.htm', context)
+    return render(request, 'activities.htm', {'form': form})
