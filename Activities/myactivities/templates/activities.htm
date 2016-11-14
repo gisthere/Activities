@@ -2,7 +2,7 @@
 
 {% block head %}
     <style>
-        .rating > .yellowstar,.rating > .yellowstar-text {
+        .rating > .yellowstar, .rating > .yellowstar-text {
             color: #ffd700;
             float: left;
         }
@@ -46,7 +46,7 @@
                                     {% elif activity.status == 'PF' %}performed-box{% endif %}">
                                     <div class="service-desc">
                                         <div class="row">
-                                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
+                                            <div class="col-lg-3 col-md-3 col-sm-8 col-xs-12 text-center">
                                                 <h5 class="row">{{ activity.name }}</h5>
                                                 <!-- Activity rating -->
                                                 <div class="row">
@@ -176,7 +176,7 @@
                                                     {% endif %}
                                                 </div>
                                             </div>
-                                            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                 <div class="row col-xs-12">
                                                     <small class="start-time">Start time:</small>
                                                     <p>{{ activity.start_time|date:"Y-m-d   H:i" }}</p>
@@ -206,31 +206,26 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-
-
+                                            <!-- Organizer's feedback -->
                                             {% for rating in form.ratings %}
                                                 {% if rating.activity.id == activity.id %}
-                                                    <div class="row">
-                                                        <div class="col-lg-offset-3 col-lg-9 col-md-9 col-sm-7 col-xs-7">
-                                                            <small>Organizer's feedback:</small>
-                                                            {% if rating.participant_rating %}
-                                                                <div class="rating star-container">
-                                                                    <p class="yellowstar-text">
-                                                                        {{ rating.participant_rating }}
-                                                                    </p>
-                                                                    <label class="full yellowstar"></label>
-                                                                </div>
-                                                            {% endif %}
-                                                            <p>
-                                                                {{ rating.comment_for_participant }}
-                                                            </p>
+                                                    <div class="col-lg-offset-3 col-md-offset-3 col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                        <div class="row">
+                                                            <div style="padding: 15px;">
+                                                                <small>Organizer's feedback:</small>
+                                                                {% if rating.participant_rating %}
+                                                                    <div class="rating star-container">
+                                                                        <p class="yellowstar-text">
+                                                                            {{ rating.participant_rating }}</p>
+                                                                        <label class="full yellowstar"></label>
+                                                                    </div>
+                                                                {% endif %}
+                                                                <p>{{ rating.comment_for_participant }}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 {% endif %}
                                             {% endfor %}
-
-
                                         </div>
                                     </div>
                                 </div>
