@@ -1,19 +1,26 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<style>
-.rating > .yellowstar {
-    color : #ffd700;
-    float : left
-}
-.star-container {
-    width : 70px;
-}
-</style>
+    <style>
+        .rating > .yellowstar, .rating > .yellowstar-text {
+            color: #ffd700;
+            float: left;
+        }
+
+        .rating > .yellowstar-text {
+            font-weight: 700;
+            font-size: 18px;
+            margin: 0px;
+            padding: 5px;
+        }
+
+        .star-container {
+            width: 100%;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-
     <!-- Section: header -->
     <section class="color-dark bg-gray">
         <div class="container">
@@ -29,7 +36,7 @@
     {% if form.activities %}
         <section class="color-dark bg-gray">
             <div id="activities">
-                {# Output information about each activity in the list #}
+                <!-- Output information about each activity in the list -->
                 {% for activity in form.activities %}
                     <div class="container">
                         <div class="row">
@@ -39,8 +46,9 @@
                                     {% elif activity.status == 'PF' %}performed-box{% endif %}">
                                     <div class="service-desc">
                                         <div class="row">
-                                            <div class="text-center col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                            <div class="col-lg-3 col-md-3 col-sm-8 col-xs-12 text-center">
                                                 <h5 class="row">{{ activity.name }}</h5>
+                                                <!-- Activity rating -->
                                                 <div class="row">
                                                     {% if activity.status == 'PF' %}
                                                         {% if form.is_created == False %}
@@ -128,11 +136,10 @@
                                                             </form>
                                                         {% endif %}
                                                     {% else %}
-                                                        <p>{{ activity.get_status_display }}
+                                                        <p>{{ activity.get_status_display }}</p>
                                                     {% endif %}
                                                 </div>
-
-                                                </p>
+                                                <!-- Activity status and action buttons -->
                                                 <div class="row">
                                                     <a href="{% url 'activity:activity_detail' activity.id %}"
                                                        class="btn btn-skin">Details</a>
@@ -169,7 +176,7 @@
                                                     {% endif %}
                                                 </div>
                                             </div>
-                                            <div class="col-lg-2 col-md-2 col-sm-6">
+                                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                 <div class="row col-xs-12">
                                                     <small class="start-time">Start time:</small>
                                                     <p>{{ activity.start_time|date:"Y-m-d   H:i" }}</p>
@@ -179,43 +186,46 @@
                                                     <p>{{ activity.end_time|date:"Y-m-d   H:i" }}</p>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 col-xs-12">
+                                            <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
                                                 <div class="row">
-                                                    <div class="col-lg-4 col-md-4 col-sm-4">
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                         <small>Category:</small>
-                                                        <br>
                                                         <p>{{ activity.activity_category }}</p>
                                                     </div>
-                                                    <div class="col-lg-4 col-md-4 col-sm-4">
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                         <small>Type:</small>
-                                                        <br>
                                                         <p>{{ activity.activity_type }}</p>
                                                     </div>
-                                                    <div class="col-lg-4 col-md-4 col-sm-4">
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                         <small>Participants limit:</small>
-                                                        <br>
                                                         <p>{{ activity.participants_limit }}</p>
                                                     </div>
-                                                    <div class="col-lg-4 col-md-4 col-sm-4">
-                                                            <small>Description:</small>
-                                                            <p>{{ activity.description }}</p>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <small>Description:</small>
+                                                        <p>{{ activity.description }}</p>
                                                     </div>
-                                                    {% for rating in form.ratings %}
-                                                        {% if rating.activity.id == activity.id %}
-                                                       <div class="col-lg-8 col-md-8 col-sm-8"> 
-                                                            <div class="row">
-                                                                <div class="rating star-container col-lg-3 col-lg-3 col-md-3">
-                                                                    <label class="full yellowstar">{{ rating.participant_rating }}</label>
-                                                                </div>
-                                                                <div class="col-lg-9 col-md-9 col-sm-9">
-                                                                     <p>{{ rating.comment_for_participant }}</p>
-                                                                </div> 
-                                                            </div>
-                                                        </div>
-                                                        {% endif %}
-                                                    {% endfor %}
                                                 </div>
                                             </div>
+                                            <!-- Organizer's feedback -->
+                                            {% for rating in form.ratings %}
+                                                {% if rating.activity.id == activity.id %}
+                                                    <div class="col-lg-offset-3 col-md-offset-3 col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                        <div class="row">
+                                                            <div style="padding: 15px;">
+                                                                <small>Organizer's feedback:</small>
+                                                                {% if rating.participant_rating %}
+                                                                    <div class="rating star-container">
+                                                                        <p class="yellowstar-text">
+                                                                            {{ rating.participant_rating }}</p>
+                                                                        <label class="full yellowstar"></label>
+                                                                    </div>
+                                                                {% endif %}
+                                                                <p>{{ rating.comment_for_participant }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
