@@ -4,23 +4,21 @@ from activity.models import Activity
 from django.utils.timezone import utc
 import datetime
 
-from functools import partial
-DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
 class DateTimeInput(forms.DateTimeInput):
     input_type = 'datetime-local'
 
 
-
 class ActivityForm(forms.ModelForm):
     title = 'Create a new activity'
-    id = forms.IntegerField(widget=forms.HiddenInput)
-    start_time = forms.DateField(widget=DateInput())
-    end_time = forms.DateField(widget=DateInput())
+    id = forms.IntegerField(widget=forms.HiddenInput,required=False)
+    start_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
+    end_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
+
     class Meta:
         model = Activity
         fields = ['id', 'name', 'description', 'requirements', 'start_time', 'end_time', 'participants_limit',
-                  'locations', 'activity_category', 'activity_type']
+                  'activity_category', 'activity_type']
         error_messages = {'required': 'This field is required'}
 
     def clean(self):
@@ -53,7 +51,5 @@ class ActivityForm(forms.ModelForm):
         self.fields['activity_type'].widget.attrs['id'] = 'create_form_activity_type'
         self.fields['activity_type'].widget.attrs['onChange'] = '{recommendationsRequest();}'
         self.fields['start_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-        self.fields['start_time'].widget.attrs['class'] = 'datepicker'
         self.fields['end_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-        self.fields['end_time'].widget.attrs['class'] = 'datepicker'
-        self.fields['locations'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        #self.fields['locations'].widget.attrs['onChange'] = '{recommendationsRequest();}'

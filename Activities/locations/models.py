@@ -30,7 +30,7 @@ class Location(models.Model):
     def from_dict(dict):
         """ Create object from values in dictionary """
         result = Location()
-        result.name = dict['name']
-        result.latitude = dict['latitude']
-        result.longitude = dict['longitude']
+        result.name = dict['name'][:100]
+        result.latitude = str(dict['latitude'])[:15]
+        result.longitude = str(dict['longitude'])[:15]
         return result
