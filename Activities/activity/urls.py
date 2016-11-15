@@ -24,5 +24,6 @@ urlpatterns = [
     url(r'^activity/(?P<activity_id>\d+)/status/change/(?P<new_status>\S{2})/$', views.change_status, name='change_status'),
     url(r'^activity/(?P<activity_id>\d+)/rating/change/(?P<new_rating>\d+)/$', views.change_rating, name='change_rating'),
     url(r'^activity/(?P<activity_id>\d+)/participant/(?P<participant_id>\d+)/rating/change/(?P<new_rating>\d+)/$', views.change_participant_rating, name='change_participant_rating'),
+    url(r'^activity/(?P<activity_id>\d+)/participant/(?P<participant_id>\d+)/comment/add/$', views.add_comment_for_participant, name='add_comment_for_participant'),
 
 ]
