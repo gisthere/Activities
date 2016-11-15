@@ -17,6 +17,10 @@
         .star-container {
             width: 100%;
         }
+
+        .link-button {
+            margin: 5px;
+        }
     </style>
 {% endblock %}
 
@@ -142,7 +146,7 @@
                                                 <!-- Activity status and action buttons -->
                                                 <div class="row">
                                                     <a href="{% url 'activity:activity_detail' activity.id %}"
-                                                       class="btn btn-skin">Details</a>
+                                                       class="btn btn-skin link-button">Details</a>
                                                     {% if form.can_remove %}
                                                         {% if activity.status != 'PF' %}
                                                             <a href="{% url 'activity:activity_edit' activity.id %}"
