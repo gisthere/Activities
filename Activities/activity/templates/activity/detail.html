@@ -199,11 +199,11 @@
                         <div class="row">
                             {% for participant in participants %}
                                 <div class="
-{% if request.user == activity.organizer %} col-md-4 {% else %} col-md-2 {% endif %}">
+{% if request.user == activity.organizer %} col-md-2 {% else %} col-md-2 {% endif %}">
                             <a href="{% url 'cabinet:user_detail' participant.user.id %}" >
                                         <div class="card member bg-white shadow-1">
                                             <div class="row">
-                                                <div class="{% if request.user == activity.organizer %} col-md-6 {% else %} col-md-12 {% endif %} member-content grey-text text-darken-4 text-center">
+                                                <div class="{% if request.user == activity.organizer %} col-md-12 {% else %} col-md-12 {% endif %} member-content grey-text text-darken-4 text-center">
                                                     <div id="member-content-{{ participant.user.id }}">
                                                         {# display star depend on rating  #}
                                                         <i class="yellow-text darken-1 fa
@@ -294,7 +294,7 @@
                                                     {% endif %}
                                                 </div>
 
-                                                {% if request.user == activity.organizer %}
+                                                {% if False %}
                                                     <div class="col-md-6 comment-participant">
                                                         {% if participant.comment_for_participant|default:'' == '' %}
                                                             <div class="form-group">
@@ -310,10 +310,10 @@
                                                 {% endif %}
                                             </div>
                                             <div class="row ">
-                                                <div class="{% if request.user == activity.organizer %} col-md-6 {% else %} col-md-12 {% endif %}member-footer text-center text-uppercase">
+                                                <div class="{% if request.user == activity.organizer %} col-md-12 {% else %} col-md-12 {% endif %}member-footer text-center text-uppercase">
                                                     {{ participant.user }}</div>
 
-                                                {% if request.user == activity.organizer %}
+                                                {% if False %}
 
                                                     <div class="col-md-6 text-center comment-participant">
                                                      {% if participant.comment_for_participant|default:'' == '' %}
