@@ -200,7 +200,7 @@
                             {% for participant in participants %}
                                 <div class="
 {% if request.user == activity.organizer %} col-md-4 {% else %} col-md-2 {% endif %}">
-                                    <a href=" ">
+                            <a href="{% url 'cabinet:user_detail' participant.user.id %}" >
                                         <div class="card member bg-white shadow-1">
                                             <div class="row">
                                                 <div class="{% if request.user == activity.organizer %} col-md-6 {% else %} col-md-12 {% endif %} member-content grey-text text-darken-4 text-center">
