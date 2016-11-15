@@ -4,6 +4,9 @@
 {% block head %}
     {% leaflet_js %}
     {% leaflet_css %}
+
+
+
 {% endblock %}
 
 {% block content %}
@@ -236,6 +239,11 @@
             });
         });
 
+
+    $(document).ready(function() {
+        $('.datepicker').datetimepicker();
+    });
+</script>
         $(document).ready(function () {
             var name = $("#id_name").val();
 

@@ -20,6 +20,13 @@
     <link href="{% static "css/style.css" %}" rel="stylesheet">
     <link href="{% static "color/default.css" %}" rel="stylesheet">
 
+
+    <!-- CSS circle loader -->
+    <link href="{% static "css/circle-loader.css" %}" rel="stylesheet">
+
+    <!-- card & shadow -->
+    <link href="{% static "css/card.css" %}" rel="stylesheet">
+
     <link href="{% static "css/bootstrap-vert-margin-shim.css" %}" rel="stylesheet">
 
     <!-- css typeahead widget -->
@@ -27,6 +34,10 @@
 
     <!-- css amaran notifcation -->
     <link href="{% static 'css/amaran/amaran.min.css' %}" rel="stylesheet">
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/datetimepicker/jquery.datetimepicker.css' %}"/>
+
 
     {% block head %}
 
@@ -107,6 +118,9 @@
 
 <script src="{% static "js/typeahead/typeahead.bundle.min.js" %}"></script>
 <script src="{% static "js/amaran/jquery.amaran.min.js" %}"></script>
+
+
+<script src="{% static 'js/datetimepicker/jquery.datetimepicker.full.min.js' %}"></script>
 
 <!-- custom page scripts. widgets and etc -->
 {% block scripts %}

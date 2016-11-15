@@ -7,7 +7,7 @@ from django.apps import apps
 from django.db.models import Q
 from django.contrib.postgres.search import TrigramSimilarity
 from django_nyt.utils import notify, subscribe
-
+from django.db.models import Avg
 
 # Create your models here.
 class ActivityCategory(models.Model):
@@ -127,6 +127,12 @@ class Participant(models.Model):
     comment = models.TextField()
     participant_rating = models.PositiveSmallIntegerField(null=True)
     comment_for_participant = models.TextField()
+
+    @property
+    def total_rating(self):
+        rating = Participant.objects.filter(user=self.user).aggregate(Avg('participant_rating'))
+
+        return rating['participant_rating__avg']
 
 
 # perhaps we should move 'Comments' to its own app later

@@ -385,6 +385,33 @@ def change_participant_rating(request, activity_id, participant_id, new_rating):
             participation.save()
     except Model.DoesNotExist as e:
         print(e)
+    return HttpResponse(participation.total_rating)
+
+# Add comment for participant
+def add_comment_for_participant(request,activity_id, participant_id):
+    # redirect to main page if the user is not authenticated
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+
+    if 'comment' in request.POST:
+        comment  = request.POST['comment']
+    # do nothing if there is no valid info in request
+    if activity_id is None or participant_id is None or comment is None:
+        return HttpResponse()
+    # check whether the provided rating is valid
+    if not comment:
+        return HttpResponse()
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+        participant = User.objects.get(id=participant_id)
+        print(participant.first_name)
+        # set the rating from the participant
+        participation = Participant.objects.get_or_create(user=participant, activity=activity)[0]
+        participation.comment_for_participant = comment
+        participation.save()
+    except Model.DoesNotExist as e:
+        print(e)
     return HttpResponse()
 
 
