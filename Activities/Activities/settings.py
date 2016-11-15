@@ -109,7 +109,7 @@ CHANNEL_LAYERS = {
         # "BACKEND": "asgiref.inmemory.ChannelLayer",
 
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [("localhost", 665)],
         },
         "ROUTING": "django_nyt.routing.channel_routing",
     },

@@ -144,7 +144,7 @@
                                                             {{ participant.user.first_name }} {{ participant.user.last_name }}
                                                         </div>
                                                         <div class="row">
-                                                            <a href="{% url 'activity:activity_detail' activity.id %}" class="btn btn-skin">Profile</a>
+                                                            <a href="{% url 'cabinet:user_detail' participant.user.id %}" class="btn btn-skin">Profile</a>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-2 col-md-2 col-sm-6">
@@ -193,7 +193,7 @@
                                                             </form>
                                                     </div>
                                                     <div class="col-md-6 col-xs-12">
-
+                                                    
                                                     </div>
                                                 </div>
                                             </div>
