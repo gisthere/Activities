@@ -51,8 +51,8 @@ def user_detail(request, user_id):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login')
     try:
-        user_info = MUser.objects.get(id = user_id)
         user = User.objects.get(id = user_id)
+        user_info = MUser.objects.get_or_create(user = user)
         participated = Activity.objects.filter(participants = user)
         organized = Activity.objects.filter(organizer = user)
     except MUser.DoesNotExist:
