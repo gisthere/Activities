@@ -20,25 +20,25 @@
             margin-top: -20px;
         }
 
-{#        .card {#}
-{#            display: block;#}
-{#        }#}
-{##}
-{#        .card-block {#}
-{#            padding: 1.25rem;#}
-{##}
-{#        }#}
-{##}
-{#        .card-title {#}
-{#            font-size: 24px;#}
-{#            font-family: 'Roboto', sans-serif;#}
-{#            font-weight: 400;#}
-{#            color: #111;#}
-{#            margin-bottom: 0.2em;#}
-{#        }#}
-{##}
-{#        .card-text {#}
-{#        }#}
+        {#        .card {#}
+        {#            display: block;#}
+        {#        }#}
+        {##}
+        {#        .card-block {#}
+        {#            padding: 1.25rem;#}
+        {##}
+        {#        }#}
+        {##}
+        {#        .card-title {#}
+        {#            font-size: 24px;#}
+        {#            font-family: 'Roboto', sans-serif;#}
+        {#            font-weight: 400;#}
+        {#            color: #111;#}
+        {#            margin-bottom: 0.2em;#}
+        {#        }#}
+        {##}
+        {#        .card-text {#}
+        {#        }#}
 
         .img-fluid-width {
             display: block;
@@ -58,7 +58,7 @@
             padding-top: 20px;
         }
 
-        #dropdown-order-input {
+        #dropdown-order-input, #dropdown-distance-input {
             border: 0;
             color: #000;
             background-color: rgba(0, 0, 0, 0);
@@ -82,10 +82,10 @@
             <div class="input-group responsive-nav-input">
                 {% if request.GET.search and request.GET.search != '' %}
                     <span class="input-group-addon" style="width:1%;"><a href="{% url 'activity:search' %}"><span
-                        class="glyphicon glyphicon-remove"></span></a></span>
+                            class="glyphicon glyphicon-remove"></span></a></span>
                 {% else %}
                     <span class="input-group-addon" style="width:1%;"><span
-                        class="glyphicon glyphicon-search"></span></span>
+                            class="glyphicon glyphicon-search"></span></span>
                 {% endif %}
 
                 <input type="text"
@@ -99,8 +99,9 @@
             </div>
             <input type="hidden" id="search_type" name="t"/>
             <input type="hidden" id="search_value" name="v"/>
-            <input type="hidden" id="order_by" name="order_by" />
-            <input type="hidden" id="page" name="page" />
+            <input type="hidden" id="order_by" name="order_by"/>
+            <input type="hidden" id="distance" name="distance"/>
+            <input type="hidden" id="page" name="page"/>
         </div>
         <button type="submit" class="hidden">Submit</button>
     </form>
@@ -115,8 +116,33 @@
                 <div class="container ">
 
                     <div class="row text-right marginbot-20">
-                        <div class="col-md-8"></div>
-                        <div class="col-md-4">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-3">
+                            <div class="dropdown" id="dropdown-distance">
+                                In the range
+                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdown-distance-input"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    {% if not request.GET.distance %}
+                                        1 km
+                                    {% else %}
+                                        {{ request.GET.distance }} km
+                                    {% endif %}
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-distance-input">
+                                    <li><a href="#" data-distance="1">1 km</a></li>
+                                    <li><a href="#" data-distance="2">2 km</a></li>
+                                    <li><a href="#" data-distance="3">3 km</a></li>
+                                    <li><a href="#" data-distance="5">5 km</a></li>
+                                    <li><a href="#" data-distance="8">8 km</a></li>
+                                    <li><a href="#" data-distance="13">13 km</a></li>
+                                    <li><a href="#" data-distance="21">21 km</a></li>
+                                    <li><a href="#" data-distance="34">34 km</a></li>
+                                    <li><a href="#" data-distance="10000">Infinity</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <div class="dropdown" id="dropdown-order">
                                 Sort by
                                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdown-order-input"
@@ -149,22 +175,22 @@
                                         <div class="card-title">{{ activity.name }}</div>
                                         <div class="card-text">
                                             <p>{{ activity.description }}</p>
-                                                
-                                                <p>Places available:
-                                                    {{ activity.available_spots }}/{{ activity.participants_limit }}
-                                                </p>
+
+                                            <p>Places available:
+                                                {{ activity.available_spots }}/{{ activity.participants_limit }}
+                                            </p>
 
                                         </div>
 
-                                            {% if activity.num_participant < activity.participants_limit %}
-                                                <button type="button" class="btn btn-skin"
-                                                        onclick="$.ajax('/activity/join?user_id={{ user.id }}&activity_id={{ activity.id }}')
-                                                                .done(function() { location.reload() })">
-                                                    Join
-                                                </button>
-                                            {% else %}
-                                                <p>Sorry, this activity is full!</p>
-                                            {% endif %}
+                                        {% if activity.num_participant < activity.participants_limit %}
+                                            <button type="button" class="btn btn-skin"
+                                                    onclick="$.ajax('/activity/join?user_id={{ user.id }}&activity_id={{ activity.id }}')
+                                                            .done(function() { location.reload() })">
+                                                Join
+                                            </button>
+                                        {% else %}
+                                            <p>Sorry, this activity is full!</p>
+                                        {% endif %}
 
                                     </div>
                                 </div>
@@ -223,7 +249,7 @@
 
                         {% for page_number in paginator.page_range %}
                             <li>
-                                <a href="#" data-page="{{page_number}}" class="page-selector">
+                                <a href="#" data-page="{{ page_number }}" class="page-selector">
                                     {{ paginator.number }}{{ page_number }}</a>
                             </li>
                         {% endfor %}
@@ -322,10 +348,10 @@
             hints.initialize();
 
             var submit = function (filter_type, filter_value) {
-                if(filter_type) {
+                if (filter_type) {
                     $('#search_type').val(filter_type);
                 }
-                if(filter_value) {
+                if (filter_value) {
                     $('#search_value').val(filter_value);
                 }
                 $('#search_form').submit();
@@ -351,20 +377,27 @@
             });
 
 
-
-            $('#dropdown-order').on('click.bs.dropdown', function(e) {
+            $('#dropdown-distance').on('click.bs.dropdown', function (e) {
                 var target = $(e.target);
-                if(target.data("order")) {
+                if (target.data("distance")) {
+                    $('#distance').val(target.data("distance"));
+                    submit();
+                } else {
+                }
+            });
+
+            $('#dropdown-order').on('click.bs.dropdown', function (e) {
+                var target = $(e.target);
+                if (target.data("order")) {
                     $('#order_by').val(target.data("order"));
                     submit();
                 } else {
                 }
-
             });
 
-            $('.page-selector').on('click', function(e) {
+            $('.page-selector').on('click', function (e) {
                 var target = $(e.currentTarget);
-                if(target.data("page")) {
+                if (target.data("page")) {
                     console.log(target.data("page"));
                     $('#page').val(target.data("page"));
                     submit();
@@ -372,7 +405,6 @@
                 }
 
             });
-
 
 
         })();

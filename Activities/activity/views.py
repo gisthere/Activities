@@ -39,6 +39,7 @@ class ActivityList(ListView):
         if 't' in self.request.GET and 'v' in self.request.GET and self.request.GET['t']:
             filter_type = self.request.GET['t']
             filter_value = self.request.GET['v']
+            filter_range = self.request.GET['distance']
 
             # check possible variation to prevent XSS injection
             if filter_type == 'at':
@@ -66,6 +67,35 @@ class ActivityList(ListView):
                 return activities.order_by('start_time')
         else:
             return activities
+
+
+#
+def get_by_range(query, latitude, longitude, distance):
+    # use GEO information of the search request if there was any
+    objs = query.filter(status='SC', start_time__gte=datetime.date.today()).all()
+    if latitude is not None or longitude is not None:
+        res = []
+        lat_scale = 111  # value in kilometers
+        lng_scale = 111  # value in kilometers
+        # output only activities which located no further than 'distance' threshold
+        for activity in objs:
+            # if at least one location of the activity is located within
+            # the specified distance, then add it to the output list
+            locs = activity.activitylocation_set.all()
+            if len(locs) == 0:
+                res.append(activity)
+            else:
+                for loc in locs:
+                    lat = float(loc.location.latitude)
+                    lng = float(loc.location.longitude)
+                    dist = pow((lat - latitude) * lat_scale, 2.0) \
+                           + pow((lng - longitude) * lng_scale, 2.0)
+                    dist = pow(dist, 0.5)
+                    if dist <= distance:
+                        res.append(activity)
+                        break
+        objs = res
+    return objs
 
 
 # Create your views here.
@@ -102,40 +132,18 @@ def index(request):
                 similarity=TrigramSimilarity('name', request.GET['search'])
             ).filter(similarity__gt=0.1)
         # use GEO information of the search request if there was any
-        objs = result.filter(status='SC', start_time__gte=datetime.date.today()).all()
-        if latitude is not None or longitude is not None:
-            res = []
-            latScale = 111  # value in kilometers
-            lngScale = 111  # value in kilometers
-            # output only activities which located no further than 'distance' threshold
-            for activity in objs:
-                # if at least one location of the activity is located within
-                # the specified distance, then add it to the output list
-                locs = activity.activitylocation_set.all()
-                if len(locs) == 0:
-                    res.append(activity)
-                else:
-                    for loc in locs:
-                        lat = float(loc.location.latitude)
-                        lng = float(loc.location.longitude)
-                        dist = pow((lat - latitude) * latScale, 2.0) \
-                               + pow((lng - longitude) * lngScale, 2.0)
-                        dist = pow(dist, 0.5)
-                        if dist <= distance:
-                            res.append(activity)
-                            break
-            objs = res
+        objs = get_by_range(result, latitude, longitude, distance)
     else:
         if request.user.is_authenticated():
             objs = Activity.objects.filter(status='SC', start_time__gte=datetime.date.today()).exclude(
                 participants=request.user).all()[:15]
         else:
             objs = Activity.objects.filter(status='SC', start_time__gte=datetime.date.today()).all()[:15]
-    availableSpots = calcAvailableSpots(Activity.objects.all())
+    available_spots = calcAvailableSpots(Activity.objects.all())
     context = {
         'user': request.user,
         'activities': objs,
-        'availableSpots': availableSpots
+        'availableSpots': available_spots
     }
     template = loader.get_template('activity/index.html')
     return HttpResponse(template.render(context, request))
