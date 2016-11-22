@@ -69,6 +69,10 @@
             width: inherit !important;
         }
 
+        .collapse.in.collapse-inline {
+            display: inline;
+        }
+
     </style>
 
 {% endblock %}
@@ -174,8 +178,15 @@
                                     <div class="card-block">
                                         <div class="card-title">{{ activity.name }}</div>
                                         <div class="card-text">
-                                            <p>{{ activity.description }}</p>
-
+                                        {% if activity.description|wordcount > 10 %}
+                                            <p>{{ activity.description|slice:":100" }}
+                                                <span class="collapse collapse-inline" id="viewdetails3"> 
+                                                {{ activity.description|slice:"101:" }}
+                                                </span> <a data-toggle="collapse" data-target="#viewdetails3">...</a>
+                                            </p>
+                                        {% else %}
+                                            <p>{{ activity.description}}</p>
+                                        {% endif %}
                                             <p>Places available:
                                                 {{ activity.available_spots }}/{{ activity.participants_limit }}
                                             </p>
