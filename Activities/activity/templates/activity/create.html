@@ -40,9 +40,7 @@
                         <div class="row marginbot-30">
                             <div class="btn-group">
                                 <div class="dropdown">
-                                    <button type="button" class="btn btn-skin dropdown-toggle" data-toggle="dropdown">
-                                        Choose activity...
-                                        <span class="caret"></span>
+                                    <button type="button" class="btn btn-skin dropdown-toggle" data-toggle="dropdown" id="#textDropDown">
                                     </button>
                                     <ul class="dropdown-menu pre-scrollable" role="menu">
                                         {% for activity in activities %}
@@ -247,18 +245,16 @@
         });
 
 
-    $(document).ready(function() {
-        $('.datepicker').datetimepicker();
-    });
-</script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             var name = $("#id_name").val();
 
             if (name.length == 0) {
-                $("#textDropDown").text("Choose your activity...");
+                document.getElementById("#textDropDown").innerHTML = "Choose your activity..."+'<span class="caret"></span>';
             } else {
-                $("#textDropDown").text(name);
+                document.getElementById("#textDropDown").innerHTML=name+'<span class="caret"></span>';
             }
+
+            $('.datepicker').datetimepicker();
 
         });
 
