@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'^activity/(?P<activity_id>\d+)/dismiss/$', views.dismiss, name='dismiss_activity'),
 
     url(r'activity/hints/', views.get_hints, name='activity_hints'),
+    url(r'activity/types/(?P<category_id>\d+)/$', views.get_types, name='get_types'),
+    url(r'activity/categories/', views.get_categories, name='get_categories'),
 
     url(r'activity/join', views.join, name='join_activity'),
     url(r'activity/recommendations$', statistics.recommendations, name='recommendations'),

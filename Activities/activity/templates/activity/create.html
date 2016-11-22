@@ -222,6 +222,39 @@
             }
         }
 
+        function onTypeChanged(){
+
+        }
+
+        function onCategoryChanged(){
+
+        }
+
+        function requestTypes(category){
+         $.ajax({
+                url: "/activity/types/" + category + '/',
+                type: "GET",
+                contentType: "application/json",
+                async: true,
+                success: typesResponse,
+                error: console.log,
+            })   
+        }
+
+        function typesResponse(types){
+            typeselector = $('#create_form_activity_type');
+
+                typeselector
+                .find('option')
+                .remove();
+            types.forEach(function(item,i,arr) {
+                var option = document.createElement("option");
+                option.text = item.name;
+                option.value = item.id
+                typeselector.add(option);    
+            });
+        }
+
         $(window).on('map:init', function (e) {
             var detail = e.originalEvent ? e.originalEvent.detail : e.detail;
             layers = L.layerGroup().addTo(detail.map);
@@ -248,10 +281,14 @@
 
 
     $(document).ready(function() {
-        $('.datepicker').datetimepicker();
-    });
-</script>
-        $(document).ready(function () {
+       
+        
+        typeselector = $('#create_form_activity_type');
+        categoryselector = $('#create_form_activity_category');
+        typeselector.find('option').remove();
+        categoryselector.find('option').remove();
+        requestTypes(0);
+
             var name = $("#id_name").val();
 
             if (name.length == 0) {
@@ -260,7 +297,7 @@
                 $("#textDropDown").text(name);
             }
 
-        });
-
-    </script>
+        $('.datepicker').datetimepicker();
+    });
+</script>
 {% endblock %}

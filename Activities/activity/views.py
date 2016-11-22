@@ -466,3 +466,21 @@ def edit(request, activity_id=None):
             raise Http404("The activity your are looking for doesn't exist.")
     else:
         return HttpResponseRedirect('login/')
+
+def get_types(request,category_id):
+    if category_id == '0':
+        types = ActivityType.objects.all().values('id','name','category');
+    else:
+        cat = ActivityCategory.objects.get(id=category_id)
+        types = ActivityType.objects.filter(category=cat).values('id','name','category');    
+    result_json = json.dumps(list(types))
+    return HttpResponse(result_json, content_type='application/json')
+
+def get_categories(request):
+    categories = ActivityCategory.objects.all().values('id','name');
+    result_json = json.dumps(list(types))
+    return HttpResponse(result_json, content_type='application/json')
+
+    
+
+

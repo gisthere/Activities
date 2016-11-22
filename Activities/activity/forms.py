@@ -17,7 +17,7 @@ class ActivityForm(forms.ModelForm):
         error_messages = {'required': 'This field is required'}
         widgets = {
             'start_time': DateTimePicker(options={"format": "YYYY-MM-DD HH:mm"}),
-            'end_time': DateTimePicker(options={"format": "YYYY-MM-DD HH:mm"})
+            'end_time': DateTimePicker(options={"format": "YYYY-MM-DD HH:mm"}),
         }
 
     def clean(self):
@@ -48,7 +48,8 @@ class ActivityForm(forms.ModelForm):
         self.fields['participants_limit'].widget.attrs['placeholder'] = 'required participants (not counting yourself)'
         self.fields['participants_limit'].widget.attrs['onChange'] = '{recommendationsRequest();}'
         self.fields['activity_type'].widget.attrs['id'] = 'create_form_activity_type'
-        self.fields['activity_type'].widget.attrs['onChange'] = '{recommendationsRequest();}'
+        self.fields['activity_type'].widget.attrs['onChange'] = '{recommendationsRequest();onTypeChanged();}'
+        self.fields['activity_category'].widget.attrs['id'] = 'create_form_activity_category'
+        self.fields['activity_category'].widget.attrs['onChange'] = '{onCategoryChanged();}'
         self.fields['start_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
         self.fields['end_time'].widget.attrs['onChange'] = '{recommendationsRequest();}'
-        #self.fields['locations'].widget.attrs['onChange'] = '{recommendationsRequest();}'
