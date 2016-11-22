@@ -30,7 +30,7 @@
 	  	<div class="col-xs-6 col-md-3">
 		  	<button type="button" class="btn btn-skin"
 		    onclick="$.ajax('/activity/join?user_id={{ user.id }}&activity_id={{ activity.id }}')
-		    .done(function() { location.reload({% url 'myactivities:participated_activities' %}) })">
+		    .done(function() { window.location ='{% url 'myactivities:participated_activities' %}'; })">
 		    Join
 		    </button>	
 	  	</div>

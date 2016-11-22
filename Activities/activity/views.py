@@ -474,3 +474,52 @@ def edit(request, activity_id=None):
             raise Http404("The activity your are looking for doesn't exist.")
     else:
         return HttpResponseRedirect('login/')
+
+
+
+def kick_participant(request, activity_id, participant_id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+
+        if activity.organizer.user.user_id != request.user.id:
+            return HttpResponse("error")
+
+
+        participant = Participant.objects.get(user_id=participant_id)
+        participant.delete()
+
+    except Model.DoesNotExist as e:
+        print(e)
+    return HttpResponse("success")
+
+
+def add_comment_for_activity(request, activity_id):
+# redirect to main page if the user is not authenticated
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+
+    if 'comment' in request.POST:
+        comment  = request.POST['comment']
+    # do nothing if there is no valid info in request
+    if activity_id is None or comment is None:
+        return HttpResponse()
+    # check whether the provided rating is valid
+    if not comment:
+        return HttpResponse()
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+        participant = User.objects.get(id=request.user.id)
+        print(participant.first_name)
+        # set the rating from the participant
+        participation = Participant.objects.get_or_create(user=participant, activity=activity)[0]
+        participation.comment = comment
+        participation.save()
+    except Model.DoesNotExist as e:
+        print(e)
+    return HttpResponse()
+
