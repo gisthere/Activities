@@ -46,7 +46,7 @@
             top: -15px;
             border-width: 0 15px 15px;
             border-style: solid;
-            border-color: #ccc transparent;
+            border-color: #fff transparent;
             display: block;
             width: 0;
 
@@ -75,6 +75,10 @@
 
         .card-rating {
             margin-left: 1em;
+        }
+
+        .clickable, .clickable:hover {
+            cursor: pointer;
         }
     </style>
 {% endblock %}
@@ -199,14 +203,17 @@
                         <div class="row">
                             {% for participant in participants %}
                                 <div class="
-{% if request.user == activity.organizer %} col-md-2 {% else %} col-md-2 {% endif %}">
-                            <a href="{% url 'cabinet:user_detail' participant.user.id %}" >
-                                        <div class="card member bg-white shadow-1">
-                                            <div class="row">
-                                                <div class="{% if request.user == activity.organizer %} col-md-12 {% else %} col-md-12 {% endif %} member-content grey-text text-darken-4 text-center">
-                                                    <div id="member-content-{{ participant.user.id }}">
-                                                        {# display star depend on rating  #}
-                                                        <i class="yellow-text darken-1 fa
+                                {% if request.user == activity.organizer %} col-md-6 {% else %} col-md-2 {% endif %}
+                                participant-card">
+
+                                    <div class="card member bg-white shadow-1">
+                                        <div class="row">
+                                            <div class="{% if request.user == activity.organizer %} col-md-4 {% else %} col-md-12 {% endif %}
+                                                {% if request.user == activity.organizer %} col-md-4 {% else %} col-md-12 {% endif %}
+                                                member-content grey-text text-darken-4 text-center">
+                                                <div id="member-content-{{ participant.user.id }}">
+                                                    {# display star depend on rating  #}
+                                                    <i class="yellow-text darken-1 fa
                                                 {% if participant.total_rating|default_if_none:0 < 1 %}
                                                 fa-star-o
                                                 {% elif participant.total_rating|default_if_none:0 < 4.5 %}
@@ -215,115 +222,123 @@
                                                 fa-star
                                                 {% endif %}
                                                 fa-2x" aria-hidden="true"
-                                                           id="participant_star_{{ participant.user.id }}"></i>
-                                                        <h6 class="no-margin"
-                                                            id="participant_rating_{{ participant.user.id }}">
-                                                            {{ participant.total_rating|default_if_none:"0.0" }}</h6>
-                                                        {# end display star #}
+                                                       id="participant_star_{{ participant.user.id }}"></i>
+                                                    <h6 class="no-margin"
+                                                        id="participant_rating_{{ participant.user.id }}">
+                                                        {{ participant.total_rating|default_if_none:"0.0" }}</h6>
+                                                    {# end display star #}
+                                                </div>
+                                                <div id="member-loader-{{ participant.user.id }}"
+                                                     class="hidden">
+                                                    <div class="spinner member-loader">
+                                                        <div class="bounce1 yellow darken-1"></div>
+                                                        <div class="bounce2 yellow darken-1"></div>
+                                                        <div class="bounce3 yellow darken-1"></div>
                                                     </div>
-                                                    <div id="member-loader-{{ participant.user.id }}"
-                                                         class="hidden">
-                                                        <div class="spinner member-loader">
-                                                            <div class="bounce1 yellow darken-1"></div>
-                                                            <div class="bounce2 yellow darken-1"></div>
-                                                            <div class="bounce3 yellow darken-1"></div>
+                                                </div>
+
+                                                {# rating form #}
+                                                {% if request.user == activity.organizer %}
+
+                                                    <form class="rating-container participant_rating small clearfix text-center">
+                                                        <fieldset class="rating card-rating">
+                                                            <input type="radio"
+                                                                   id="star5{{ participant.user.id }}"
+                                                                   name="rating" value="5"
+                                                                    {% if participant.participant_rating == 5 %}
+                                                                   checked {% endif %}/>
+                                                            <label class="full"
+                                                                   for="star5{{ participant.user.id }}"
+                                                                   data-star="5"
+                                                                   data-participant="{{ participant.user.id }}"
+                                                                   title="Awesome - 5 stars"></label>
+
+                                                            <input type="radio"
+                                                                   id="star4{{ participant.user.id }}"
+                                                                   name="rating" value="4"
+                                                                    {% if participant.participant_rating == 4 %}
+                                                                   checked {% endif %}/>
+                                                            <label class="full"
+                                                                   for="star4{{ participant.user.id }}"
+                                                                   data-star="4"
+                                                                   data-participant="{{ participant.user.id }}"
+                                                                   title="Pretty good - 4 stars"></label>
+
+                                                            <input type="radio"
+                                                                   id="star3{{ participant.user.id }}"
+                                                                   name="rating" value="3"
+                                                                    {% if participant.participant_rating == 3 %}
+                                                                   checked {% endif %}/>
+                                                            <label class="full"
+                                                                   for="star3{{ participant.user.id }}"
+                                                                   data-star="3"
+                                                                   data-participant="{{ participant.user.id }}"
+                                                                   title="Meh - 3 stars"></label>
+
+                                                            <input type="radio"
+                                                                   id="star2{{ participant.user.id }}"
+                                                                   name="rating" value="2"
+                                                                    {% if participant.participant_rating == 2 %}
+                                                                   checked {% endif %}/>
+                                                            <label class="full"
+                                                                   for="star2{{ participant.user.id }}"
+                                                                   data-star="2"
+                                                                   data-participant="{{ participant.user.id }}"
+                                                                   title="Kinda bad - 2 stars"></label>
+
+                                                            <input type="radio"
+                                                                   id="star1{{ participant.user.id }}"
+                                                                   name="rating" value="1"
+                                                                    {% if participant.participant_rating == 1 %}
+                                                                   checked {% endif %}/>
+                                                            <label class="full"
+                                                                   for="star1{{ participant.user.id }}"
+                                                                   data-star="1"
+                                                                   data-participant="{{ participant.user.id }}"
+                                                                   title="Sucks big time - 1 star"></label>
+                                                        </fieldset>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+
+                                            {% if request.user == activity.organizer %}
+                                                <div class="col-md-8">
+                                                    {% if participant.comment_for_participant|default:'' == '' %}
+                                                        <div class="form-group">
+                                                            <textarea class="form-control" rows="3"
+                                                                      id="participant_comment_{{ participant.user.id }}"></textarea>
                                                         </div>
-                                                    </div>
-
-                                                    {# rating form #}
-                                                    {% if request.user == activity.organizer %}
-
-                                                        <form class="rating-container participant_rating small clearfix text-center">
-                                                            <fieldset class="rating card-rating">
-                                                                <input type="radio"
-                                                                       id="star5{{ participant.user.id }}"
-                                                                       name="rating" value="5"
-                                                                        {% if participant.participant_rating == 5 %}
-                                                                       checked {% endif %}/>
-                                                                <label class="full"
-                                                                       for="star5{{ participant.user.id }}"
-                                                                       data-star="5"
-                                                                       data-participant="{{ participant.user.id }}"
-                                                                       title="Awesome - 5 stars"></label>
-
-                                                                <input type="radio"
-                                                                       id="star4{{ participant.user.id }}"
-                                                                       name="rating" value="4"
-                                                                        {% if participant.participant_rating == 4 %}
-                                                                       checked {% endif %}/>
-                                                                <label class="full"
-                                                                       for="star4{{ participant.user.id }}"
-                                                                       data-star="4"
-                                                                       data-participant="{{ participant.user.id }}"
-                                                                       title="Pretty good - 4 stars"></label>
-
-                                                                <input type="radio"
-                                                                       id="star3{{ participant.user.id }}"
-                                                                       name="rating" value="3"
-                                                                        {% if participant.participant_rating == 3 %}
-                                                                       checked {% endif %}/>
-                                                                <label class="full"
-                                                                       for="star3{{ participant.user.id }}"
-                                                                       data-star="3"
-                                                                       data-participant="{{ participant.user.id }}"
-                                                                       title="Meh - 3 stars"></label>
-
-                                                                <input type="radio"
-                                                                       id="star2{{ participant.user.id }}"
-                                                                       name="rating" value="2"
-                                                                        {% if participant.participant_rating == 2 %}
-                                                                       checked {% endif %}/>
-                                                                <label class="full"
-                                                                       for="star2{{ participant.user.id }}"
-                                                                       data-star="2"
-                                                                       data-participant="{{ participant.user.id }}"
-                                                                       title="Kinda bad - 2 stars"></label>
-
-                                                                <input type="radio"
-                                                                       id="star1{{ participant.user.id }}"
-                                                                       name="rating" value="1"
-                                                                        {% if participant.participant_rating == 1 %}
-                                                                       checked {% endif %}/>
-                                                                <label class="full"
-                                                                       for="star1{{ participant.user.id }}"
-                                                                       data-star="1"
-                                                                       data-participant="{{ participant.user.id }}"
-                                                                       title="Sucks big time - 1 star"></label>
-                                                            </fieldset>
-                                                        </form>
+                                                    {% else %}
+                                                        {{ participant.comment_for_participant }}
                                                     {% endif %}
                                                 </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="row">
+                                            <div class="{% if request.user == activity.organizer %} col-md-4 {% else %} col-md-12 {% endif %}
+                                                member-footer text-center text-uppercase">
+                                                <a href="{% url 'cabinet:user_detail' participant.user.id %}">{{ participant.user }}</a>
 
-                                                {% if False %}
-                                                    <div class="col-md-6 comment-participant">
-                                                        {% if participant.comment_for_participant|default:'' == '' %}
-                                                            <div class="form-group">
+                                                {% if request.user == activity.organizer %}
+                                                    <i class="grey-text text-darken-2 fa fa-times delete-participant clickable"
+                                                       aria-hidden="true"
+                                                       data-participant="{{ participant.user.id }}"></i>
+                                                {% endif %}
 
-                                                <div class="col-md-12 member-footer text-center text-uppercase">
-                                                    {{ participant.user }}
-                                                     <i class="grey-text text-darken-2 fa fa-times delete-participant" aria-hidden="true"></i>
-                                                </div>
                                             </div>
-                                            <div class="row ">
-                                                <div class="{% if request.user == activity.organizer %} col-md-12 {% else %} col-md-12 {% endif %}member-footer text-center text-uppercase">
-                                                    {{ participant.user }}</div>
 
-                                                {% if False %}
-
-                                                    <div class="col-md-6 text-center comment-participant">
-                                                     {% if participant.comment_for_participant|default:'' == '' %}
+                                            {% if request.user == activity.organizer %}
+                                                <div class="col-md-8">
+                                                    {% if participant.comment_for_participant|default:'' == '' %}
                                                         <button class="btn btn-skin comment-participant-button"
                                                                 data-participant="{{ participant.user.id }}"
                                                                 type="button">Comment
                                                         </button>
-                                                         {% endif %}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
                                         </div>
-                                    </a>
-
-
+                                    </div>
                                 </div>
 
                             {% endfor %}
@@ -515,6 +530,16 @@
             });
 
 
+            function progressParticipant(status, participant_id) {
+                if (status) {
+                    $("#member-content-" + participant_id).addClass("hidden");
+                    $("#member-loader-" + participant_id).removeClass("hidden");
+                } else {
+                    $("#member-content-" + participant_id).removeClass("hidden");
+                    $("#member-loader-" + participant_id).addClass("hidden");
+                }
+            }
+
             var activityId = {{ activity.id }};
 
             $('.participant_rating').on('click', function (e) {
@@ -527,8 +552,7 @@
             });
 
             function changeRating(activity_id, participant_id, new_rating) {
-                $("#member-content-" + participant_id).addClass("hidden");
-                $("#member-loader-" + participant_id).removeClass("hidden");
+                progressParticipant(true, participant_id);
 
                 $.ajax('/activity/' + activity_id + '/participant/' + participant_id + '/rating/change/' + new_rating)
                         .done(function (result) {
@@ -543,8 +567,7 @@
                             else if (result < 4.5) participantStar.addClass("fa-star-half-o");
                             else participantStar.addClass("fa-star");
 
-                            $("#member-content-" + participant_id).removeClass("hidden");
-                            $("#member-loader-" + participant_id).addClass("hidden");
+                            progressParticipant(false, participant_id);
                         });
             }
 
@@ -574,10 +597,17 @@
 
                 if (target.data("participant")) {
                     var participantId = target.data("participant");
+                    progressParticipant(true, participantId);
                     var inputComment = $("#participant_comment_" + target.data("participant"));
 
                     if (!!inputComment && inputComment.val() != "") {
-                        addCommentForParticipant(activityId, participantId, inputComment.val());
+
+                        var comment = inputComment.val();
+                        addCommentForParticipant(activityId, participantId, comment, function (result) {
+                            inputComment.closest(".form-group").replaceWith(comment);
+                            target.remove();
+                            progressParticipant(false, participantId);
+                        });
                     }
                 }
 
@@ -586,7 +616,7 @@
                 return false;
             });
 
-            function addCommentForParticipant(activityId, participantId, comment) {
+            function addCommentForParticipant(activityId, participantId, comment, callback) {
                 $.ajax({
                     type: 'POST',
                     url: '/activity/' + activityId + '/participant/' + participantId + '/comment/add/',
@@ -594,32 +624,48 @@
                         comment: comment
                     }
                 }).done(function (result) {
+                    callback(result);
                 });
             }
 
-            function kickParticipant(activityId, participantId) {
+            function kickParticipant(activityId, participantId, callback) {
                 $.ajax({
                     type: 'GET',
                     url: '/activity/' + activityId + '/participant/' + participantId + '/kick/'
                 }).done(function (result) {
-                    console.log(result);
+                    callback(result);
                 });
             }
 
 
             function deleteParticipant() {
-                $(".delete-participant").bind("click", function(e) {
+                $(".delete-participant").bind("click", function (e) {
                     e.preventDefault();
                     e.stopPropagation();
+
+
+                    var target = $(e.target);
+                    if (!target.data("participant")) return;
+
+                    var participantId = target.data("participant");
                     var participantCard = $(e.target).closest(".participant-card");
 
+                    progressParticipant(true, participantId);
+                    kickParticipant(activityId, participantId, function (e) {
 
-                    participantCard.remove();
-
+                        if (e == "success") {
+                            participantCard.remove();
+                        } else {
+                            console.log(e);
+                        }
+                        progressParticipant(false, participantId);
+                    });
 
                     return false;
                 });
             }
+
+            deleteParticipant();
 
         })();
     </script>

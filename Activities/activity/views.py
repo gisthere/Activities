@@ -485,13 +485,13 @@ def kick_participant(request, activity_id, participant_id):
         # try to load activity from the database
         activity = Activity.objects.get(id=activity_id)
 
-        if activity.organizer.user.id != request.user.id:
-            return HttpResponse("")
+        if activity.organizer.user.user_id != request.user.id:
+            return HttpResponse("error")
 
 
-        participant = Participant.objects.get(id=participant_id)
+        participant = Participant.objects.get(user_id=participant_id)
         participant.delete()
 
     except Model.DoesNotExist as e:
         print(e)
-    return HttpResponse()
+    return HttpResponse("success")
