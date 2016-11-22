@@ -48,8 +48,11 @@ def signup(request):
         try:
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
             email = form.cleaned_data.get('email')
-            user = User.objects.create_user(username, email, password)
+            user = User.objects.create_user(username, email=email, password=password, first_name=first_name,
+                                            last_name=last_name)
             user.save()
             auth.login(request, user)
             update_user_location(request, user)
@@ -57,7 +60,7 @@ def signup(request):
             return render(request, 'msg.htm', {'form': form})
         except IntegrityError as e:
             form = SignupForm()
-            form.message = 'Specified user name is already in use';
+            form.message = 'Specified user name is already in use'
     # if a GET (or any other method) we'll create a blank form
     else:
         form = SignupForm()

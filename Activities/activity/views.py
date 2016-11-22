@@ -22,6 +22,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Value, CharField, FloatField
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
+
 class ActivityList(ListView):
     model = Activity
     paginate_by = 10
@@ -31,13 +32,14 @@ class ActivityList(ListView):
     def get_queryset(self):
         list = Activity.objects.annotate(
             num_participant=Count('participant'),
-            rating =Avg('participant__rating')
+            rating=Avg('participant__rating')
         )
 
         # get search 't' - type and 'v' value
         if 't' in self.request.GET and 'v' in self.request.GET and self.request.GET['t']:
             filter_type = self.request.GET['t']
             filter_value = self.request.GET['v']
+            filter_range = self.request.GET['distance']
 
             # check possible variation to prevent XSS injection
             if filter_type == 'at':
@@ -65,6 +67,35 @@ class ActivityList(ListView):
                 return activities.order_by('start_time')
         else:
             return activities
+
+
+#
+def get_by_range(query, latitude, longitude, distance):
+    # use GEO information of the search request if there was any
+    objs = query.filter(status='SC', start_time__gte=datetime.date.today()).all()
+    if latitude is not None or longitude is not None:
+        res = []
+        lat_scale = 111  # value in kilometers
+        lng_scale = 111  # value in kilometers
+        # output only activities which located no further than 'distance' threshold
+        for activity in objs:
+            # if at least one location of the activity is located within
+            # the specified distance, then add it to the output list
+            locs = activity.activitylocation_set.all()
+            if len(locs) == 0:
+                res.append(activity)
+            else:
+                for loc in locs:
+                    lat = float(loc.location.latitude)
+                    lng = float(loc.location.longitude)
+                    dist = pow((lat - latitude) * lat_scale, 2.0) \
+                           + pow((lng - longitude) * lng_scale, 2.0)
+                    dist = pow(dist, 0.5)
+                    if dist <= distance:
+                        res.append(activity)
+                        break
+        objs = res
+    return objs
 
 
 # Create your views here.
@@ -101,36 +132,18 @@ def index(request):
                 similarity=TrigramSimilarity('name', request.GET['search'])
             ).filter(similarity__gt=0.1)
         # use GEO information of the search request if there was any
-        objs = result.filter(status='SC',start_time__gte=datetime.date.today()).all()
-        if latitude is not None or longitude is not None:
-            res = []
-            latScale = 111  # value in kilometers
-            lngScale = 111  # value in kilometers
-            # output only activities which located no further than 'distance' threshold
-            for activity in objs:
-                # if at least one location of the activity is located within
-                # the specified distance, then add it to the output list
-                locs = activity.activitylocation_set.all()
-                if len(locs) == 0:
-                    res.append(activity)
-                else:
-                    for loc in locs:
-                        lat = float(loc.location.latitude)
-                        lng = float(loc.location.longitude)
-                        dist = pow((lat - latitude) * latScale, 2.0) \
-                               + pow((lng - longitude) * lngScale, 2.0)
-                        dist = pow(dist, 0.5)
-                        if dist <= distance:
-                            res.append(activity)
-                            break
-            objs = res
+        objs = get_by_range(result, latitude, longitude, distance)
     else:
-        objs = Activity.objects.filter(status='SC',start_time__gte=datetime.date.today()).all()
-    availableSpots = calcAvailableSpots(Activity.objects.all())
+        if request.user.is_authenticated():
+            objs = Activity.objects.filter(status='SC', start_time__gte=datetime.date.today()).exclude(
+                participants=request.user).all()[:15]
+        else:
+            objs = Activity.objects.filter(status='SC', start_time__gte=datetime.date.today()).all()[:15]
+    available_spots = calcAvailableSpots(Activity.objects.all())
     context = {
         'user': request.user,
         'activities': objs,
-        'availableSpots': availableSpots
+        'availableSpots': available_spots
     }
     template = loader.get_template('activity/index.html')
     return HttpResponse(template.render(context, request))
@@ -289,9 +302,12 @@ def join(request):
         return HttpResponse()
     try:
         # try to load activity from the database
-        activity = Activity.objects.get(id=activity_id)
         user = User.objects.get(id=user_id)
-        # TODO: check whether I've joined activity or not
+        activity = Activity.objects.get(id=activity_id)
+
+        if user in activity.participants.all():
+            return HttpResponseRedirect('/')
+
         Participant.objects.update_or_create(user=user, activity=activity)
     except Model.DoesNotExist as e:
         print(e)
@@ -368,12 +384,13 @@ def change_participant_rating(request, activity_id, participant_id, new_rating):
     try:
         # try to load activity from the database
         activity = Activity.objects.get(id=activity_id)
-        participant = User.objects.get(id=participant_id)
-        print(participant.first_name)
-        # set the rating from the participant
-        participation = Participant.objects.get_or_create(user=participant, activity=activity)[0]
-        participation.participant_rating = new_rating
-        participation.save()
+        if request.user.id == activity.organizer_id:
+            participant = User.objects.get(id=participant_id)
+            print(participant.first_name)
+            # set the rating from the participant
+            participation = Participant.objects.get_or_create(user=participant, activity=activity)[0]
+            participation.participant_rating = new_rating
+            participation.save()
     except Model.DoesNotExist as e:
         print(e)
     return HttpResponse(participation.total_rating)
@@ -415,14 +432,15 @@ def detail(request, activity_id):
         if request.method == 'POST':
             if 'UserMessage' in request.POST:
                 msgText = request.POST['UserMessage']
-                activ = Activity.objects.get(id = activity_id)
-                newComment = Chat.objects.create(user = request.user, activity = activ, message = msgText)
+                activ = Activity.objects.get(id=activity_id)
+                newComment = Chat.objects.create(user=request.user, activity=activ, message=msgText)
                 newComment.save()
-        activ = Activity.objects.get(id = activity_id)
-        allComments = Chat.objects.filter(activity = activ)
+        activ = Activity.objects.get(id=activity_id)
+        allComments = Chat.objects.filter(activity=activ)
     except Activity.DoesNotExist:
         raise Http404("The activity your are looking for doesn't exist.")
-    return render(request, 'activity/detail.html', {'activity': activity, 'comments': allComments, 'participants': participants})
+    return render(request, 'activity/detail.html',
+                  {'activity': activity, 'comments': allComments, 'participants': participants})
 
 
 def edit(request, activity_id=None):

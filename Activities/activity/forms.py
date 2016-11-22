@@ -3,23 +3,22 @@ from django.core.exceptions import ValidationError
 from activity.models import Activity
 from django.utils.timezone import utc
 import datetime
-
-
-class DateTimeInput(forms.DateTimeInput):
-    input_type = 'datetime-local'
+from bootstrap3_datetime.widgets import DateTimePicker
 
 
 class ActivityForm(forms.ModelForm):
     title = 'Create a new activity'
-    id = forms.IntegerField(widget=forms.HiddenInput,required=False)
-    start_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
-    end_time = forms.DateTimeField(required=True, input_formats=['%Y-%m-%dT%H:%M'], widget=DateTimeInput)
+    id = forms.IntegerField(widget=forms.HiddenInput, required=False)
 
     class Meta:
         model = Activity
         fields = ['id', 'name', 'description', 'requirements', 'start_time', 'end_time', 'participants_limit',
                   'activity_category', 'activity_type']
         error_messages = {'required': 'This field is required'}
+        widgets = {
+            'start_time': DateTimePicker(options={"format": "YYYY-MM-DD HH:mm"}),
+            'end_time': DateTimePicker(options={"format": "YYYY-MM-DD HH:mm"})
+        }
 
     def clean(self):
         start_time = self.cleaned_data.get('start_time')
