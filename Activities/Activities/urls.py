@@ -15,10 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django_nyt.urls import get_pattern as get_nyt_pattern
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^cabinet/', include('cabinet.urls')),
+    url(r'^chat/', include('chat.urls')),
     url(r'^', include('authentication.urls')),
-    url(r'^', include('activity.urls'))
-
+    url(r'^', include('activity.urls')),
+    url(r'^', include('myactivities.urls')),
+    url(r'^subscriptions/', include('subscriptions.urls')),
+    url(r'^notifications/', get_nyt_pattern()),
 ]

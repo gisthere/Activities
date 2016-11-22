@@ -1,49 +1,262 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+{% load staticfiles %}
+{% block head %}
+    {% leaflet_js %}
+    {% leaflet_css %}
 
-{% block title %}Create Activity{% endblock %}
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" media="screen">
+    <link rel="stylesheet" href="{% static "css/bootstrap-datetimepicker.min.css" %}" media="screen"/>
+    <script src="{% static "js/jquery-1.9.1.js" %}"></script>
+    <script src="{% static "js/jquery.min.js" %}"></script>
+    {{ activity_form.media }}
+{% endblock %}
 
 {% block content %}
-    <p>Creating activity worked!</p>
-    <form action="{% url 'activity:add_activity' %}" method="post" novalidate>
-        {% csrf_token %}
 
-        <p>
-        <label for="id_name">Name:</label>
-        <input id="id_name" maxlength="30" name="name" type="text" required="">
-        </p>
 
-        <label for="id_description">Description:</label>
-        <input id="id_description" maxlength="30" name="description" type="text">
+    <section class="home-section nopadd-bot color-dark text-center">
 
-        <p>
-            <label for="id_requirements">Requirements:</label>
-            <textarea cols="40" id="id_requirements" name="requirements" rows="10" required=""></textarea>
-        </p>
+        <div class="container marginbot-20 formCreate">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="animatedParent">
+                        <div class="section-heading text-center">
+                            <h2 class="h-bold animated bounceInDown">{{ activity_form.title }}</h2>
+                            <div class="divider-header"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <p>
-            <label for="id_participants_limit">Participants limit:</label>
-            <input id="id_participants_limit" name="participants_limit" type="text" required="">
-        </p>
+        </div>
+        <div>Save your time! Create a new activity based on your previous ones!</div>
 
-        <p>
-            <label class="required" for="id_activity_category">Activity category:</label>
-            <select id="id_activity_category" name="activity_category" required="">
-                {% for category in activity_categories %}
-                    <option value="{{ category.id }}" >{{ category.name }}</option>
-                {% endfor %}
-            </select>
-        </p>
+        <div class="container">
+            <div class="row marginbot-80">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="col-md-12">
+                        <div class="row marginbot-30">
+                            <div class="btn-group">
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-skin dropdown-toggle" data-toggle="dropdown" id="#textDropDown">
+                                    </button>
+                                    <ul class="dropdown-menu pre-scrollable" role="menu">
+                                        {% for activity in activities %}
+                                            <li>
+                                                <a href="{% url 'activity:activity_create' activity.id %}">{{ activity.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
 
-        <p>
-            <label class="required" for="id_activity_type">Activity type:</label>
-            <select id="id_activity_type" name="activity_type" required="">
-                {% for type in activity_types %}
-                    <option value="{{ type.id }}" >{{ type.name }}</option>
-                {% endfor %}
-            </select>
-        </p>
+                    </div>
+                    <form id="activityForm" class="form-horizontal" action="" method="POST">
+                        {% csrf_token %}
+                        {% for error in activity_form.non_field_errors %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                        {% endfor %}
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">{{ activity_form.name }}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">{{ activity_form.description }}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">{{ activity_form.requirements }}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <label for="{{ activity_form.start_time.id_for_label }}"
+                                           class="col-md-2 control-label">From:</label>
+                                    <div class="col-md-10">{{ activity_form.start_time }}</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ activity_form.end_time.id_for_label }}"
+                                           class="col-md-2 control-label">To:</label>
+                                    <div class="col-md-10">{{ activity_form.end_time }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">{{ activity_form.participants_limit }}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">{{ activity_form.locations }}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <label for="{{ activity_form.activity_category.id_for_label }}"
+                                           class="col-md-4 control-label">Category:</label>
+                                    <div class="col-md-8">{{ activity_form.activity_category }}</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ activity_form.activity_type.id_for_label }}"
+                                           class="col-md-4 control-label">Type:</label>
+                                    <div class="col-md-8">{{ activity_form.activity_type }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row map">
+                            {% leaflet_map "activity_map" %}
+                        </div>
+                        <input type="submit" value="Create" class="btn btn-skin btn-lg btn-block"/>
+                    </form>
 
-        <input type="submit" value="Create" />
+                </div>
+            </div>
+        </div>
 
-    </form>
+        <div class="container marginbot-50">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="animatedParent">
+                        <div id="div_reccomendation" class="section-heading text-center">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+{% endblock %}
+
+{% block scripts %}
+
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+    <script type="text/javascript" src="{% static "js/moment.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootstrap-datetimepicker.min.js" %}" charset="UTF-8"></script>
+
+    <script type="text/javascript">
+        function recommendationsRequest() {
+            var type = $('#create_form_activity_type').val();
+
+            if (type == '') {
+                document.getElementById("div_reccomendation").innerHTML = "";
+                return;
+            }
+
+            $.ajax({
+                url: "{% url 'activity:recommendations' %}" + '?' + 'type=' + type,
+                type: "GET",
+                contentType: "application/text",
+                async: true,
+                success: recommendationsResponse,
+                error: recommendationsError,
+            })
+        }
+        ;
+
+        function recommendationsResponse(response) {
+            document.getElementById("div_reccomendation").innerHTML = response;
+        }
+        ;
+
+        function recommendationsError(response) {
+            document.getElementById("div_reccomendation").innerHTML = "";
+        }
+        ;
+    </script>
+
+
+    <script type="text/javascript">
+        var layers = {};
+
+        function onMarkerClick(e) {
+            // get the marker on which click event fired
+            var marker = e.target;
+            // remove it from the map
+            if (layers.hasLayer(marker)) {
+                console.log(marker);
+                layers.removeLayer(marker);
+            }
+        }
+
+        // adds marker and its description (if any) to the specified map
+        function addMarker(map, loc) {
+            var marker = L.marker([loc.latitude, loc.longitude], {draggable: true});
+            marker.on('click', onMarkerClick);
+            // add a marker to the map
+            layers.addLayer(marker);
+            // add popup for the marker if it has any name
+            if (loc.name) {
+                var popup = L.popup()
+                        .setLatLng([loc.latitude, loc.longitude])
+                        .setContent(loc.name);
+                marker.bindPopup(popup);
+            }
+        }
+
+        // create location object from the given parameters
+        function createLocation(latlng, name) {
+            var loc = {};
+            loc.latitude = latlng.lat;
+            loc.longitude = latlng.lng;
+            loc.name = name;
+            return loc;
+        }
+
+        function onMapClick(e) {
+            // if there is location information, then add new marker on the map
+            if (e.latlng) {
+                var loc = createLocation(e.latlng, '');
+                addMarker(e.target, loc);
+            }
+        }
+
+        $(window).on('map:init', function (e) {
+            var detail = e.originalEvent ? e.originalEvent.detail : e.detail;
+            layers = L.layerGroup().addTo(detail.map);
+            detail.map.on('click', onMapClick);
+            detail.map.locate();
+
+            // add geo information to the post request before submit
+            $('#activityForm').submit(function () { //listen for submit event
+                var res = [];
+                // pack all locations into json array...
+                layers.eachLayer(function (layer) {
+                    var latlng = layer.getLatLng();
+                    var loc = createLocation(latlng, '');
+                    res.push(JSON.stringify(loc));
+                });
+                // ...and attach it to the current form
+                $('<input />').attr('type', 'hidden')
+                        .attr('name', 'locations')
+                        .attr('value', '{ "locations": [' + res + ']}')
+                        .appendTo('#activityForm');
+                return true;
+            });
+        });
+
+
+        $(document).ready(function() {
+            var name = $("#id_name").val();
+
+            if (name.length == 0) {
+                document.getElementById("#textDropDown").innerHTML = "Choose your activity..."+'<span class="caret"></span>';
+            } else {
+                document.getElementById("#textDropDown").innerHTML=name+'<span class="caret"></span>';
+            }
+
+            $('.datepicker').datetimepicker();
+
+        });
+
+    </script>
 {% endblock %}

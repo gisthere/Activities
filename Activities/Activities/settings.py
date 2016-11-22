@@ -38,13 +38,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
+    'leaflet',
     'locations',
     'authentication',
     'activity',
+    'myactivities',
     'plans',
-    'templatetags'
-
+     # templatetags',
+    'cabinet',
+    'chat',
+    'subscriptions',
+    'django_nyt',
+    'channels',
+    'ratings',
+    'bootstrap3_datetime'
 ]
 
 MIDDLEWARE = [
@@ -96,6 +104,20 @@ DATABASES = {
 }
 
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        # "BACKEND": "asgiref.inmemory.ChannelLayer",
+
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+        "ROUTING": "django_nyt.routing.channel_routing",
+    },
+}
+
+
+
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -114,6 +136,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LEAFLET_CONFIG = {
+  'DEFAULT_CENTER': (00.00, 00.00),
+  'DEFAULT_ZOOM': 1,
+  'MIN_ZOOM': 1,
+  'MAX_ZOOM': 18,
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/

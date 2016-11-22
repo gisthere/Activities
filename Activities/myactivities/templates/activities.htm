@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <style>
+        .rating > .yellowstar, .rating > .yellowstar-text {
+            color: #ffd700;
+            float: left;
+        }
+
+        .rating > .yellowstar-text {
+            font-weight: 700;
+            font-size: 18px;
+            margin: 0px;
+            padding: 5px;
+        }
+
+        .star-container {
+            width: 100%;
+        }
+
+        .link-button {
+            margin: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <!-- Section: header -->
+    <section class="color-dark bg-gray">
+        <div class="container">
+            <div class="row simple-box">
+                <div class="section-heading">
+                    <h2 class="text-center h-bold">{{ form.header }}</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /Section: header -->
+
+    {% if form.activities %}
+        <section class="color-dark bg-gray">
+            <div id="activities">
+                <!-- Output information about each activity in the list -->
+                {% for activity in form.activities %}
+                    <div class="container">
+                        <div class="row">
+                            <div class="animated">
+                                <div id="activity{{ activity.id }}" class="{% if activity.status == 'SC' %}simple-box
+                                    {% elif activity.status == 'CN' %}canceled-box
+                                    {% elif activity.status == 'PF' %}performed-box{% endif %}">
+                                    <div class="service-desc">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-3 col-sm-8 col-xs-12 text-center">
+                                                <h5 class="row">{{ activity.name }}</h5>
+                                                <!-- Activity rating -->
+                                                <div class="row">
+                                                    {% if activity.status == 'PF' %}
+                                                        {% if form.is_created == False %}
+                                                            <form class="rating-container">
+                                                                <fieldset class="rating">
+                                                                    <input type="radio" id="star5{{ activity.id }}"
+                                                                           name="rating" value="5"
+                                                                            {% if activity.rating == 5 %}
+                                                                           checked {% endif %}/>
+                                                                    <label class="full" for="star5{{ activity.id }}"
+                                                                           onclick="changeRating({{ activity.id }}, 5)"
+                                                                           title="Awesome - 5 stars"></label>
+
+                                                                    <input type="radio" id="star4{{ activity.id }}"
+                                                                           name="rating" value="4"
+                                                                            {% if activity.rating == 4 %}
+                                                                           checked {% endif %}/>
+                                                                    <label class="full" for="star4{{ activity.id }}"
+                                                                           onclick="changeRating({{ activity.id }}, 4)"
+                                                                           title="Pretty good - 4 stars"></label>
+
+                                                                    <input type="radio" id="star3{{ activity.id }}"
+                                                                           name="rating" value="3"
+                                                                            {% if activity.rating == 3 %}
+                                                                           checked {% endif %}/>
+                                                                    <label class="full" for="star3{{ activity.id }}"
+                                                                           onclick="changeRating({{ activity.id }}, 3)"
+                                                                           title="Meh - 3 stars"></label>
+
+                                                                    <input type="radio" id="star2{{ activity.id }}"
+                                                                           name="rating" value="2"
+                                                                            {% if activity.rating == 2 %}
+                                                                           checked {% endif %}/>
+                                                                    <label class="full" for="star2{{ activity.id }}"
+                                                                           onclick="changeRating({{ activity.id }}, 2)"
+                                                                           title="Kinda bad - 2 stars"></label>
+
+                                                                    <input type="radio" id="star1{{ activity.id }}"
+                                                                           name="rating" value="1"
+                                                                            {% if activity.rating == 1 %}
+                                                                           checked {% endif %}/>
+                                                                    <label class="full" for="star1{{ activity.id }}"
+                                                                           onclick="changeRating({{ activity.id }}, 1)"
+                                                                           title="Sucks big time - 1 star"></label>
+                                                                </fieldset>
+                                                            </form>
+                                                        {% else %}
+                                                            <form class="rating-container">
+                                                                <fieldset class="rating">
+                                                                    <input type="radio" id="star5{{ activity.id }}"
+                                                                           name="rating" value="5"
+                                                                            {% if activity.rating == 5 %}
+                                                                           checked {% else %} disabled {% endif %}/>
+                                                                    <label class="full" for="star5{{ activity.id }}"
+                                                                           title="Awesome - 5 stars"></label>
+
+                                                                    <input type="radio" id="star4{{ activity.id }}"
+                                                                           name="rating" value="4"
+                                                                            {% if activity.rating == 4 %}
+                                                                           checked {% else %} disabled {% endif %}/>
+                                                                    <label class="full" for="star4{{ activity.id }}"
+                                                                           title="Pretty good - 4 stars"></label>
+
+                                                                    <input type="radio" id="star3{{ activity.id }}"
+                                                                           name="rating" value="3"
+                                                                            {% if activity.rating == 3 %}
+                                                                           checked {% else %} disabled {% endif %}/>
+                                                                    <label class="full" for="star3{{ activity.id }}"
+                                                                           title="Meh - 3 stars"></label>
+
+                                                                    <input type="radio" id="star2{{ activity.id }}"
+                                                                           name="rating" value="2"
+                                                                            {% if activity.rating == 2 %}
+                                                                           checked {% else %} disabled {% endif %}/>
+                                                                    <label class="full" for="star2{{ activity.id }}"
+                                                                           title="Kinda bad - 2 stars"></label>
+
+                                                                    <input type="radio" id="star1{{ activity.id }}"
+                                                                           name="rating" value="1"
+                                                                            {% if activity.rating == 1 %}
+                                                                           checked {% else %} disabled {% endif %}/>
+                                                                    <label class="full" for="star1{{ activity.id }}"
+                                                                           title="Sucks big time - 1 star"></label>
+                                                                </fieldset>
+                                                            </form>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <p>{{ activity.get_status_display }}</p>
+                                                    {% endif %}
+                                                </div>
+                                                <!-- Activity status and action buttons -->
+                                                <div class="row">
+                                                    <a href="{% url 'activity:activity_detail' activity.id %}"
+                                                       class="btn btn-skin link-button">Details</a>
+                                                    {% if form.can_remove %}
+                                                        {% if activity.status != 'PF' %}
+                                                            <a href="{% url 'activity:activity_edit' activity.id %}"
+                                                               class="btn btn-skin">Edit</a>
+                                                        {% endif %}
+                                                        {% if activity.status == 'SC' %}
+                                                            <button type="button" class="perform btn btn-skin"
+                                                                    onclick="changeStatus({{ activity.id }}, 'PF')">
+                                                                Perform
+                                                            </button>
+                                                            <button type="button" class="btn btn-skin"
+                                                                    onclick="changeStatus({{ activity.id }}, 'CN')">
+                                                                Cancel
+                                                            </button>
+                                                        {% elif activity.status == 'CN' %}
+                                                            <button type="button" class="btn btn-skin"
+                                                                    onclick="changeStatus({{ activity.id }}, 'SC')">
+                                                                Restore
+                                                            </button>
+                                                            <button type="button" class="btn btn-skin"
+                                                                    onclick="deleteActivity({{ activity.id }})">
+                                                                Delete
+                                                            </button>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    {% if form.can_join and activity.status != 'PF' %}
+                                                        <button type="button" class="btn btn-skin"
+                                                                onclick="dismissActivity({{ activity.id }})">
+                                                            Dismiss
+                                                        </button>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                <div class="row col-xs-12">
+                                                    <small class="start-time">Start time:</small>
+                                                    <p>{{ activity.start_time|date:"Y-m-d   H:i" }}</p>
+                                                </div>
+                                                <div class="row col-xs-12">
+                                                    <small>End time:</small>
+                                                    <p>{{ activity.end_time|date:"Y-m-d   H:i" }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <small>Category:</small>
+                                                        <p>{{ activity.activity_category }}</p>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <small>Type:</small>
+                                                        <p>{{ activity.activity_type }}</p>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <small>Participants limit:</small>
+                                                        <p>{{ activity.participants_limit }}</p>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <small>Description:</small>
+                                                        <p>{{ activity.description }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Organizer's feedback -->
+                                            {% for rating in form.ratings %}
+                                                {% if rating.activity.id == activity.id %}
+                                                    <div class="col-lg-offset-3 col-md-offset-3 col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                        <div class="row">
+                                                            <div style="padding: 15px;">
+                                                                <small>Organizer's feedback:</small>
+                                                                {% if rating.participant_rating %}
+                                                                    <div class="rating star-container">
+                                                                        <p class="yellowstar-text">
+                                                                            {{ rating.participant_rating }}</p>
+                                                                        <label class="full yellowstar"></label>
+                                                                    </div>
+                                                                {% endif %}
+                                                                <p>{{ rating.comment_for_participant }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% else %}
+
+        <section class="color-dark bg-gray">
+            <div>
+                <div class="container">
+                    <div class="row">
+                        <div class="simple-box text-center">
+                            <h5>
+                                No activities yet!
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock content %}
+
+{% block scripts %}
+    <script>
+        function deleteActivity(activity_id) {
+            $.ajax('/activity/' + activity_id + '/delete/')
+                    .done(function () {
+                        // TODO: remove element from the DOM. Do not reload the whole page!
+                        location.reload();
+                    });
+        }
+
+        function dismissActivity(activity_id) {
+            $.ajax('/activity/' + activity_id + '/dismiss/')
+                    .done(function () {
+                        // TODO: remove the element from the DOM. Do not reload the whole page!
+                        location.reload();
+                    });
+        }
+
+        function changeStatus(activity_id, new_status) {
+            $.ajax('/activity/' + activity_id + '/status/change/' + new_status)
+                    .done(function () {
+                        location.reload();
+                    });
+        }
+
+        function changeRating(activity_id, new_rating) {
+            $.ajax('/activity/' + activity_id + '/rating/change/' + new_rating)
+                    .done(function () {
+                    });
+        }
+    </script>
+{% endblock %}

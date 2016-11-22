@@ -1,5 +1,5 @@
+from django.contrib.auth.models import User
 from django.db import models
-from authentication.models import User
 from activity.models import ActivityCategory
 from activity.models import ActivityType
 from activity.models import Activity

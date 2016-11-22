@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<section class="home-section nopadd-bot color-dark text-center">
+        <div class="container marginbot-20 formCreate">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="animatedParent">
+                        <div class="section-heading text-center">
+                            <h2 class="h-bold animated bounceInDown">Chat: {{title}} <!-- {{ activity_form.title }} --></h2>
+                            <div class="divider-header"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</section>
+
+    <div class="container">
+		<div class="row marginbot-80">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="col-md-12">
+                	<div class="row marginbot-30">
+	                    <div class="btn-group">
+	                        {% if comments != 0 %}
+								<ul>
+									{% for com in comments %}
+									<div>User Name: {{com.user.id}}</div>
+									<div>Activity: {{com.activity}}</div>
+									<div>Comments: {{com.message}}</div>
+									<div>Time: {{com.time}}</div>
+
+									<hr>
+									{% endfor %}
+								</ul>
+							{% endif %}
+
+							<div>Write your own comment here!</div>
+							<form class="form-horizontal" action="" method="POST" name = "comments">
+								{% csrf_token %}
+								<div class="row">
+                                    <div class="form-group">
+									   <div class="col-md-12">
+                                            <!-- {{activity_form.message}} -->
+										  <input type="text" name="UserMessage" id = "userMsg">
+										</div>
+						            </div>
+						        </div>
+								<input type="submit" name="submitAction" id = "submitMsg" value = "Send" class="btn btn-skin btn-lg btn-block">
+							</form>
+	                    </div>
+                	</div>
+                </div>
+            </div>
+        </div>
+    </div>
+                    
+
+
+
+	   
+
+    </div>		
+{% endblock %}

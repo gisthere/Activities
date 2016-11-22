@@ -1,6 +1,72 @@
-<form action="/login/" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Login"/>
-    <a href="/signup/">Sign up</a>
-</form>
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="home-section nopadd-bot color-dark text-center">
+        <div class="container marginbot-50">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="animatedParent">
+                        <div class="section-heading text-center">
+                            <h2 class="h-bold animated bounceInDown">{{ form.title }}</h2>
+                            <div class="divider-header"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row marginbot-80">
+                <div class="col-md-8 col-md-offset-2">
+                    <form class="input-form" action="{{ form.action }}" method="post">
+                        <input id="latitude" type="hidden" name="latitude">
+                        <input id="longitude" type="hidden" name="longitude">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% if form.message %}
+                                    <p class="error-list">{{ form.message }}</p>
+                                {% endif %}
+
+                                {% for field in form %}
+                                    <div class="form-group">
+                                        <input name="{{ field.html_name }}"
+                                               placeholder="{{ field.label }}"
+                                               type="{{ field.field.widget.input_type }}"
+                                               value="{{ field.value }}"
+                                               class="form-control input-lg">
+                                        {% if field.errors %}
+                                            <li class="error-list">
+                                                {% for error in field.errors %}
+                                                    <ul>{{ error }}</ul>
+                                                {% endfor %}
+                                            </li>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <input type="submit" value="{{ form.title }}" class="btn btn-skin btn-lg btn-block"/>
+                        <a href="{{ form.switch_action }}">{{ form.switch_title }}</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function success(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            $('#latitude').val(latitude);
+            $('#longitude').val(longitude);
+        }
+        function error() { }
+        window.onload = function () {
+            navigator.geolocation.getCurrentPosition(success, error);
+        }
+    </script>
+{% endblock %}
