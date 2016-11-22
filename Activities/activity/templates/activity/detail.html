@@ -198,12 +198,11 @@
                         <h6 class="vert-offset-bottom-05">Members</h6>
                         <div class="row">
                             {% for participant in participants %}
-                                <div class="
-{% if request.user == activity.organizer %} col-md-4 {% else %} col-md-2 {% endif %}">
-                                    <a href=" ">
+                                <div class="col-md-2 participant-card">
+                                    <a href="">
                                         <div class="card member bg-white shadow-1">
                                             <div class="row">
-                                                <div class="{% if request.user == activity.organizer %} col-md-6 {% else %} col-md-12 {% endif %} member-content grey-text text-darken-4 text-center">
+                                                <div class="col-md-12 member-content grey-text text-darken-4 text-center">
                                                     <div id="member-content-{{ participant.user.id }}">
                                                         {# display star depend on rating  #}
                                                         <i class="yellow-text darken-1 fa
@@ -294,36 +293,11 @@
                                                     {% endif %}
                                                 </div>
 
-                                                {% if request.user == activity.organizer %}
-                                                    <div class="col-md-6 comment-participant">
-                                                        {% if participant.comment_for_participant|default:'' == '' %}
-                                                            <div class="form-group">
 
-                                                            <textarea class="form-control" rows="3"
-                                                                      id="participant_comment_{{ participant.user.id }}"></textarea>
-                                                            </div>
-                                                        {% else %}
-                                                            {{ participant.comment_for_participant }}
-                                                        {% endif %}
-
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                            <div class="row ">
-                                                <div class="{% if request.user == activity.organizer %} col-md-6 {% else %} col-md-12 {% endif %}member-footer text-center text-uppercase">
-                                                    {{ participant.user }}</div>
-
-                                                {% if request.user == activity.organizer %}
-
-                                                    <div class="col-md-6 text-center comment-participant">
-                                                     {% if participant.comment_for_participant|default:'' == '' %}
-                                                        <button class="btn btn-skin comment-participant-button"
-                                                                data-participant="{{ participant.user.id }}"
-                                                                type="button">Comment
-                                                        </button>
-                                                         {% endif %}
-                                                    </div>
-                                                {% endif %}
+                                                <div class="col-md-12 member-footer text-center text-uppercase">
+                                                    {{ participant.user }}
+                                                     <i class="grey-text text-darken-2 fa fa-times delete-participant" aria-hidden="true"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </a>
@@ -599,6 +573,30 @@
                         comment: comment
                     }
                 }).done(function (result) {
+                });
+            }
+
+            function kickParticipant(activityId, participantId) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/activity/' + activityId + '/participant/' + participantId + '/kick/'
+                }).done(function (result) {
+                    console.log(result);
+                });
+            }
+
+
+            function deleteParticipant() {
+                $(".delete-participant").bind("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var participantCard = $(e.target).closest(".participant-card");
+
+
+                    participantCard.remove();
+
+
+                    return false;
                 });
             }
 

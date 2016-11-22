@@ -28,8 +28,6 @@ class ActivityList(ListView):
     context_object_name = 'activities'
     template_name = 'activity/activities_list.html'
 
-
-
     def get_queryset(self):
         list = Activity.objects.annotate(
             num_participant=Count('participant'),
@@ -458,3 +456,24 @@ def edit(request, activity_id=None):
             raise Http404("The activity your are looking for doesn't exist.")
     else:
         return HttpResponseRedirect('login/')
+
+
+
+def kick_participant(request, activity_id, participant_id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+
+    try:
+        # try to load activity from the database
+        activity = Activity.objects.get(id=activity_id)
+
+        if activity.organizer.user.id != request.user.id:
+            return HttpResponse("")
+
+
+        participant = Participant.objects.get(id=participant_id)
+        participant.delete()
+
+    except Model.DoesNotExist as e:
+        print(e)
+    return HttpResponse()
