@@ -185,6 +185,30 @@
 
                             </div>
                         </div>
+
+                        {% if request.user != activity.organizer %}
+                            <div class="row">
+                                {% for participant in participants %}
+                                    {% if participant.user.id == request.user.id %}
+                                        {% if participant.comment|default:'' == '' %}
+                                            <div class="form-group">
+                                    <textarea class="form-control" rows="3"
+                                              id="activity-comment"></textarea>
+                                            </div>
+                                            <button class="btn btn-skin" id="activity-comment-button"
+                                                    data-participant="{{ participant.user.id }}"
+                                                    type="button">Comment
+                                            </button>
+                                        {% else %}
+                                            {{ participant.comment }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+
+                            </div>
+                        {% endif %}
+
+
                     </div>
 
                 </div>
@@ -637,7 +661,6 @@
                 });
             }
 
-
             function deleteParticipant() {
                 $(".delete-participant").bind("click", function (e) {
                     e.preventDefault();
@@ -666,6 +689,39 @@
             }
 
             deleteParticipant();
+
+            $('#activity-comment-button').on('click', function (e) {
+                var target = $(e.target);
+
+                if (target.data("participant")) {
+                    var participantId = target.data("participant");
+                    var inputComment = $("#activity-comment");
+                    if (!!inputComment && inputComment.val() != "") {
+                        var comment = inputComment.val();
+                        addCommentForActivity(activityId, comment, function (result) {
+                            inputComment.closest(".form-group").replaceWith(comment);
+                            target.remove();
+                        });
+                    }
+                }
+
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            });
+
+            function addCommentForActivity(activityId, comment, callback) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/activity/' + activityId + '/comment/add/',
+                    data: {
+                        comment: comment
+                    }
+                }).done(function (result) {
+                    callback(result);
+                });
+            }
+
 
         })();
     </script>
