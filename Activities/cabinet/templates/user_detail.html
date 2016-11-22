@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <style>
+.pre-scrollable.activity {
+  max-height: 100px !important;
+  overflow-y: scroll;
+}
+    </style>
+
+{% endblock %}
+
+{% block content %}
+ <section class="home-section nopadd-bot color-dark text-center">
+        <div class="container marginbot-50">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="animatedParent">
+                        <div class="section-heading text-center">
+                            <h2 class="h-bold animated bounceInDown">User details</h2>
+                            <div class="divider-header"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row marginbot-80">
+                <div class="col-md-8">
+                        {% csrf_token %}
+                            <div class="form-group form-group-lg">
+                                <div class = "row ">
+                                    <label class="col-sm-6 control-label text-right">User name:</label>
+                                    <div class="col-sm-6 text-left">{{ user.last_name }} {{ user.first_name }}</div>
+                                </div>
+                                <div class = "row ">
+                                    <label class="col-sm-6 control-label text-right">E-mail:</label>
+                                    <div class="col-sm-6 text-left">{{ user_info.email }}</div>
+                                </div>
+                                <div class = "row">
+                                    <label class="col-sm-6 control-label text-right">Phone:</label>
+                                    <div class="col-sm-6 text-left">{{ user_info.phone }}</div>
+                                </div>
+                                <div class = "row">
+                                    <label class="col-sm-6 control-label text-right">Telegram:</label>
+                                    <div class="col-sm-6 text-left">{{ user_info.telegram }}</div>
+                                </div>
+                                <div class = "row">
+                                    <label class="col-sm-6 control-label text-right">Date of birth:</label>
+                                    <div class="col-sm-6 text-left">{{ user_info.birth_date }}</div>
+                                </div>
+                                <div class = "row">
+                                    <label class="col-sm-6 control-label text-right">Gender:</label>
+                                    <div class="col-sm-6 text-left">{{ user_info.gender }}</div>
+                                </div>
+                            </div>
+                </div>
+                <div class="col-md-4">
+                    <div class = "row"><label class="col-sm-6 control-label text-left">Participated activities:</label></div>
+                    <div class = "pre-scrollable activity">
+                        {% if participated != 0 %}
+                                    {% for participated_activity in participated %}
+                                    <div>{{participated_activity.name}}</div>
+                                    <hr>
+                                    {% endfor %}
+                        {% else %}
+                            There is no participated activity yet!
+                        {% endif %}
+                    </div>
+                
+                    <div class = "row "><label class="col-sm-6 control-label">Organized activities:</label></div>
+                    <div class = "pre-scrollable activity">
+                        {% if organized != 0 %}
+                            {% for organized_activity in organized %}
+                                <div>{{organized_activity.name}}</div>
+                                <!-- <div class="col-sm-6">{{organized_activity.name}}</div> -->
+                                <hr>
+                            {% endfor %}
+                        {% else %}
+                            There is no organized activity yet!
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

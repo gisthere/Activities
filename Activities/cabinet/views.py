@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
-
+from activity.models import Activity, Participant
 from authentication.models import User as MUser
 from .forms import UserSettingsForm
 from django.views.generic.edit import FormView
@@ -46,3 +46,15 @@ def index(request):
                 print(e)
     # return 400
     return HttpResponse(template.render({'settings_form': form}, request))
+
+def user_detail(request, user_id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login')
+    try:
+        user_info = MUser.objects.get(id = user_id)
+        user = User.objects.get(id = user_id)
+        participated = Activity.objects.filter(participants = user)
+        organized = Activity.objects.filter(organizer = user)
+    except MUser.DoesNotExist:
+        raise Http404("The user your are looking for doesn't exist.")
+    return render(request, 'user_detail.html', {'user_info': user_info, 'user': user, 'participated': participated, 'organized': organized})

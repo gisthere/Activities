@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'subscriptions',
     'django_nyt',
     'channels',
-    'ratings'
+    'ratings',
+    'bootstrap3_datetime'
 ]
 
 MIDDLEWARE = [
