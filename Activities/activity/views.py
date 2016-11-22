@@ -22,18 +22,17 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Value, CharField, FloatField
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
+
 class ActivityList(ListView):
     model = Activity
     paginate_by = 10
     context_object_name = 'activities'
     template_name = 'activity/activities_list.html'
 
-
-
     def get_queryset(self):
         list = Activity.objects.annotate(
             num_participant=Count('participant'),
-            rating =Avg('participant__rating')
+            rating=Avg('participant__rating')
         )
 
         # get search 't' - type and 'v' value
@@ -103,7 +102,7 @@ def index(request):
                 similarity=TrigramSimilarity('name', request.GET['search'])
             ).filter(similarity__gt=0.1)
         # use GEO information of the search request if there was any
-        objs = result.filter(status='SC',start_time__gte=datetime.date.today()).all()
+        objs = result.filter(status='SC', start_time__gte=datetime.date.today()).all()
         if latitude is not None or longitude is not None:
             res = []
             latScale = 111  # value in kilometers
@@ -128,9 +127,10 @@ def index(request):
             objs = res
     else:
         if request.user.is_authenticated():
-            objs = Activity.objects.filter(status='SC',start_time__gte=datetime.date.today()).exclude(participants=request.user).all()
+            objs = Activity.objects.filter(status='SC', start_time__gte=datetime.date.today()).exclude(
+                participants=request.user).all()[:15]
         else:
-            objs = Activity.objects.filter(status='SC',start_time__gte=datetime.date.today()).all()
+            objs = Activity.objects.filter(status='SC', start_time__gte=datetime.date.today()).all()[:15]
     availableSpots = calcAvailableSpots(Activity.objects.all())
     context = {
         'user': request.user,
@@ -299,7 +299,7 @@ def join(request):
 
         if user in activity.participants.all():
             return HttpResponseRedirect('/')
-        
+
         Participant.objects.update_or_create(user=user, activity=activity)
     except Model.DoesNotExist as e:
         print(e)
@@ -397,14 +397,15 @@ def detail(request, activity_id):
         if request.method == 'POST':
             if 'UserMessage' in request.POST:
                 msgText = request.POST['UserMessage']
-                activ = Activity.objects.get(id = activity_id)
-                newComment = Chat.objects.create(user = request.user, activity = activ, message = msgText)
+                activ = Activity.objects.get(id=activity_id)
+                newComment = Chat.objects.create(user=request.user, activity=activ, message=msgText)
                 newComment.save()
-        activ = Activity.objects.get(id = activity_id)
-        allComments = Chat.objects.filter(activity = activ)
+        activ = Activity.objects.get(id=activity_id)
+        allComments = Chat.objects.filter(activity=activ)
     except Activity.DoesNotExist:
         raise Http404("The activity your are looking for doesn't exist.")
-    return render(request, 'activity/detail.html', {'activity': activity, 'comments': allComments, 'participants': participants})
+    return render(request, 'activity/detail.html',
+                  {'activity': activity, 'comments': allComments, 'participants': participants})
 
 
 def edit(request, activity_id=None):
