@@ -1,2 +1,0 @@
-DROP DATABASE activitiesdb;
-DROP USER admin;

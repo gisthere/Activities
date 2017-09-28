@@ -1,8 +1,0 @@
-Sketch UI
-Pages:
-•	Main
-•	Activity
-•	Create 
-•	My Activities
-•	Login/signup
-•	Chat
